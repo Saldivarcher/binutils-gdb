@@ -61,6 +61,7 @@
 #include "elfcomm.h"
 #include "dwarf.h"
 #include "ctf-api.h"
+#include "demangle.h"
 
 #include "elf/common.h"
 #include "elf/external.h"
@@ -239,6 +240,7 @@ static elf_section_list * symtab_shndx_list;
 static bfd_boolean show_name = FALSE;
 static bfd_boolean do_dynamic = FALSE;
 static bfd_boolean do_syms = FALSE;
+static bfd_boolean do_demangle = FALSE;
 static bfd_boolean do_dyn_syms = FALSE;
 static bfd_boolean do_reloc = FALSE;
 static bfd_boolean do_sections = FALSE;
@@ -4452,6 +4454,7 @@ static struct option options[] =
   {"use-dynamic",      no_argument, 0, 'D'},
   {"unwind",	       no_argument, 0, 'u'},
   {"archive-index",    no_argument, 0, 'c'},
+  {"demangle",         no_argument, 0, 'C'},
   {"hex-dump",	       required_argument, 0, 'x'},
   {"relocated-dump",   required_argument, 0, 'R'},
   {"string-dump",      required_argument, 0, 'p'},
@@ -4494,6 +4497,7 @@ usage (FILE * stream)
   -e --headers           Equivalent to: -h -l -S\n\
   -s --syms              Display the symbol table\n\
      --symbols           An alias for --syms\n\
+  -C --demangle          Demangle symbols\n\
   --dyn-syms             Display the dynamic symbol table\n\
   -n --notes             Display the core notes (if present)\n\
   -r --relocs            Display the relocations (if present)\n\
@@ -4630,7 +4634,7 @@ parse_args (Filedata * filedata, int argc, char ** argv)
     usage (stderr);
 
   while ((c = getopt_long
-	  (argc, argv, "ADHINR:SVWacdeghi:lnp:rstuvw::x:z", options, NULL)) != EOF)
+	  (argc, argv, "ADHINR:CSVWacdeghi:lnp:rstuvw::x:z", options, NULL)) != EOF)
     {
       switch (c)
 	{
@@ -4703,6 +4707,9 @@ parse_args (Filedata * filedata, int argc, char ** argv)
 	  break;
 	case 'c':
 	  do_archive_index = TRUE;
+	  break;
+	case 'C':
+	  do_demangle = TRUE;
 	  break;
 	case 'x':
 	  request_dump (filedata, HEX_DUMP);
@@ -12035,8 +12042,26 @@ process_symbol_table (Filedata * filedata)
 		    printf (" [%s] ", get_symbol_other (filedata, psym->st_other ^ vis));
 		}
 	      printf (" %4s ", get_symbol_index_type (filedata, psym->st_shndx));
-	      print_symbol (25, psym->st_name < strtab_size
-			    ? strtab + psym->st_name : _("<corrupt>"));
+
+	      // TODO: Clean this up
+	      char* symbol;
+	      if (psym->st_name < strtab_size)
+		symbol = strtab + psym->st_name;
+	      else
+		symbol = _("<corrupt>");
+
+	      char* demangle = NULL;
+	      if (do_demangle)
+		// TODO: implement the ability to set flags?
+		demangle = cplus_demangle (symbol, 0);
+
+	      if (demangle == NULL)
+		print_symbol (25, symbol);
+	      else
+		{
+		  print_symbol (50, demangle);
+		  free(demangle);
+		}
 
 	      version_string
 		= get_symbol_version_string (filedata,
