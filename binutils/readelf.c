@@ -12043,13 +12043,10 @@ process_symbol_table (Filedata * filedata)
 		}
 	      printf (" %4s ", get_symbol_index_type (filedata, psym->st_shndx));
 
-	      // TODO: Clean this up
-	      char* symbol;
-	      if (psym->st_name < strtab_size)
-		symbol = strtab + psym->st_name;
-	      else
-		symbol = _("<corrupt>");
+	      char* symbol = psym->st_name < strtab_size
+		? strtab + psym->st_name : _("<corrupt>");
 
+	      // TODO: A better way to incorporate demangling?
 	      char* demangle = NULL;
 	      if (do_demangle)
 		// TODO: implement the ability to set flags?
