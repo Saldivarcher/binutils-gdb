@@ -2476,6 +2476,11 @@ Output_section::add_input_section(Layout* layout,
       entsize = 1;
     }
 
+  // Handle instances where there are no .rodata sections present,
+  // within the object only .rodata.strN.N sections.
+  if (is_prefix_of(".rodata", secname))
+    sh_flags &= ~(elfcpp::SHF_MERGE | elfcpp::SHF_STRINGS);
+
   this->update_flags_for_input_section(sh_flags);
   this->set_entsize(entsize);
 

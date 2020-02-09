@@ -1,3 +1,8 @@
+2020-02-08  Miguel Saldivar <saldivarcher@gmail.com>
+	* output.cc (add_input_section): Handle cases
+	when there are no .rodata sections present
+	within the object.
+
 2020-01-20  Nick Clifton  <nickc@redhat.com>
 
 	* po/uk.po: Updated Ukranian translation.
