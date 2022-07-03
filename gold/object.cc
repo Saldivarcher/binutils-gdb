@@ -53,19 +53,19 @@ namespace gold
 
 Read_symbols_data::~Read_symbols_data()
 {
-  if (this->section_headers != NULL)
+  if (this->section_headers != nullptr)
     delete this->section_headers;
-  if (this->section_names != NULL)
+  if (this->section_names != nullptr)
     delete this->section_names;
-  if (this->symbols != NULL)
+  if (this->symbols != nullptr)
     delete this->symbols;
-  if (this->symbol_names != NULL)
+  if (this->symbol_names != nullptr)
     delete this->symbol_names;
-  if (this->versym != NULL)
+  if (this->versym != nullptr)
     delete this->versym;
-  if (this->verdef != NULL)
+  if (this->verdef != nullptr)
     delete this->verdef;
-  if (this->verneed != NULL)
+  if (this->verneed != nullptr)
     delete this->verneed;
 }
 
@@ -93,7 +93,7 @@ Xindex::initialize_symtab_xindex(Object* object, unsigned int symtab_shndx)
       if (object->section_type(i) == elfcpp::SHT_SYMTAB_SHNDX
 	  && this->adjust_shndx(object->section_link(i)) == symtab_shndx)
 	{
-	  this->read_symtab_xindex<size, big_endian>(object, i, NULL);
+	  this->read_symtab_xindex<size, big_endian>(object, i, nullptr);
 	  return;
 	}
     }
@@ -102,7 +102,7 @@ Xindex::initialize_symtab_xindex(Object* object, unsigned int symtab_shndx)
 }
 
 // Read in the symtab_xindex_ array, given the section index of the
-// SHT_SYMTAB_SHNDX section.  If PSHDRS is not NULL, it points at the
+// SHT_SYMTAB_SHNDX section.  If PSHDRS is not nullptr, it points at the
 // section headers.
 
 template<int size, bool big_endian>
@@ -112,7 +112,7 @@ Xindex::read_symtab_xindex(Object* object, unsigned int xindex_shndx,
 {
   section_size_type bytecount;
   const unsigned char* contents;
-  if (pshdrs == NULL)
+  if (pshdrs == nullptr)
     contents = object->section_contents(xindex_shndx, &bytecount, false);
   else
     {
@@ -167,7 +167,7 @@ Object::error(const char* format, ...) const
 {
   va_list args;
   va_start(args, format);
-  char* buf = NULL;
+  char* buf = nullptr;
   if (vasprintf(&buf, format, args) < 0)
     gold_nomem();
   va_end(args);
@@ -293,7 +293,7 @@ bool
 Relobj::merge_output_offset(unsigned int shndx, section_offset_type offset,
                             section_offset_type *poutput) const {
   Object_merge_map* object_merge_map = this->object_merge_map_;
-  if (object_merge_map == NULL)
+  if (object_merge_map == nullptr)
     return false;
   return object_merge_map->get_output_offset(shndx, offset, poutput);
 }
@@ -301,8 +301,8 @@ Relobj::merge_output_offset(unsigned int shndx, section_offset_type offset,
 const Output_section_data*
 Relobj::find_merge_section(unsigned int shndx) const {
   Object_merge_map* object_merge_map = this->object_merge_map_;
-  if (object_merge_map == NULL)
-    return NULL;
+  if (object_merge_map == nullptr)
+    return nullptr;
   return object_merge_map->find_merge_section(shndx);
 }
 
@@ -323,7 +323,7 @@ Relobj::copy_symbols_data(Symbols_data* gc_sd, Read_symbols_data* sd,
   memcpy(gc_sd->section_names_data, sd->section_names->data(),
 	 sd->section_names_size);
   gc_sd->section_names_size = sd->section_names_size;
-  if (sd->symbols != NULL)
+  if (sd->symbols != nullptr)
     {
       gc_sd->symbols_data =
 	     new unsigned char[sd->symbols_size];
@@ -332,11 +332,11 @@ Relobj::copy_symbols_data(Symbols_data* gc_sd, Read_symbols_data* sd,
     }
   else
     {
-      gc_sd->symbols_data = NULL;
+      gc_sd->symbols_data = nullptr;
     }
   gc_sd->symbols_size = sd->symbols_size;
   gc_sd->external_symbols_offset = sd->external_symbols_offset;
-  if (sd->symbol_names != NULL)
+  if (sd->symbol_names != nullptr)
     {
       gc_sd->symbol_names_data =
 	     new unsigned char[sd->symbol_names_size];
@@ -345,7 +345,7 @@ Relobj::copy_symbols_data(Symbols_data* gc_sd, Read_symbols_data* sd,
     }
   else
     {
-      gc_sd->symbol_names_data = NULL;
+      gc_sd->symbol_names_data = nullptr;
     }
   gc_sd->symbol_names_size = sd->symbol_names_size;
 }
@@ -392,8 +392,8 @@ Relobj::finalize_incremental_relocs(Layout* layout, bool clear_counts)
   unsigned int nsyms = this->get_global_symbols()->size();
   this->reloc_bases_ = new unsigned int[nsyms];
 
-  gold_assert(this->reloc_bases_ != NULL);
-  gold_assert(layout->incremental_inputs() != NULL);
+  gold_assert(this->reloc_bases_ != nullptr);
+  gold_assert(layout->incremental_inputs() != nullptr);
 
   unsigned int rindex = layout->incremental_inputs()->get_reloc_count();
   for (unsigned int i = 0; i < nsyms; ++i)
@@ -450,7 +450,7 @@ Sized_relobj<size, big_endian>::do_output_section_address(
     return this->section_address(shndx);
 
   const Output_section* os = this->do_output_section(shndx);
-  gold_assert(os != NULL);
+  gold_assert(os != nullptr);
   return os->address();
 }
 
@@ -481,7 +481,7 @@ Sized_relobj_file<size, big_endian>::Sized_relobj_file(
     is_deferred_layout_(false),
     deferred_layout_(),
     deferred_layout_relocs_(),
-    output_views_(NULL)
+    output_views_(nullptr)
 {
 }
 
@@ -616,8 +616,8 @@ Object::find_shdr(
 	  const char *p = sh_name ? names + sh_name + len : names;
 	  p = reinterpret_cast<const char*>(memmem(p, names_size - (p - names),
 						   name, len));
-	  if (p == NULL)
-	    return NULL;
+	  if (p == nullptr)
+	    return nullptr;
 	  sh_name = p - names;
 	  hdr = pshdrs;
 	  if (sh_name == 0)
@@ -632,7 +632,7 @@ Object::find_shdr(
 	    return hdr;
 	  hdr += shdr_size;
 	}
-      hdr = NULL;
+      hdr = nullptr;
       if (sh_name == 0)
 	return hdr;
     }
@@ -648,13 +648,13 @@ Sized_relobj_file<size, big_endian>::find_eh_frame(
     const char* names,
     section_size_type names_size) const
 {
-  const unsigned char* s = NULL;
+  const unsigned char* s = nullptr;
 
   while (1)
     {
       s = this->template find_shdr<size, big_endian>(pshdrs, ".eh_frame",
 						     names, names_size, s);
-      if (s == NULL)
+      if (s == nullptr)
 	return false;
 
       typename This::Shdr shdr(s);
@@ -770,10 +770,10 @@ build_compressed_section_map(
 		}
 	      info.size = convert_to_section_size_type(uncompressed_size);
 	      info.flag = shdr.get_sh_flags();
-	      info.contents = NULL;
+	      info.contents = nullptr;
 	      if (uncompressed_size != -1ULL)
 		{
-		  unsigned char* uncompressed_data = NULL;
+		  unsigned char* uncompressed_data = nullptr;
 		  if (decompress_if_needed && need_decompressed_section(name))
 		    {
 		      uncompressed_data = new unsigned char[uncompressed_size];
@@ -812,15 +812,15 @@ Sized_relobj_file<size, big_endian>::do_find_special_sections(
   Compressed_section_map* compressed_sections =
     build_compressed_section_map<size, big_endian>(
       pshdrs, this->shnum(), names, sd->section_names_size, this, true);
-  if (compressed_sections != NULL)
+  if (compressed_sections != nullptr)
     this->set_compressed_sections(compressed_sections);
 
   return (this->has_eh_frame_
 	  || (!parameters->options().relocatable()
 	      && parameters->options().gdb_index()
-	      && (memmem(names, sd->section_names_size, "debug_info", 11) != NULL
+	      && (memmem(names, sd->section_names_size, "debug_info", 11) != nullptr
 		  || memmem(names, sd->section_names_size,
-			    "debug_types", 12) != NULL)));
+			    "debug_types", 12) != nullptr)));
 }
 
 // Read the sections and symbols from an object file.
@@ -847,10 +847,10 @@ Sized_relobj_file<size, big_endian>::base_read_symbols(Read_symbols_data* sd)
 
   bool need_local_symbols = this->do_find_special_sections(sd);
 
-  sd->symbols = NULL;
+  sd->symbols = nullptr;
   sd->symbols_size = 0;
   sd->external_symbols_offset = 0;
-  sd->symbol_names = NULL;
+  sd->symbol_names = nullptr;
   sd->symbol_names_size = 0;
 
   if (this->symtab_shndx_ == 0)
@@ -1044,7 +1044,7 @@ Sized_relobj_file<size, big_endian>::include_section_group(
   // seen one with the same signature.
   bool include_group;
   bool is_comdat;
-  Kept_section* kept_section = NULL;
+  Kept_section* kept_section = nullptr;
 
   if ((flags & elfcpp::GRP_COMDAT) == 0)
     {
@@ -1062,7 +1062,7 @@ Sized_relobj_file<size, big_endian>::include_section_group(
   if (is_comdat && include_group)
     {
       Incremental_inputs* incremental_inputs = layout->incremental_inputs();
-      if (incremental_inputs != NULL)
+      if (incremental_inputs != nullptr)
 	incremental_inputs->report_comdat_group(this, signature.c_str());
     }
 
@@ -1190,7 +1190,7 @@ Sized_relobj_file<size, big_endian>::include_linkonce_section(
       // that the kept section is another linkonce section.  If it is
       // the same size, record it as the section which corresponds to
       // this one.
-      if (kept2->object() != NULL && !kept2->is_comdat())
+      if (kept2->object() != nullptr && !kept2->is_comdat())
 	this->set_kept_comdat_section(index, false, 0, sh_size, kept2);
     }
   else if (!include1)
@@ -1202,7 +1202,7 @@ Sized_relobj_file<size, big_endian>::include_linkonce_section(
       // this linkonce section.  We'll handle the simple case where
       // the group has only one member section.  Otherwise, it's not
       // worth the effort.
-      if (kept1->object() != NULL && kept1->is_comdat())
+      if (kept1->object() != nullptr && kept1->is_comdat())
 	this->set_kept_comdat_section(index, false, 0, sh_size, kept1);
     }
   else
@@ -1273,7 +1273,7 @@ Sized_relobj_file<size, big_endian>::layout_eh_frame_section(
 					       reloc_type,
 					       &offset);
   this->output_sections()[shndx] = os;
-  if (os == NULL || offset == -1)
+  if (os == nullptr || offset == -1)
     this->section_offsets()[shndx] = invalid_address;
   else
     this->section_offsets()[shndx] = convert_types<Address, off_t>(offset);
@@ -1281,7 +1281,7 @@ Sized_relobj_file<size, big_endian>::layout_eh_frame_section(
   // If this section requires special handling, and if there are
   // relocs that aply to it, then we must do the special handling
   // before we apply the relocs.
-  if (os != NULL && offset == -1 && reloc_shndx != 0)
+  if (os != nullptr && offset == -1 && reloc_shndx != 0)
     this->set_relocs_must_follow_section_writes();
 }
 
@@ -1435,7 +1435,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
   bool is_pass_one = false;
   bool is_pass_two = false;
 
-  Symbols_data* gc_sd = NULL;
+  Symbols_data* gc_sd = nullptr;
 
   /* Check if do_layout needs to be two-pass.  If so, find out which pass
      should happen.  In the first pass, the data in sd is saved to be used
@@ -1443,9 +1443,9 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
   if (is_two_pass)
     {
       gc_sd = this->get_symbols_data();
-      if (gc_sd == NULL)
+      if (gc_sd == nullptr)
 	{
-	  gold_assert(sd != NULL);
+	  gold_assert(sd != nullptr);
 	  is_pass_one = true;
 	}
       else
@@ -1470,11 +1470,11 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
       this->set_symbols_data(gc_sd);
     }
 
-  const unsigned char* section_headers_data = NULL;
+  const unsigned char* section_headers_data = nullptr;
   section_size_type section_names_size;
-  const unsigned char* symbols_data = NULL;
+  const unsigned char* symbols_data = nullptr;
   section_size_type symbols_size;
-  const unsigned char* symbol_names_data = NULL;
+  const unsigned char* symbol_names_data = nullptr;
   section_size_type symbol_names_size;
 
   if (is_two_pass)
@@ -1490,10 +1490,10 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
     {
       section_headers_data = sd->section_headers->data();
       section_names_size = sd->section_names_size;
-      if (sd->symbols != NULL)
+      if (sd->symbols != nullptr)
 	symbols_data = sd->symbols->data();
       symbols_size = sd->symbols_size;
-      if (sd->symbol_names != NULL)
+      if (sd->symbol_names != nullptr)
 	symbol_names_data = sd->symbol_names->data();
       symbol_names_size = sd->symbol_names_size;
     }
@@ -1568,9 +1568,9 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
       if (!is_pass_two)
 	{
 	  delete sd->section_headers;
-	  sd->section_headers = NULL;
+	  sd->section_headers = nullptr;
 	  delete sd->section_names;
-	  sd->section_names = NULL;
+	  sd->section_names = nullptr;
 	}
       return;
     }
@@ -1682,7 +1682,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 
 	  // Add the section to the incremental inputs layout.
 	  Incremental_inputs* incremental_inputs = layout->incremental_inputs();
-	  if (incremental_inputs != NULL
+	  if (incremental_inputs != nullptr
 	      && !discard
 	      && can_incremental_update(sh_type))
 	    {
@@ -1696,7 +1696,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 	  if (discard)
 	    {
 	      // Do not include this section in the link.
-	      out_sections[i] = NULL;
+	      out_sections[i] = nullptr;
 	      out_section_offsets[i] = invalid_address;
 	      continue;
 	    }
@@ -1781,7 +1781,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 	  // collection. do_layout has been called before and some
 	  // sections have been already discarded. Simply ignore
 	  // such sections this time around.
-	  if (out_sections[i] == NULL)
+	  if (out_sections[i] == nullptr)
 	    {
 	      gold_assert(out_section_offsets[i] == invalid_address);
 	      continue;
@@ -1794,7 +1794,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 			      " in file '%s'"),
 			    program_name, this->section_name(i).c_str(),
 			    this->name().c_str());
-		out_sections[i] = NULL;
+		out_sections[i] = nullptr;
 		out_section_offsets[i] = invalid_address;
 		continue;
 	      }
@@ -1802,7 +1802,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 
       if (is_pass_two && parameters->options().icf_enabled())
 	{
-	  if (out_sections[i] == NULL)
+	  if (out_sections[i] == nullptr)
 	    {
 	      gold_assert(out_section_offsets[i] == invalid_address);
 	      continue;
@@ -1823,7 +1823,7 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 			      folded_obj->section_name(folded.second).c_str(),
 			      folded_obj->name().c_str());
 		  }
-		out_sections[i] = NULL;
+		out_sections[i] = nullptr;
 		out_section_offsets[i] = invalid_address;
 		continue;
 	      }
@@ -1969,9 +1969,9 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
 	  out_section_offsets[i] = invalid_address;
 	  continue;
 	}
-      if (data_section == NULL)
+      if (data_section == nullptr)
 	{
-	  out_sections[i] = NULL;
+	  out_sections[i] = nullptr;
 	  out_section_offsets[i] = invalid_address;
 	  continue;
 	}
@@ -2014,14 +2014,14 @@ Sized_relobj_file<size, big_endian>::do_layout(Symbol_table* symtab,
       delete[] gc_sd->section_names_data;
       delete[] gc_sd->symbols_data;
       delete[] gc_sd->symbol_names_data;
-      this->set_symbols_data(NULL);
+      this->set_symbols_data(nullptr);
     }
   else
     {
       delete sd->section_headers;
-      sd->section_headers = NULL;
+      sd->section_headers = nullptr;
       delete sd->section_names;
-      sd->section_names = NULL;
+      sd->section_names = nullptr;
     }
 }
 
@@ -2095,9 +2095,9 @@ Sized_relobj_file<size, big_endian>::do_layout_deferred_sections(Layout* layout)
       unsigned int data_shndx = this->adjust_shndx(shdr.get_sh_info());
 
       Output_section* data_section = out_sections[data_shndx];
-      if (data_section == NULL)
+      if (data_section == nullptr)
 	{
-	  out_sections[shndx] = NULL;
+	  out_sections[shndx] = nullptr;
 	  out_section_offsets[shndx] = invalid_address;
 	  continue;
 	}
@@ -2120,9 +2120,9 @@ Sized_relobj_file<size, big_endian>::do_add_symbols(Symbol_table* symtab,
 						    Read_symbols_data* sd,
 						    Layout* layout)
 {
-  if (sd->symbols == NULL)
+  if (sd->symbols == nullptr)
     {
-      gold_assert(sd->symbol_names == NULL);
+      gold_assert(sd->symbol_names == nullptr);
       return;
     }
 
@@ -2152,9 +2152,9 @@ Sized_relobj_file<size, big_endian>::do_add_symbols(Symbol_table* symtab,
 			  &this->defined_count_);
 
   delete sd->symbols;
-  sd->symbols = NULL;
+  sd->symbols = nullptr;
   delete sd->symbol_names;
-  sd->symbol_names = NULL;
+  sd->symbol_names = nullptr;
 }
 
 // Find out if this object, that is a member of a lib group, should be included
@@ -2170,7 +2170,7 @@ Sized_relobj_file<size, big_endian>::do_should_include_member(
     Read_symbols_data* sd,
     std::string* why)
 {
-  char* tmpbuf = NULL;
+  char* tmpbuf = nullptr;
   size_t tmpbuflen = 0;
   const char* sym_names =
       reinterpret_cast<const char*>(sd->symbol_names->data());
@@ -2200,12 +2200,12 @@ Sized_relobj_file<size, big_endian>::do_should_include_member(
 								 &tmpbuflen);
       if (t == Archive::SHOULD_INCLUDE_YES)
 	{
-	  if (tmpbuf != NULL)
+	  if (tmpbuf != nullptr)
 	    free(tmpbuf);
 	  return t;
 	}
     }
-  if (tmpbuf != NULL)
+  if (tmpbuf != nullptr)
     free(tmpbuf);
   return Archive::SHOULD_INCLUDE_UNKNOWN;
 }
@@ -2351,7 +2351,7 @@ Sized_relobj_file<size, big_endian>::do_count_local_symbols(Stringpool* pool,
 
       if (is_ordinary
 	  && shndx < shnum
-	  && (out_sections[shndx] == NULL
+	  && (out_sections[shndx] == nullptr
 	      || (out_sections[shndx]->order() == ORDER_EHFRAME
 		  && out_section_offsets[shndx] == invalid_address)))
 	{
@@ -2384,7 +2384,7 @@ Sized_relobj_file<size, big_endian>::do_count_local_symbols(Stringpool* pool,
       // If needed, add the symbol to the dynamic symbol table string pool.
       if (lv.needs_output_dynsym_entry())
 	{
-	  dynpool->add(name, true, NULL);
+	  dynpool->add(name, true, nullptr);
 	  ++dyncount;
 	}
 
@@ -2430,7 +2430,7 @@ Sized_relobj_file<size, big_endian>::do_count_local_symbols(Stringpool* pool,
 	}
 
       // Add the symbol to the symbol table string pool.
-      pool->add(name, true, NULL);
+      pool->add(name, true, nullptr);
       ++count;
     }
 
@@ -2486,15 +2486,15 @@ Sized_relobj_file<size, big_endian>::compute_final_local_value_internal(
       Address secoffset = out_offsets[shndx];
       if (symtab->is_section_folded(this, shndx))
 	{
-	  gold_assert(os == NULL && secoffset == invalid_address);
+	  gold_assert(os == nullptr && secoffset == invalid_address);
 	  // Get the os of the section it is folded onto.
 	  Section_id folded = symtab->icf()->get_folded_section(this,
 								shndx);
-	  gold_assert(folded.first != NULL);
+	  gold_assert(folded.first != nullptr);
 	  Sized_relobj_file<size, big_endian>* folded_obj = reinterpret_cast
 	    <Sized_relobj_file<size, big_endian>*>(folded.first);
 	  os = folded_obj->output_section(folded.second);
-	  gold_assert(os != NULL);
+	  gold_assert(os != nullptr);
 	  secoffset = folded_obj->get_output_section_offset(folded.second);
 
 	  // This could be a relaxed input section.
@@ -2502,12 +2502,12 @@ Sized_relobj_file<size, big_endian>::compute_final_local_value_internal(
 	    {
 	      const Output_relaxed_input_section* relaxed_section =
 		os->find_relaxed_input_section(folded_obj, folded.second);
-	      gold_assert(relaxed_section != NULL);
+	      gold_assert(relaxed_section != nullptr);
 	      secoffset = relaxed_section->address() - os->address();
 	    }
 	}
 
-      if (os == NULL)
+      if (os == nullptr)
 	{
 	  // This local symbol belongs to a section we are discarding.
 	  // In some cases when applying relocations later, we will
@@ -2525,7 +2525,7 @@ Sized_relobj_file<size, big_endian>::compute_final_local_value_internal(
 	    {
 	      // This local symbol belongs to a discarded or optimized
 	      // .eh_frame section.  Just treat it like the case in which
-	      // os == NULL above.
+	      // os == nullptr above.
 	      gold_assert(this->has_eh_frame_);
 	      return This::CFLV_DISCARDED;
 	    }
@@ -2549,7 +2549,7 @@ Sized_relobj_file<size, big_endian>::compute_final_local_value_internal(
 	      // symbols for arbitrary non-merge sections.
 	      const Output_section_data* posd =
 		os->find_relaxed_input_section(this, shndx);
-	      if (posd != NULL)
+	      if (posd != nullptr)
 		{
 		  uint64_t value = posd->address();
 		  if (relocatable)
@@ -2701,7 +2701,7 @@ Sized_relobj_file<size, big_endian>::do_set_local_dynsym_offset(off_t off)
   return this->output_local_dynsym_count_;
 }
 
-// If Symbols_data is not NULL get the section flags from here otherwise
+// If Symbols_data is not nullptr get the section flags from here otherwise
 // get it from the file.
 
 template<int size, bool big_endian>
@@ -2709,14 +2709,14 @@ uint64_t
 Sized_relobj_file<size, big_endian>::do_section_flags(unsigned int shndx)
 {
   Symbols_data* sd = this->get_symbols_data();
-  if (sd != NULL)
+  if (sd != nullptr)
     {
       const unsigned char* pshdrs = sd->section_headers_data
 				    + This::shdr_size * shndx;
       typename This::Shdr shdr(pshdrs);
       return shdr.get_sh_flags();
     }
-  // If sd is NULL, read the section header from the file.
+  // If sd is nullptr, read the section header from the file.
   return this->elf_file_.section_flags(shndx);
 }
 
@@ -2728,7 +2728,7 @@ uint64_t
 Sized_relobj_file<size, big_endian>::do_section_entsize(unsigned int shndx)
 {
   Symbols_data* sd = this->get_symbols_data();
-  gold_assert(sd != NULL);
+  gold_assert(sd != nullptr);
 
   const unsigned char* pshdrs = sd->section_headers_data
 				+ This::shdr_size * shndx;
@@ -2789,13 +2789,13 @@ Sized_relobj_file<size, big_endian>::write_local_symbols(
   // Get views into the output file for the portions of the symbol table
   // and the dynamic symbol table that we will be writing.
   off_t output_size = this->output_local_symbol_count_ * sym_size;
-  unsigned char* oview = NULL;
+  unsigned char* oview = nullptr;
   if (output_size > 0)
     oview = of->get_output_view(symtab_off + this->local_symbol_offset_,
 				output_size);
 
   off_t dyn_output_size = this->output_local_dynsym_count_ * sym_size;
-  unsigned char* dyn_oview = NULL;
+  unsigned char* dyn_oview = nullptr;
   if (dyn_output_size > 0)
     dyn_oview = of->get_output_view(this->local_dynsym_offset_,
 				    dyn_output_size);
@@ -2819,7 +2819,7 @@ Sized_relobj_file<size, big_endian>::write_local_symbols(
       if (is_ordinary)
 	{
 	  gold_assert(st_shndx < out_sections.size());
-	  if (out_sections[st_shndx] == NULL)
+	  if (out_sections[st_shndx] == nullptr)
 	    continue;
 	  st_shndx = out_sections[st_shndx]->out_shndx();
 	  if (st_shndx >= elfcpp::SHN_LORESERVE)
@@ -2947,7 +2947,7 @@ Sized_relobj_file<size, big_endian>::get_symbol_location_info(
 		  char* demangled_name = cplus_demangle(
 		      info->enclosing_symbol_name.c_str(),
 		      DMGL_ANSI | DMGL_PARAMS);
-		  if (demangled_name != NULL)
+		  if (demangled_name != nullptr)
 		    {
 		      info->enclosing_symbol_name.assign(demangled_name);
 		      free(demangled_name);
@@ -3023,7 +3023,7 @@ Sized_relobj_file<size, big_endian>::map_to_kept_section(
 	    static_cast<Sized_relobj_file<size, big_endian>*>(kept_object);
 	  Output_section* os = kept_relobj->output_section(kept_shndx);
 	  Address offset = kept_relobj->get_output_section_offset(kept_shndx);
-	  if (os != NULL && offset != invalid_address)
+	  if (os != nullptr && offset != invalid_address)
 	    {
 	      *pfound = true;
 	      return os->address() + offset;
@@ -3048,7 +3048,7 @@ Sized_relobj_file<size, big_endian>::find_kept_section_object(
   if (this->get_kept_comdat_section(shndx, &is_comdat, symndx_p, &sh_size,
 				    &kept_section))
     return kept_section->object();
-  return NULL;
+  return nullptr;
 }
 
 // Return the name of symbol SYMNDX.
@@ -3058,7 +3058,7 @@ const char*
 Sized_relobj_file<size, big_endian>::get_symbol_name(unsigned int symndx)
 {
   if (this->symtab_shndx_ == 0)
-    return NULL;
+    return nullptr;
 
   section_size_type symbols_size;
   const unsigned char* symbols = this->section_contents(this->symtab_shndx_,
@@ -3075,7 +3075,7 @@ Sized_relobj_file<size, big_endian>::get_symbol_name(unsigned int symndx)
   const unsigned char* p = symbols + symndx * This::sym_size;
 
   if (p >= symbols + symbols_size)
-    return NULL;
+    return nullptr;
 
   elfcpp::Sym<size, big_endian> sym(p);
 
@@ -3096,7 +3096,7 @@ Sized_relobj_file<size, big_endian>::do_get_global_symbol_counts(
   for (typename Symbols::const_iterator p = this->symbols_.begin();
        p != this->symbols_.end();
        ++p)
-    if (*p != NULL
+    if (*p != nullptr
 	&& (*p)->source() == Symbol::FROM_OBJECT
 	&& (*p)->object() == this
 	&& (*p)->is_defined())
@@ -3119,7 +3119,7 @@ Object::decompressed_section_contents(
   const unsigned char* buffer = this->do_section_contents(shndx, &buffer_size,
 							  false);
 
-  if (this->compressed_sections_ == NULL)
+  if (this->compressed_sections_ == nullptr)
     {
       *plen = buffer_size;
       *is_new = false;
@@ -3136,11 +3136,11 @@ Object::decompressed_section_contents(
     }
 
   section_size_type uncompressed_size = p->second.size;
-  if (p->second.contents != NULL)
+  if (p->second.contents != nullptr)
     {
       *plen = uncompressed_size;
       *is_new = false;
-      if (palign != NULL)
+      if (palign != nullptr)
 	*palign = p->second.addralign;
       return p->second.contents;
     }
@@ -3163,7 +3163,7 @@ Object::decompressed_section_contents(
   // once in this pass.
   *plen = uncompressed_size;
   *is_new = true;
-  if (palign != NULL)
+  if (palign != nullptr)
     *palign = p->second.addralign;
   return uncompressed_data;
 }
@@ -3174,17 +3174,17 @@ Object::decompressed_section_contents(
 void
 Object::discard_decompressed_sections()
 {
-  if (this->compressed_sections_ == NULL)
+  if (this->compressed_sections_ == nullptr)
     return;
 
   for (Compressed_section_map::iterator p = this->compressed_sections_->begin();
        p != this->compressed_sections_->end();
        ++p)
     {
-      if (p->second.contents != NULL)
+      if (p->second.contents != nullptr)
 	{
 	  delete[] p->second.contents;
-	  p->second.contents = NULL;
+	  p->second.contents = nullptr;
 	}
     }
 }
@@ -3220,7 +3220,7 @@ Input_objects::add_object(Object* obj)
 	  // marked so.
 	  if (!obj->as_needed())
 	    {
-	      gold_assert(ins.first->second != NULL);
+	      gold_assert(ins.first->second != nullptr);
 	      ins.first->second->clear_as_needed();
 	    }
 	  return false;
@@ -3233,7 +3233,7 @@ Input_objects::add_object(Object* obj)
   if (parameters->options().user_set_print_symbol_counts()
       || parameters->options().cref())
     {
-      if (this->cref_ == NULL)
+      if (this->cref_ == nullptr)
 	this->cref_ = new Cref();
       this->cref_->add_object(obj);
     }
@@ -3294,7 +3294,7 @@ Input_objects::archive_start(Archive* archive)
   if (parameters->options().user_set_print_symbol_counts()
       || parameters->options().cref())
     {
-      if (this->cref_ == NULL)
+      if (this->cref_ == nullptr)
 	this->cref_ = new Cref();
       this->cref_->add_archive_start(archive);
     }
@@ -3316,7 +3316,7 @@ void
 Input_objects::print_symbol_counts(const Symbol_table* symtab) const
 {
   if (parameters->options().user_set_print_symbol_counts()
-      && this->cref_ != NULL)
+      && this->cref_ != nullptr)
     this->cref_->print_symbol_counts(symtab);
 }
 
@@ -3325,7 +3325,7 @@ Input_objects::print_symbol_counts(const Symbol_table* symtab) const
 void
 Input_objects::print_cref(const Symbol_table* symtab, FILE* f) const
 {
-  if (parameters->options().cref() && this->cref_ != NULL)
+  if (parameters->options().cref() && this->cref_ != nullptr)
     this->cref_->print_cref(symtab, f);
 }
 
@@ -3340,7 +3340,7 @@ std::string
 Relocate_info<size, big_endian>::location(size_t, off_t offset) const
 {
   Sized_dwarf_line_info<size, big_endian> line_info(this->object);
-  std::string ret = line_info.addr2line(this->data_shndx, offset, NULL);
+  std::string ret = line_info.addr2line(this->data_shndx, offset, nullptr);
   if (!ret.empty())
     return ret;
 
@@ -3389,7 +3389,7 @@ make_elf_sized_object(const std::string& name, Input_file* input_file,
 				 ehdr.get_e_machine(), size, big_endian,
 				 ehdr.get_ei_osabi(),
 				 ehdr.get_ei_abiversion());
-  if (target == NULL)
+  if (target == nullptr)
     gold_fatal(_("%s: unsupported ELF machine number %d"),
 	       name.c_str(), ehdr.get_e_machine());
 
@@ -3397,11 +3397,11 @@ make_elf_sized_object(const std::string& name, Input_file* input_file,
     set_parameters_target(target);
   else if (target != &parameters->target())
     {
-      if (punconfigured != NULL)
+      if (punconfigured != nullptr)
 	*punconfigured = true;
       else
 	gold_error(_("%s: incompatible target"), name.c_str());
-      return NULL;
+      return nullptr;
     }
 
   return target->make_elf_object<size, big_endian>(name, input_file, offset,
@@ -3439,7 +3439,7 @@ make_elf_object(const std::string& name, Input_file* input_file, off_t offset,
 		const unsigned char* p, section_offset_type bytes,
 		bool* punconfigured)
 {
-  if (punconfigured != NULL)
+  if (punconfigured != nullptr)
     *punconfigured = false;
 
   std::string error;
@@ -3449,7 +3449,7 @@ make_elf_object(const std::string& name, Input_file* input_file, off_t offset,
 					       &big_endian, &error))
     {
       gold_error(_("%s: %s"), name.c_str(), error.c_str());
-      return NULL;
+      return nullptr;
     }
 
   if (size == 32)
@@ -3461,13 +3461,13 @@ make_elf_object(const std::string& name, Input_file* input_file, off_t offset,
 	  return make_elf_sized_object<32, true>(name, input_file,
 						 offset, ehdr, punconfigured);
 #else
-	  if (punconfigured != NULL)
+	  if (punconfigured != nullptr)
 	    *punconfigured = true;
 	  else
 	    gold_error(_("%s: not configured to support "
 			 "32-bit big-endian object"),
 		       name.c_str());
-	  return NULL;
+	  return nullptr;
 #endif
 	}
       else
@@ -3477,13 +3477,13 @@ make_elf_object(const std::string& name, Input_file* input_file, off_t offset,
 	  return make_elf_sized_object<32, false>(name, input_file,
 						  offset, ehdr, punconfigured);
 #else
-	  if (punconfigured != NULL)
+	  if (punconfigured != nullptr)
 	    *punconfigured = true;
 	  else
 	    gold_error(_("%s: not configured to support "
 			 "32-bit little-endian object"),
 		       name.c_str());
-	  return NULL;
+	  return nullptr;
 #endif
 	}
     }
@@ -3496,13 +3496,13 @@ make_elf_object(const std::string& name, Input_file* input_file, off_t offset,
 	  return make_elf_sized_object<64, true>(name, input_file,
 						 offset, ehdr, punconfigured);
 #else
-	  if (punconfigured != NULL)
+	  if (punconfigured != nullptr)
 	    *punconfigured = true;
 	  else
 	    gold_error(_("%s: not configured to support "
 			 "64-bit big-endian object"),
 		       name.c_str());
-	  return NULL;
+	  return nullptr;
 #endif
 	}
       else
@@ -3512,13 +3512,13 @@ make_elf_object(const std::string& name, Input_file* input_file, off_t offset,
 	  return make_elf_sized_object<64, false>(name, input_file,
 						  offset, ehdr, punconfigured);
 #else
-	  if (punconfigured != NULL)
+	  if (punconfigured != nullptr)
 	    *punconfigured = true;
 	  else
 	    gold_error(_("%s: not configured to support "
 			 "64-bit little-endian object"),
 		       name.c_str());
-	  return NULL;
+	  return nullptr;
 #endif
 	}
     }

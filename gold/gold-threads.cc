@@ -215,7 +215,7 @@ class Condvar_impl_threads : public Condvar_impl
 
 Condvar_impl_threads::Condvar_impl_threads()
 {
-  int err = pthread_cond_init(&this->cond_, NULL);
+  int err = pthread_cond_init(&this->cond_, nullptr);
   if (err != 0)
     gold_fatal(_("pthread_cond_init failed: %s"), strerror(err));
 }
@@ -341,7 +341,7 @@ Once::Once()
 #endif
 {
 #ifndef ENABLE_THREADS
-  this->once_ = NULL;
+  this->once_ = nullptr;
 #else
   this->once_ = new Once_initialize();
 #endif
@@ -402,8 +402,8 @@ Once::run_once(void* arg)
   if (err != 0)
     gold_fatal(_("pthread_once failed: %s"), strerror(err));
 
-  once_pointer = NULL;
-  once_arg = NULL;
+  once_pointer = nullptr;
+  once_arg = nullptr;
 
   err = pthread_mutex_unlock(&once_pointer_control);
   if (err != 0)
@@ -434,7 +434,7 @@ Initialize_lock::initialize()
     return false;
   else
     {
-      this->run_once(NULL);
+      this->run_once(nullptr);
       return true;
     }
 }

@@ -37,16 +37,16 @@ class Task_list
 {
  public:
   Task_list()
-    : head_(NULL), tail_(NULL)
+    : head_(nullptr), tail_(nullptr)
   { }
 
   ~Task_list()
-  { gold_assert(this->head_ == NULL && this->tail_ == NULL); }
+  { gold_assert(this->head_ == nullptr && this->tail_ == nullptr); }
 
   // Return whether the list is empty.
   bool
   empty() const
-  { return this->head_ == NULL; }
+  { return this->head_ == nullptr; }
 
   // Add T to the head of the list.
   void
@@ -56,15 +56,15 @@ class Task_list
   void
   push_back(Task* t);
 
-  // Remove the first Task on the list and return it.  Return NULL if
+  // Remove the first Task on the list and return it.  Return nullptr if
   // the list is empty.
   Task*
   pop_front();
 
  private:
-  // The start of the list.  NULL if the list is empty.
+  // The start of the list.  nullptr if the list is empty.
   Task* head_;
-  // The end of the list.  NULL if the list is empty.
+  // The end of the list.  nullptr if the list is empty.
   Task* tail_;
 };
 
@@ -92,13 +92,13 @@ class Task_token
 {
  public:
   Task_token(bool is_blocker)
-    : is_blocker_(is_blocker), blockers_(0), writer_(NULL), waiting_()
+    : is_blocker_(is_blocker), blockers_(0), writer_(nullptr), waiting_()
   { }
 
   ~Task_token()
   {
     gold_assert(this->blockers_ == 0);
-    gold_assert(this->writer_ == NULL);
+    gold_assert(this->writer_ == nullptr);
   }
 
   // Return whether this is a blocker.
@@ -113,7 +113,7 @@ class Task_token
   is_writable() const
   {
     gold_assert(!this->is_blocker_);
-    return this->writer_ == NULL;
+    return this->writer_ == nullptr;
   }
 
   // Add the task as the token's writer (there may only be one
@@ -121,7 +121,7 @@ class Task_token
   void
   add_writer(const Task* t)
   {
-    gold_assert(!this->is_blocker_ && this->writer_ == NULL);
+    gold_assert(!this->is_blocker_ && this->writer_ == nullptr);
     this->writer_ = t;
   }
 
@@ -130,7 +130,7 @@ class Task_token
   remove_writer(const Task* t)
   {
     gold_assert(!this->is_blocker_ && this->writer_ == t);
-    this->writer_ = NULL;
+    this->writer_ = nullptr;
   }
 
   // A blocker token uses these methods.
@@ -141,7 +141,7 @@ class Task_token
   {
     gold_assert(this->is_blocker_);
     ++this->blockers_;
-    this->writer_ = NULL;
+    this->writer_ = nullptr;
   }
 
   // Add some number of blockers to the token.
@@ -150,7 +150,7 @@ class Task_token
   {
     gold_assert(this->is_blocker_);
     this->blockers_ += c;
-    this->writer_ = NULL;
+    this->writer_ = nullptr;
   }
 
   // Remove a blocker from the token.  Returns true if block count
@@ -160,7 +160,7 @@ class Task_token
   {
     gold_assert(this->is_blocker_ && this->blockers_ > 0);
     --this->blockers_;
-    this->writer_ = NULL;
+    this->writer_ = nullptr;
     return this->blockers_ == 0;
   }
 
@@ -186,7 +186,7 @@ class Task_token
   { this->waiting_.push_front(t); }
 
   // Remove the first Task waiting for this token to be released, and
-  // return it.  Return NULL if no Tasks are waiting.
+  // return it.  Return nullptr if no Tasks are waiting.
   Task*
   remove_first_waiting()
   { return this->waiting_.pop_front(); }

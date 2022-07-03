@@ -38,7 +38,7 @@ class Cref
 {
  public:
   Cref()
-    : inputs_(NULL)
+    : inputs_(nullptr)
   { }
 
   // Record an input object file.  This is called for each object file

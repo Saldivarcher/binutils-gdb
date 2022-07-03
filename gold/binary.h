@@ -64,7 +64,7 @@ class Binary_to_elf
   converted_data_leak()
   {
     unsigned char* ret = this->data_;
-    this->data_ = NULL;
+    this->data_ = nullptr;
     return ret;
   }
 

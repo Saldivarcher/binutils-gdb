@@ -49,7 +49,7 @@ Dynobj::Dynobj(const std::string& name, Input_file* input_file, off_t offset)
   // object's filename.  The only exception is when the dynamic object
   // is part of an archive (so the filename is the archive's
   // filename).  In that case, we use just the dynobj's name-in-archive.
-  if (input_file == NULL)
+  if (input_file == nullptr)
     this->soname_ = name;
   else
     {
@@ -81,7 +81,7 @@ Sized_dynobj<size, big_endian>::Sized_dynobj(
   : Dynobj(name, input_file, offset),
     elf_file_(this, ehdr),
     dynsym_shndx_(-1U),
-    symbols_(NULL),
+    symbols_(nullptr),
     defined_count_(0)
 {
 }
@@ -134,11 +134,11 @@ Sized_dynobj<size, big_endian>::find_dynsym_sections(
 							   pshdrs);
 	      this->set_xindex(xindex);
 	    }
-	  pi = NULL;
+	  pi = nullptr;
 	  break;
 	case elfcpp::SHT_SYMTAB:
 	  symtab_shndx = i;
-	  pi = NULL;
+	  pi = nullptr;
 	  break;
 	case elfcpp::SHT_GNU_versym:
 	  pi = pversym_shndx;
@@ -162,14 +162,14 @@ Sized_dynobj<size, big_endian>::find_dynsym_sections(
 							   pshdrs);
 	      this->set_xindex(xindex);
 	    }
-	  pi = NULL;
+	  pi = nullptr;
 	  break;
 	default:
-	  pi = NULL;
+	  pi = nullptr;
 	  break;
 	}
 
-      if (pi == NULL)
+      if (pi == nullptr)
 	continue;
 
       if (*pi != -1U)
@@ -217,7 +217,7 @@ Sized_dynobj<size, big_endian>::read_dynsym_section(
 {
   if (shndx == -1U)
     {
-      *view = NULL;
+      *view = nullptr;
       *view_size = 0;
       *view_info = 0;
       return;
@@ -360,28 +360,28 @@ Sized_dynobj<size, big_endian>::base_read_symbols(Read_symbols_data* sd)
 
   unsigned int strtab_shndx = -1U;
 
-  sd->symbols = NULL;
+  sd->symbols = nullptr;
   sd->symbols_size = 0;
   sd->external_symbols_offset = 0;
-  sd->symbol_names = NULL;
+  sd->symbol_names = nullptr;
   sd->symbol_names_size = 0;
-  sd->versym = NULL;
+  sd->versym = nullptr;
   sd->versym_size = 0;
-  sd->verdef = NULL;
+  sd->verdef = nullptr;
   sd->verdef_size = 0;
   sd->verdef_info = 0;
-  sd->verneed = NULL;
+  sd->verneed = nullptr;
   sd->verneed_size = 0;
   sd->verneed_info = 0;
 
   const unsigned char* namesu = sd->section_names->data();
   const char* names = reinterpret_cast<const char*>(namesu);
-  if (memmem(names, sd->section_names_size, ".zdebug_", 8) != NULL)
+  if (memmem(names, sd->section_names_size, ".zdebug_", 8) != nullptr)
     {
       Compressed_section_map* compressed_sections =
 	  build_compressed_section_map<size, big_endian>(
 	      pshdrs, this->shnum(), names, sd->section_names_size, this, true);
-      if (compressed_sections != NULL)
+      if (compressed_sections != nullptr)
         this->set_compressed_sections(compressed_sections);
     }
 
@@ -447,8 +447,8 @@ Sized_dynobj<size, big_endian>::base_read_symbols(Read_symbols_data* sd)
   // this is a convenient place to do it.
   if (dynamic_shndx != -1U)
     this->read_dynamic(pshdrs, dynamic_shndx, strtab_shndx,
-		       (sd->symbol_names == NULL
-			? NULL
+		       (sd->symbol_names == nullptr
+			? nullptr
 			: sd->symbol_names->data()),
 		       sd->symbol_names_size);
 }
@@ -507,9 +507,9 @@ Sized_dynobj<size, big_endian>::do_layout(Symbol_table* symtab,
     }
 
   delete sd->section_headers;
-  sd->section_headers = NULL;
+  sd->section_headers = nullptr;
   delete sd->section_names;
-  sd->section_names = NULL;
+  sd->section_names = nullptr;
 }
 
 // Add an entry to the vector mapping version numbers to version
@@ -524,7 +524,7 @@ Sized_dynobj<size, big_endian>::set_version_map(
 {
   if (ndx >= version_map->size())
     version_map->resize(ndx + 1);
-  if ((*version_map)[ndx] != NULL)
+  if ((*version_map)[ndx] != nullptr)
     this->error(_("duplicate definition for version %u"), ndx);
   (*version_map)[ndx] = name;
 }
@@ -537,7 +537,7 @@ Sized_dynobj<size, big_endian>::make_verdef_map(
     Read_symbols_data* sd,
     Version_map* version_map) const
 {
-  if (sd->verdef == NULL)
+  if (sd->verdef == nullptr)
     return;
 
   const char* names = reinterpret_cast<const char*>(sd->symbol_names->data());
@@ -616,7 +616,7 @@ Sized_dynobj<size, big_endian>::make_verneed_map(
     Read_symbols_data* sd,
     Version_map* version_map) const
 {
-  if (sd->verneed == NULL)
+  if (sd->verneed == nullptr)
     return;
 
   const char* names = reinterpret_cast<const char*>(sd->symbol_names->data());
@@ -695,7 +695,7 @@ Sized_dynobj<size, big_endian>::make_version_map(
     Read_symbols_data* sd,
     Version_map* version_map) const
 {
-  if (sd->verdef == NULL && sd->verneed == NULL)
+  if (sd->verdef == nullptr && sd->verneed == nullptr)
     return;
 
   // A guess at the maximum version number we will see.  If this is
@@ -714,11 +714,11 @@ Sized_dynobj<size, big_endian>::do_add_symbols(Symbol_table* symtab,
 					       Read_symbols_data* sd,
 					       Layout*)
 {
-  if (sd->symbols == NULL)
+  if (sd->symbols == nullptr)
     {
-      gold_assert(sd->symbol_names == NULL);
-      gold_assert(sd->versym == NULL && sd->verdef == NULL
-		  && sd->verneed == NULL);
+      gold_assert(sd->symbol_names == nullptr);
+      gold_assert(sd->versym == nullptr && sd->verdef == nullptr
+		  && sd->verneed == nullptr);
       return;
     }
 
@@ -748,8 +748,8 @@ Sized_dynobj<size, big_endian>::do_add_symbols(Symbol_table* symtab,
     reinterpret_cast<const char*>(sd->symbol_names->data());
   symtab->add_from_dynobj(this, sd->symbols->data(), symcount,
 			  sym_names, sd->symbol_names_size,
-			  (sd->versym == NULL
-			   ? NULL
+			  (sd->versym == nullptr
+			   ? nullptr
 			   : sd->versym->data()),
 			  sd->versym_size,
 			  &version_map,
@@ -757,23 +757,23 @@ Sized_dynobj<size, big_endian>::do_add_symbols(Symbol_table* symtab,
 			  &this->defined_count_);
 
   delete sd->symbols;
-  sd->symbols = NULL;
+  sd->symbols = nullptr;
   delete sd->symbol_names;
-  sd->symbol_names = NULL;
-  if (sd->versym != NULL)
+  sd->symbol_names = nullptr;
+  if (sd->versym != nullptr)
     {
       delete sd->versym;
-      sd->versym = NULL;
+      sd->versym = nullptr;
     }
-  if (sd->verdef != NULL)
+  if (sd->verdef != nullptr)
     {
       delete sd->verdef;
-      sd->verdef = NULL;
+      sd->verdef = nullptr;
     }
-  if (sd->verneed != NULL)
+  if (sd->verneed != nullptr)
     {
       delete sd->verneed;
-      sd->verneed = NULL;
+      sd->verneed = nullptr;
     }
 
   // This is normally the last time we will read any data from this
@@ -841,7 +841,7 @@ Sized_dynobj<size, big_endian>::do_get_global_symbol_counts(
   for (typename Symbols::const_iterator p = this->symbols_->begin();
        p != this->symbols_->end();
        ++p)
-    if (*p != NULL
+    if (*p != nullptr
 	&& (*p)->source() == Symbol::FROM_OBJECT
 	&& (*p)->object() == this
 	&& (*p)->is_defined()
@@ -1492,9 +1492,9 @@ Versions::define_base_version(Stringpool* dynpool)
   // so it doesn't need to be in version_table_.
   gold_assert(this->defs_.empty());
   const char* name = parameters->options().soname();
-  if (name == NULL)
+  if (name == nullptr)
     name = parameters->options().output_file_name();
-  name = dynpool->add(name, false, NULL);
+  name = dynpool->add(name, false, nullptr);
   Verdef* vdbase = new Verdef(name, std::vector<std::string>(),
                               true, false, false, true);
   this->defs_.push_back(vdbase);
@@ -1525,7 +1525,7 @@ Versions::record_version(const Symbol_table* symtab,
 			 Stringpool* dynpool, const Symbol* sym)
 {
   gold_assert(!this->is_finalized_);
-  gold_assert(sym->version() != NULL);
+  gold_assert(sym->version() != nullptr);
 
   // A symbol defined as "sym@" is bound to an unspecified base version.
   if (sym->version()[0] == '\0')
@@ -1553,7 +1553,7 @@ Versions::add_def(Stringpool* dynpool, const Symbol* sym, const char* version,
 		  Stringpool::Key version_key)
 {
   Key k(version_key, 0);
-  Version_base* const vbnull = NULL;
+  Version_base* const vbnull = nullptr;
   std::pair<Version_table::iterator, bool> ins =
     this->version_table_.insert(std::make_pair(k, vbnull));
 
@@ -1564,7 +1564,7 @@ Versions::add_def(Stringpool* dynpool, const Symbol* sym, const char* version,
 
       // We have now seen a symbol in this version, so it is not
       // weak.
-      gold_assert(vb != NULL);
+      gold_assert(vb != nullptr);
       vb->clear_weak();
     }
   else
@@ -1597,7 +1597,7 @@ Versions::add_need(Stringpool* dynpool, const char* filename, const char* name,
   filename = dynpool->add(filename, true, &filename_key);
 
   Key k(name_key, filename_key);
-  Version_base* const vbnull = NULL;
+  Version_base* const vbnull = nullptr;
   std::pair<Version_table::iterator, bool> ins =
     this->version_table_.insert(std::make_pair(k, vbnull));
 
@@ -1610,7 +1610,7 @@ Versions::add_need(Stringpool* dynpool, const char* filename, const char* name,
   // See whether we already have this filename.  We don't expect many
   // version references, so we just do a linear search.  This could be
   // replaced by a hash table.
-  Verneed* vn = NULL;
+  Verneed* vn = nullptr;
   for (Needs::iterator p = this->needs_.begin();
        p != this->needs_.end();
        ++p)
@@ -1622,7 +1622,7 @@ Versions::add_need(Stringpool* dynpool, const char* filename, const char* name,
 	}
     }
 
-  if (vn == NULL)
+  if (vn == nullptr)
     {
       // Create base version definition lazily for shared library.
       if (parameters->options().shared() && this->needs_base_version_)
@@ -1704,7 +1704,7 @@ Versions::version_index(const Symbol_table* symtab, const Stringpool* dynpool,
 {
   Stringpool::Key version_key;
   const char* version = dynpool->find(sym->version(), &version_key);
-  gold_assert(version != NULL);
+  gold_assert(version != nullptr);
 
   Key k;
   if (!sym->is_from_dynobj() && !sym->is_copied_from_dynobj())
@@ -1717,7 +1717,7 @@ Versions::version_index(const Symbol_table* symtab, const Stringpool* dynpool,
 
       Stringpool::Key filename_key;
       const char* filename = dynpool->find(dynobj->soname(), &filename_key);
-      gold_assert(filename != NULL);
+      gold_assert(filename != nullptr);
 
       k = Key(version_key, filename_key);
     }
@@ -1755,7 +1755,7 @@ Versions::symbol_section_contents(const Symbol_table* symtab,
     {
       unsigned int version_index;
       const char* version = (*p)->version();
-      if (version == NULL)
+      if (version == nullptr)
 	{
 	  if ((*p)->is_defined() && !(*p)->is_from_dynobj())
 	    version_index = elfcpp::VER_NDX_GLOBAL;
@@ -1768,7 +1768,7 @@ Versions::symbol_section_contents(const Symbol_table* symtab,
 	version_index = this->version_index(symtab, dynpool, *p);
       // If the symbol was defined as foo@V1 instead of foo@@V1, add
       // the hidden bit.
-      if ((*p)->version() != NULL
+      if ((*p)->version() != nullptr
 	  && (*p)->is_defined()
 	  && !(*p)->is_default()
 	  && !(*p)->from_dyn())

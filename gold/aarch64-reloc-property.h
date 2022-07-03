@@ -189,18 +189,18 @@ class AArch64_reloc_property_table
     return this->table_[idx];
   }
 
-  // Like get_reloc_property but only return non-NULL if relocation code is
+  // Like get_reloc_property but only return non-nullptr if relocation code is
   // static and implemented.
   const AArch64_reloc_property*
   get_implemented_static_reloc_property(unsigned int code) const
   {
     unsigned int idx = code_to_array_index(code);
     const AArch64_reloc_property* arp = this->table_[idx];
-    return ((arp != NULL
+    return ((arp != nullptr
 	     && (arp->reloc_type() == AArch64_reloc_property::RT_STATIC)
 	     && arp->is_implemented())
 	    ? arp
-	    : NULL);
+	    : nullptr);
   }
 
   // Return a string describing the relocation code that is not

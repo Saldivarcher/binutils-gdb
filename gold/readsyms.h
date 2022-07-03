@@ -50,10 +50,10 @@ class Read_symbols : public Task
 {
  public:
   // DIRPATH is the list of directories to search for libraries.
-  // INPUT is the file to read.  INPUT_GROUP is not NULL if we are in
+  // INPUT is the file to read.  INPUT_GROUP is not nullptr if we are in
   // the middle of an input group.  THIS_BLOCKER is used to prevent
   // the associated Add_symbols task from running before the previous
-  // one has completed; it will be NULL for the first task.
+  // one has completed; it will be nullptr for the first task.
   // NEXT_BLOCKER is used to block the next input file from adding
   // symbols.
   Read_symbols(Input_objects* input_objects, Symbol_table* symtab,
@@ -182,10 +182,10 @@ private:
 class Read_member : public Task
 {
  public:
-  // INPUT is the file to read.  INPUT_GROUP is not NULL if we are in
+  // INPUT is the file to read.  INPUT_GROUP is not nullptr if we are in
   // the middle of an input group.  THIS_BLOCKER is used to prevent
   // the associated Add_symbols task from running before the previous
-  // one has completed; it will be NULL for the first task.
+  // one has completed; it will be nullptr for the first task.
   // NEXT_BLOCKER is used to block the next input file from adding
   // symbols.
   Read_member(Input_objects* /*input_objects*/, Symbol_table* /*symtab*/,
@@ -392,7 +392,7 @@ class Finish_group : public Task
 	       Task_token* next_blocker)
     : input_objects_(input_objects), symtab_(symtab),
       layout_(layout), mapfile_(mapfile), input_group_(input_group),
-      saw_undefined_(0), this_blocker_(NULL), next_blocker_(next_blocker)
+      saw_undefined_(0), this_blocker_(nullptr), next_blocker_(next_blocker)
   { }
 
   ~Finish_group();
@@ -407,7 +407,7 @@ class Finish_group : public Task
   void
   set_blocker(Task_token* this_blocker)
   {
-    gold_assert(this->this_blocker_ == NULL);
+    gold_assert(this->this_blocker_ == nullptr);
     this->this_blocker_ = this_blocker;
   }
 

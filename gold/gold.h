@@ -309,7 +309,7 @@ string_hash(const Char_type* s)
 inline bool
 is_wildcard_string(const char* s)
 {
-  return strpbrk(s, "?*[") != NULL;
+  return strpbrk(s, "?*[") != nullptr;
 }
 
 } // End namespace gold.

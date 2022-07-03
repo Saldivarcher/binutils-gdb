@@ -135,7 +135,7 @@ Vendor_object_attributes::Vendor_object_attributes(
 size_t
 Vendor_object_attributes::size() const
 {
-  if (this->name() == NULL)
+  if (this->name() == nullptr)
     return 0;
 
   size_t data_size = 0;
@@ -191,7 +191,7 @@ Vendor_object_attributes::get_attribute(int tag)
     {
       Other_attributes::iterator p =
 	this->other_attributes_.find(tag);
-      return p != this->other_attributes_.end() ? p->second : NULL;
+      return p != this->other_attributes_.end() ? p->second : nullptr;
     }
 }
 
@@ -204,7 +204,7 @@ Vendor_object_attributes::get_attribute(int tag) const
     {
       Other_attributes::const_iterator p =
 	this->other_attributes_.find(tag);
-      return p != this->other_attributes_.end() ? p->second : NULL;
+      return p != this->other_attributes_.end() ? p->second : nullptr;
     }
 }
 
@@ -278,7 +278,7 @@ Attributes_section_data::Attributes_section_data(
 
   const unsigned char* p = view;
   p = view;
-  if (size > 0 && p != NULL && *(p++) == 'A')
+  if (size > 0 && p != nullptr && *(p++) == 'A')
     {
       size--;
       while (size > 0)
@@ -297,7 +297,7 @@ Attributes_section_data::Attributes_section_data(
 
 	  int vendor;
 	  const char* std_section = parameters->target().attributes_vendor();
-	  if (std_section != NULL && strcmp(section_name, std_section) == 0)
+	  if (std_section != nullptr && strcmp(section_name, std_section) == 0)
 	    vendor = Object_attribute::OBJ_ATTR_PROC;
 	  else if (strcmp(section_name, "gnu") == 0)
 	    vendor = Object_attribute::OBJ_ATTR_GNU;

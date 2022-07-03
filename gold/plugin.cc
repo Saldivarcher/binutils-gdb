@@ -197,7 +197,7 @@ Plugin::load()
   // Load the plugin library.
   // FIXME: Look for the library in standard locations.
   this->handle_ = dlopen(this->filename_.c_str(), RTLD_NOW);
-  if (this->handle_ == NULL)
+  if (this->handle_ == nullptr)
     {
       gold_error(_("%s: could not load plugin library: %s"),
                  this->filename_.c_str(), dlerror());
@@ -206,7 +206,7 @@ Plugin::load()
 
   // Find the plugin's onload entry point.
   void* ptr = dlsym(this->handle_, "onload");
-  if (ptr == NULL)
+  if (ptr == nullptr)
     {
       gold_error(_("%s: could not find onload entry point"),
                  this->filename_.c_str());
@@ -385,7 +385,7 @@ Plugin::claim_file(struct ld_plugin_input_file* plugin_input_file)
 {
   int claimed = 0;
 
-  if (this->claim_file_handler_ != NULL)
+  if (this->claim_file_handler_ != nullptr)
     {
       (*this->claim_file_handler_)(plugin_input_file, &claimed);
       if (claimed)
@@ -399,7 +399,7 @@ Plugin::claim_file(struct ld_plugin_input_file* plugin_input_file)
 inline void
 Plugin::all_symbols_read()
 {
-  if (this->all_symbols_read_handler_ != NULL)
+  if (this->all_symbols_read_handler_ != nullptr)
     (*this->all_symbols_read_handler_)();
 }
 
@@ -408,7 +408,7 @@ Plugin::all_symbols_read()
 inline void
 Plugin::new_input(struct ld_plugin_input_file* plugin_input_file)
 {
-  if (this->new_input_handler_ != NULL)
+  if (this->new_input_handler_ != nullptr)
     (*this->new_input_handler_)(plugin_input_file);
 }
 
@@ -417,7 +417,7 @@ Plugin::new_input(struct ld_plugin_input_file* plugin_input_file)
 inline void
 Plugin::cleanup()
 {
-  if (this->cleanup_handler_ != NULL && !this->cleanup_done_)
+  if (this->cleanup_handler_ != nullptr && !this->cleanup_done_)
     {
       // Set this flag before calling to prevent a recursive plunge
       // in the event that a plugin's cleanup handler issues a
@@ -446,7 +446,7 @@ class Plugin_rescan : public Task
   {
     if (this->this_blocker_->is_blocked())
       return this->this_blocker_;
-    return NULL;
+    return nullptr;
   }
 
   void
@@ -472,7 +472,7 @@ class Plugin_rescan : public Task
 class Plugin_recorder
 {
  public:
-  Plugin_recorder() : file_count_(0), tempdir_(NULL), logfile_(NULL)
+  Plugin_recorder() : file_count_(0), tempdir_(nullptr), logfile_(nullptr)
   { }
 
   bool
@@ -509,10 +509,10 @@ Plugin_recorder::init()
   // copies of replacement files.
   char dir_template[] = "gold-recording-XXXXXX";
 #ifdef HAVE_MKDTEMP
-  if (mkdtemp(dir_template) == NULL)
+  if (mkdtemp(dir_template) == nullptr)
     return false;
 #else
-  if (mktemp(dir_template) == NULL)
+  if (mktemp(dir_template) == nullptr)
     return false;
 #if defined (_WIN32) && !defined (__CYGWIN32__)
   if (mkdir(dir_template) != 0)
@@ -531,7 +531,7 @@ Plugin_recorder::init()
   std::string logname(tempdir);
   logname.append("/log");
   FILE* logfile = ::fopen(logname.c_str(), "w");
-  if (logfile == NULL)
+  if (logfile == nullptr)
     return false;
 
   this->tempdir_ = tempdir;
@@ -683,9 +683,9 @@ Plugin_recorder::record_symbols(const Object* obj, int nsyms,
         }
 
       fprintf(this->logfile_, " %5d: %-2s %c %s", i, def, vis, isym->name);
-      if (isym->version != NULL && isym->version[0] != '\0')
+      if (isym->version != nullptr && isym->version[0] != '\0')
 	fprintf(this->logfile_, "@%s", isym->version);
-      if (isym->comdat_key != NULL && isym->comdat_key[0] != '\0')
+      if (isym->comdat_key != nullptr && isym->comdat_key[0] != '\0')
 	{
 	  if (strcmp(isym->name, isym->comdat_key) == 0)
 	    fprintf(this->logfile_, " [comdat]");
@@ -751,7 +751,7 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
   this->plugin_input_file_.offset = offset;
   this->plugin_input_file_.filesize = filesize;
   this->plugin_input_file_.handle = reinterpret_cast<void*>(handle);
-  if (elf_object != NULL)
+  if (elf_object != nullptr)
     this->objects_.push_back(elf_object);
   this->in_claim_file_handler_ = true;
 
@@ -768,9 +768,9 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
 	      this->any_claimed_ = true;
               this->in_claim_file_handler_ = false;
 
-	      if (this->recorder_ != NULL)
+	      if (this->recorder_ != nullptr)
 		{
-		  const std::string& objname = (elf_object == NULL
+		  const std::string& objname = (elf_object == nullptr
 						? input_file->filename()
 						: elf_object->name());
 		  this->recorder_->claimed_file(objname,
@@ -779,7 +779,7 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
 		}
 
               if (this->objects_.size() > handle
-                  && this->objects_[handle]->pluginobj() != NULL)
+                  && this->objects_[handle]->pluginobj() != nullptr)
                 return this->objects_[handle]->pluginobj();
 
               // If the plugin claimed the file but did not call the
@@ -796,10 +796,10 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
 
   this->in_claim_file_handler_ = false;
 
-  if (this->recorder_ != NULL)
+  if (this->recorder_ != nullptr)
     this->recorder_->unclaimed_file(input_file->filename(), offset, filesize);
 
-  return NULL;
+  return nullptr;
 }
 
 // Save an archive.  This is used so that a plugin can add a file
@@ -843,7 +843,7 @@ Plugin_manager::all_symbols_read(Workqueue* workqueue, Task* task,
   this->symtab_ = symtab;
   this->dirpath_ = dirpath;
   this->mapfile_ = mapfile;
-  this->this_blocker_ = NULL;
+  this->this_blocker_ = nullptr;
 
   // Set symbols used in defsym expressions as seen in real ELF.
   Layout *layout = parameters->options().plugins()->layout();
@@ -1042,8 +1042,8 @@ Plugin_manager::make_plugin_object(unsigned int handle)
 {
   // Make sure we aren't asked to make an object for the same handle twice.
   if (this->objects_.size() != handle
-      && this->objects_[handle]->pluginobj() != NULL)
-    return NULL;
+      && this->objects_[handle]->pluginobj() != nullptr)
+    return nullptr;
 
   const std::string* filename = &this->input_file_->filename();
 
@@ -1075,7 +1075,7 @@ Plugin_manager::get_input_file(unsigned int handle,
                                struct ld_plugin_input_file* file)
 {
   Pluginobj* obj = this->object(handle)->pluginobj();
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   obj->lock(this->task_);
@@ -1092,19 +1092,19 @@ Plugin_manager::get_input_file(unsigned int handle,
 ld_plugin_status
 Plugin_manager::release_input_file(unsigned int handle)
 {
-  if (this->object(handle) == NULL)
+  if (this->object(handle) == nullptr)
     return LDPS_BAD_HANDLE;
 
   Pluginobj* obj = this->object(handle)->pluginobj();
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   obj->unlock(this->task_);
   return LDPS_OK;
 }
 
-// Get the elf object corresponding to the handle. Return NULL if we
+// Get the elf object corresponding to the handle. Return nullptr if we
 // found a Pluginobj instead.
 
 Object*
@@ -1114,9 +1114,9 @@ Plugin_manager::get_elf_object(const void* handle)
       static_cast<unsigned int>(reinterpret_cast<intptr_t>(handle)));
 
   // The object should not be a Pluginobj.
-  if (obj == NULL
-      || obj->pluginobj() != NULL)
-    return NULL;
+  if (obj == nullptr
+      || obj->pluginobj() != nullptr)
+    return nullptr;
 
   return obj;
 }
@@ -1138,10 +1138,10 @@ Plugin_manager::get_view(unsigned int handle, const void **viewp)
   else
     {
       // An already claimed file.
-      if (this->object(handle) == NULL)
+      if (this->object(handle) == nullptr)
         return LDPS_BAD_HANDLE;
       Pluginobj* obj = this->object(handle)->pluginobj();
-      if (obj == NULL)
+      if (obj == nullptr)
         return LDPS_BAD_HANDLE;
       offset = obj->offset();
       filesize = obj->filesize();
@@ -1182,7 +1182,7 @@ Plugin_manager::add_input_file(const char* pathname, bool is_lib)
     gold_error(_("input files added by plug-ins in --incremental mode not "
 		 "supported yet"));
 
-  if (this->recorder_ != NULL)
+  if (this->recorder_ != nullptr)
     this->recorder_->replacement_file(pathname, is_lib);
 
   this->workqueue_->queue_soon(new Read_symbols(this->input_objects_,
@@ -1192,8 +1192,8 @@ Plugin_manager::add_input_file(const char* pathname, bool is_lib)
 						0,
                                                 this->mapfile_,
                                                 input_argument,
-                                                NULL,
-                                                NULL,
+                                                nullptr,
+                                                nullptr,
                                                 this->this_blocker_,
                                                 next_blocker));
   this->this_blocker_ = next_blocker;
@@ -1206,7 +1206,7 @@ Plugin_manager::add_input_file(const char* pathname, bool is_lib)
 Pluginobj::Pluginobj(const std::string& name, Input_file* input_file,
                      off_t offset, off_t filesize)
   : Object(name, input_file, false, offset),
-    nsyms_(0), syms_(NULL), symbols_(), filesize_(filesize), comdat_map_()
+    nsyms_(0), syms_(nullptr), symbols_(), filesize_(filesize), comdat_map_()
 {
 }
 
@@ -1306,7 +1306,7 @@ Pluginobj::get_symbol_resolution_info(Symbol_table* symtab,
 	      else
 		res = LDPR_PREVAILING_DEF_IRONLY;
 	    }
-          else if (lsym->object()->pluginobj() != NULL)
+          else if (lsym->object()->pluginobj() != nullptr)
             res = LDPR_RESOLVED_IR;
           else if (lsym->object()->is_dynamic())
             res = LDPR_RESOLVED_DYN;
@@ -1328,7 +1328,7 @@ Pluginobj::get_symbol_resolution_info(Symbol_table* symtab,
 		res = LDPR_PREVAILING_DEF_IRONLY;
 	    }
           else
-            res = (lsym->object()->pluginobj() != NULL
+            res = (lsym->object()->pluginobj() != nullptr
                    ? LDPR_PREEMPTED_IR
                    : LDPR_PREEMPTED_REG);
         }
@@ -1350,8 +1350,8 @@ Pluginobj::include_comdat_group(std::string comdat_key, Layout* layout)
   // layout object whether it should be included.
   if (ins.second)
     ins.first->second = layout->find_or_add_kept_section(comdat_key,
-							 NULL, 0, true,
-							 true, NULL);
+							 nullptr, 0, true,
+							 true, nullptr);
 
   return ins.first->second;
 }
@@ -1400,7 +1400,7 @@ Sized_pluginobj<size, big_endian>::do_add_symbols(Symbol_table* symtab,
   elfcpp::Sym_write<size, big_endian> osym(symbuf);
 
   Plugin_recorder* recorder = parameters->options().plugins()->recorder();
-  if (recorder != NULL)
+  if (recorder != nullptr)
     recorder->record_symbols(this, this->nsyms_, this->syms_);
 
   this->symbols_.resize(this->nsyms_);
@@ -1414,10 +1414,10 @@ Sized_pluginobj<size, big_endian>::do_add_symbols(Symbol_table* symtab,
       elfcpp::STB bind;
       elfcpp::STV vis;
 
-      if (name != NULL && name[0] == '\0')
-        name = NULL;
-      if (ver != NULL && ver[0] == '\0')
-        ver = NULL;
+      if (name != nullptr && name[0] == '\0')
+        name = nullptr;
+      if (ver != nullptr && ver[0] == '\0')
+        ver = nullptr;
 
       switch (isym->def)
         {
@@ -1467,7 +1467,7 @@ Sized_pluginobj<size, big_endian>::do_add_symbols(Symbol_table* symtab,
           break;
         }
 
-      if (isym->comdat_key != NULL
+      if (isym->comdat_key != nullptr
           && isym->comdat_key[0] != '\0'
           && !this->include_comdat_group(isym->comdat_key, layout))
         shndx = elfcpp::SHN_UNDEF;
@@ -1493,7 +1493,7 @@ Sized_pluginobj<size, big_endian>::do_should_include_member(
     Read_symbols_data*,
     std::string* why)
 {
-  char* tmpbuf = NULL;
+  char* tmpbuf = nullptr;
   size_t tmpbuflen = 0;
 
   for (int i = 0; i < this->nsyms_; ++i)
@@ -1511,12 +1511,12 @@ Sized_pluginobj<size, big_endian>::do_should_include_member(
 								 &tmpbuflen);
       if (t == Archive::SHOULD_INCLUDE_YES)
 	{
-	  if (tmpbuf != NULL)
+	  if (tmpbuf != nullptr)
 	    free(tmpbuf);
 	  return t;
 	}
     }
-  if (tmpbuf != NULL)
+  if (tmpbuf != nullptr)
     free(tmpbuf);
   return Archive::SHOULD_INCLUDE_UNKNOWN;
 }
@@ -1577,7 +1577,7 @@ Sized_pluginobj<size, big_endian>::do_section_contents(
     bool)
 {
   gold_unreachable();
-  return NULL;
+  return nullptr;
 }
 
 // Return section flags.  Not used for plugin objects.
@@ -1657,7 +1657,7 @@ Xindex*
 Sized_pluginobj<size, big_endian>::do_initialize_xindex()
 {
   gold_unreachable();
-  return NULL;
+  return nullptr;
 }
 
 // Get symbol counts.  Don't count plugin objects; the replacement
@@ -1698,16 +1698,16 @@ class Plugin_finish : public Task
 
   ~Plugin_finish()
   {
-    if (this->this_blocker_ != NULL)
+    if (this->this_blocker_ != nullptr)
       delete this->this_blocker_;
   }
 
   Task_token*
   is_runnable()
   {
-    if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+    if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
       return this->this_blocker_;
-    return NULL;
+    return nullptr;
   }
 
   void
@@ -1718,7 +1718,7 @@ class Plugin_finish : public Task
   run(Workqueue*)
   {
     Plugin_manager* plugins = parameters->options().plugins();
-    gold_assert(plugins != NULL);
+    gold_assert(plugins != nullptr);
     // We could call early cleanup handlers here.
     if (plugins->recorder())
       plugins->recorder()->finish();
@@ -1744,9 +1744,9 @@ Plugin_hook::~Plugin_hook()
 Task_token*
 Plugin_hook::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 // Return a Task_locker for a Plugin_hook task.  We don't need any
@@ -1764,7 +1764,7 @@ Plugin_hook::run(Workqueue* workqueue)
 {
   gold_assert(this->options_.has_plugins());
   Symbol* start_sym = this->symtab_->lookup(parameters->entry());
-  if (start_sym != NULL)
+  if (start_sym != nullptr)
     start_sym->set_in_real_elf();
 
   this->options_.plugins()->all_symbols_read(workqueue,
@@ -1820,7 +1820,7 @@ add_symbols(void* handle, int nsyms, const ld_plugin_symbol* syms)
   gold_assert(parameters->options().has_plugins());
   Pluginobj* obj = parameters->options().plugins()->make_plugin_object(
       static_cast<unsigned int>(reinterpret_cast<intptr_t>(handle)));
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_ERR;
   obj->store_incoming_symbols(nsyms, syms);
   return LDPS_OK;
@@ -1867,10 +1867,10 @@ get_symbols(const void* handle, int nsyms, ld_plugin_symbol* syms)
   Plugin_manager* plugins = parameters->options().plugins();
   Object* obj = plugins->object(
     static_cast<unsigned int>(reinterpret_cast<intptr_t>(handle)));
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_ERR;
   Pluginobj* plugin_obj = obj->pluginobj();
-  if (plugin_obj == NULL)
+  if (plugin_obj == nullptr)
     return LDPS_ERR;
   Symbol_table* symtab = plugins->symtab();
   return plugin_obj->get_symbol_resolution_info(symtab, nsyms, syms, 1);
@@ -1886,10 +1886,10 @@ get_symbols_v2(const void* handle, int nsyms, ld_plugin_symbol* syms)
   Plugin_manager* plugins = parameters->options().plugins();
   Object* obj = plugins->object(
     static_cast<unsigned int>(reinterpret_cast<intptr_t>(handle)));
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_ERR;
   Pluginobj* plugin_obj = obj->pluginobj();
-  if (plugin_obj == NULL)
+  if (plugin_obj == nullptr)
     return LDPS_ERR;
   Symbol_table* symtab = plugins->symtab();
   return plugin_obj->get_symbol_resolution_info(symtab, nsyms, syms, 2);
@@ -1906,10 +1906,10 @@ get_symbols_v3(const void* handle, int nsyms, ld_plugin_symbol* syms)
   Plugin_manager* plugins = parameters->options().plugins();
   Object* obj = plugins->object(
     static_cast<unsigned int>(reinterpret_cast<intptr_t>(handle)));
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_ERR;
   Pluginobj* plugin_obj = obj->pluginobj();
-  if (plugin_obj == NULL)
+  if (plugin_obj == nullptr)
     return LDPS_ERR;
   Symbol_table* symtab = plugins->symtab();
   return plugin_obj->get_symbol_resolution_info(symtab, nsyms, syms, 3);
@@ -1985,7 +1985,7 @@ get_input_section_count(const void* handle, unsigned int* count)
 
   Object* obj = parameters->options().plugins()->get_elf_object(handle);
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_ERR;
 
   *count = obj->shnum();
@@ -2008,7 +2008,7 @@ get_input_section_type(const struct ld_plugin_section section,
   Object* obj
     = parameters->options().plugins()->get_elf_object(section.handle); 
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   *type = obj->section_type(section.shndx);
@@ -2031,7 +2031,7 @@ get_input_section_name(const struct ld_plugin_section section,
   Object* obj
     = parameters->options().plugins()->get_elf_object(section.handle); 
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   // Check if the object is locked before getting the section name.
@@ -2060,7 +2060,7 @@ get_input_section_contents(const struct ld_plugin_section section,
   Object* obj
     = parameters->options().plugins()->get_elf_object(section.handle); 
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   // Check if the object is locked before getting the section contents.
@@ -2089,7 +2089,7 @@ get_input_section_alignment(const struct ld_plugin_section section,
   Object* obj
     = parameters->options().plugins()->get_elf_object(section.handle);
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   *addralign = obj->section_addralign(section.shndx);
@@ -2112,7 +2112,7 @@ get_input_section_size(const struct ld_plugin_section section,
   Object* obj
     = parameters->options().plugins()->get_elf_object(section.handle);
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return LDPS_BAD_HANDLE;
 
   *secsize = obj->section_size(section.shndx);
@@ -2152,11 +2152,11 @@ update_section_order(const struct ld_plugin_section* section_list,
   if (num_sections == 0)
     return LDPS_OK;
 
-  if (section_list == NULL)
+  if (section_list == nullptr)
     return LDPS_ERR;
 
   Layout* layout = parameters->options().plugins()->layout();
-  gold_assert (layout != NULL);
+  gold_assert (layout != nullptr);
 
   std::map<Section_id, unsigned int>* order_map
     = layout->get_section_order_map();
@@ -2167,7 +2167,7 @@ update_section_order(const struct ld_plugin_section* section_list,
     {
       Object* obj = parameters->options().plugins()->get_elf_object(
           section_list[i].handle);
-      if (obj == NULL || obj->is_dynamic())
+      if (obj == nullptr || obj->is_dynamic())
 	return LDPS_BAD_HANDLE;
       unsigned int shndx = section_list[i].shndx;
       Section_id secn_id(static_cast<Relobj*>(obj), shndx);
@@ -2221,11 +2221,11 @@ unique_segment_for_sections(const char* segment_name,
   if (num_sections == 0)
     return LDPS_OK;
 
-  if (section_list == NULL)
+  if (section_list == nullptr)
     return LDPS_ERR;
 
   Layout* layout = parameters->options().plugins()->layout();
-  gold_assert (layout != NULL);
+  gold_assert (layout != nullptr);
 
   Layout::Unique_segment_info* s = new Layout::Unique_segment_info;
   s->name = segment_name;
@@ -2236,7 +2236,7 @@ unique_segment_for_sections(const char* segment_name,
     {
       Object* obj = parameters->options().plugins()->get_elf_object(
           section_list[i].handle);
-      if (obj == NULL || obj->is_dynamic())
+      if (obj == nullptr || obj->is_dynamic())
 	return LDPS_BAD_HANDLE;
       unsigned int shndx = section_list[i].shndx;
       Const_section_id secn_id(static_cast<Relobj*>(obj), shndx);
@@ -2264,7 +2264,7 @@ static Pluginobj*
 make_sized_plugin_object(const std::string& filename,
 			 Input_file* input_file, off_t offset, off_t filesize)
 {
-  Pluginobj* obj = NULL;
+  Pluginobj* obj = nullptr;
 
   parameters_force_valid_target();
   const Target& target(parameters->target());
@@ -2312,7 +2312,7 @@ make_sized_plugin_object(const std::string& filename,
 #endif
     }
 
-  gold_assert(obj != NULL);
+  gold_assert(obj != nullptr);
   return obj;
 }
 

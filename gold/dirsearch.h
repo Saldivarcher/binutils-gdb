@@ -42,7 +42,7 @@ class Dirsearch
 {
  public:
   Dirsearch()
-    : directories_(NULL), token_(true)
+    : directories_(nullptr), token_(true)
   { }
 
   // Set the list of directories to search.

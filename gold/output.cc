@@ -454,8 +454,8 @@ Output_file_header::Output_file_header(Target* target,
   : target_(target),
     symtab_(symtab),
     segment_header_(osh),
-    section_header_(NULL),
-    shstrtab_(NULL)
+    section_header_(nullptr),
+    shstrtab_(nullptr)
 {
   this->set_data_size(this->do_size());
 }
@@ -548,7 +548,7 @@ Output_file_header::do_sized_write(Output_file* of)
 
   oehdr.put_e_entry(this->entry<size>());
 
-  if (this->segment_header_ == NULL)
+  if (this->segment_header_ == nullptr)
     oehdr.put_e_phoff(0);
   else
     oehdr.put_e_phoff(this->segment_header_->offset());
@@ -557,7 +557,7 @@ Output_file_header::do_sized_write(Output_file* of)
   oehdr.put_e_flags(this->target_->processor_specific_flags());
   oehdr.put_e_ehsize(elfcpp::Elf_sizes<size>::ehdr_size);
 
-  if (this->segment_header_ == NULL)
+  if (this->segment_header_ == nullptr)
     {
       oehdr.put_e_phentsize(0);
       oehdr.put_e_phnum(0);
@@ -601,14 +601,14 @@ template<int size>
 typename elfcpp::Elf_types<size>::Elf_Addr
 Output_file_header::entry()
 {
-  const bool should_issue_warning = (parameters->options().entry() != NULL
+  const bool should_issue_warning = (parameters->options().entry() != nullptr
 				     && !parameters->options().relocatable()
 				     && !parameters->options().shared());
   const char* entry = parameters->entry();
   Symbol* sym = this->symtab_->lookup(entry);
 
   typename Sized_symbol<size>::Value_type v;
-  if (sym != NULL)
+  if (sym != nullptr)
     {
       Sized_symbol<size>* ssym;
       ssym = this->symtab_->get_sized_symbol<size>(sym);
@@ -670,7 +670,7 @@ Output_data_const_buffer::do_write(Output_file* of)
 void
 Output_section_data::set_output_section(Output_section* os)
 {
-  gold_assert(this->output_section_ == NULL);
+  gold_assert(this->output_section_ == nullptr);
   this->output_section_ = os;
   this->do_adjust_output_section(os);
 }
@@ -680,7 +680,7 @@ Output_section_data::set_output_section(Output_section* os)
 unsigned int
 Output_section_data::do_out_shndx() const
 {
-  gold_assert(this->output_section_ != NULL);
+  gold_assert(this->output_section_ != nullptr);
   return this->output_section_->out_shndx();
 }
 
@@ -691,7 +691,7 @@ void
 Output_section_data::set_addralign(uint64_t addralign)
 {
   this->addralign_ = addralign;
-  if (this->output_section_ != NULL
+  if (this->output_section_ != nullptr
       && this->output_section_->addralign() < addralign)
     this->output_section_->set_addralign(addralign);
 }
@@ -878,7 +878,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::Output_reloc(
 {
   // this->type_ is a bitfield; make sure TYPE fits.
   gold_assert(this->type_ == type);
-  this->u1_.relobj = NULL;
+  this->u1_.relobj = nullptr;
   this->u2_.od = od;
 }
 
@@ -896,7 +896,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::Output_reloc(
   gold_assert(shndx != INVALID_CODE);
   // this->type_ is a bitfield; make sure TYPE fits.
   gold_assert(this->type_ == type);
-  this->u1_.relobj = NULL;
+  this->u1_.relobj = nullptr;
   this->u2_.relobj = relobj;
 }
 
@@ -970,7 +970,7 @@ set_needs_dynsym_index()
 	const unsigned int lsi = this->local_sym_index_;
 	Sized_relobj_file<size, big_endian>* relobj =
 	    this->u1_.relobj->sized_relobj();
-	gold_assert(relobj != NULL);
+	gold_assert(relobj != nullptr);
 	if (!this->is_section_symbol_)
 	  relobj->set_needs_output_dynsym_entry(lsi);
 	else
@@ -996,7 +996,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::get_symbol_index()
       gold_unreachable();
 
     case GSYM_CODE:
-      if (this->u1_.gsym == NULL)
+      if (this->u1_.gsym == nullptr)
 	index = 0;
       else if (dynamic)
 	index = this->u1_.gsym->dynsym_index();
@@ -1026,7 +1026,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::get_symbol_index()
 	const unsigned int lsi = this->local_sym_index_;
 	Sized_relobj_file<size, big_endian>* relobj =
 	    this->u1_.relobj->sized_relobj();
-	gold_assert(relobj != NULL);
+	gold_assert(relobj != nullptr);
 	if (!this->is_section_symbol_)
 	  {
 	    if (dynamic)
@@ -1037,7 +1037,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::get_symbol_index()
 	else
 	  {
 	    Output_section* os = relobj->output_section(lsi);
-	    gold_assert(os != NULL);
+	    gold_assert(os != nullptr);
 	    if (dynamic)
 	      index = os->dynsym_index();
 	    else
@@ -1066,14 +1066,14 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::
 	      && this->is_section_symbol_);
   const unsigned int lsi = this->local_sym_index_;
   Output_section* os = this->u1_.relobj->output_section(lsi);
-  gold_assert(os != NULL);
+  gold_assert(os != nullptr);
   Address offset = this->u1_.relobj->get_output_section_offset(lsi);
   if (offset != invalid_address)
     return offset + addend;
   // This is a merge section.
   Sized_relobj_file<size, big_endian>* relobj =
       this->u1_.relobj->sized_relobj();
-  gold_assert(relobj != NULL);
+  gold_assert(relobj != nullptr);
   offset = os->output_address(relobj, lsi, addend);
   gold_assert(offset != invalid_address);
   return offset;
@@ -1089,7 +1089,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::get_address() const
   if (this->shndx_ != INVALID_CODE)
     {
       Output_section* os = this->u2_.relobj->output_section(this->shndx_);
-      gold_assert(os != NULL);
+      gold_assert(os != nullptr);
       Address off = this->u2_.relobj->get_output_section_offset(this->shndx_);
       if (off != invalid_address)
 	address += os->address() + off;
@@ -1097,12 +1097,12 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::get_address() const
 	{
 	  Sized_relobj_file<size, big_endian>* relobj =
 	      this->u2_.relobj->sized_relobj();
-	  gold_assert(relobj != NULL);
+	  gold_assert(relobj != nullptr);
 	  address = os->output_address(relobj, this->shndx_, address);
 	  gold_assert(address != invalid_address);
 	}
     }
-  else if (this->u2_.od != NULL)
+  else if (this->u2_.od != nullptr)
     address += this->u2_.od->address();
   return address;
 }
@@ -1160,7 +1160,7 @@ Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>::symbol_value(
   const unsigned int lsi = this->local_sym_index_;
   Sized_relobj_file<size, big_endian>* relobj =
       this->u1_.relobj->sized_relobj();
-  gold_assert(relobj != NULL);
+  gold_assert(relobj != nullptr);
   if (this->use_plt_offset_)
     return parameters->target().plt_address_for_local(relobj, lsi);
   const Symbol_value<size>* symval = relobj->local_symbol(lsi);
@@ -1339,7 +1339,7 @@ Output_data_group<size, big_endian>::do_write(Output_file* of)
       Output_section* os = this->relobj_->output_section(*p);
 
       unsigned int output_shndx;
-      if (os != NULL)
+      if (os != nullptr)
 	output_shndx = os->out_shndx();
       else
 	{
@@ -1803,7 +1803,7 @@ Output_data_dynamic::Dynamic_entry::write(
 
     case DYNAMIC_SECTION_SIZE:
       val = this->u_.od->data_size();
-      if (this->od2 != NULL)
+      if (this->od2 != nullptr)
 	val += this->od2->data_size();
       break;
 
@@ -2163,7 +2163,7 @@ Output_section::Input_section::relobj() const
     return this->u2_.object;
   else if (this->is_merge_section())
     {
-      gold_assert(this->u2_.pomb->first_relobj() != NULL);
+      gold_assert(this->u2_.pomb->first_relobj() != nullptr);
       return this->u2_.pomb->first_relobj();
     }
   else if (this->is_relaxed_input_section())
@@ -2181,7 +2181,7 @@ Output_section::Input_section::shndx() const
     return this->shndx_;
   else if (this->is_merge_section())
     {
-      gold_assert(this->u2_.pomb->first_relobj() != NULL);
+      gold_assert(this->u2_.pomb->first_relobj() != nullptr);
       return this->u2_.pomb->first_shndx();
     }
   else if (this->is_relaxed_input_section())
@@ -2303,10 +2303,10 @@ Output_section::Output_section(const char* name, elfcpp::Elf_Word type,
     addralign_(0),
     entsize_(0),
     load_address_(0),
-    link_section_(NULL),
+    link_section_(nullptr),
     link_(0),
-    info_section_(NULL),
-    info_symndx_(NULL),
+    info_section_(nullptr),
+    info_symndx_(nullptr),
     info_(0),
     type_(type),
     flags_(flags),
@@ -2317,7 +2317,7 @@ Output_section::Output_section(const char* name, elfcpp::Elf_Word type,
     input_sections_(),
     first_input_offset_(0),
     fills_(),
-    postprocessing_buffer_(NULL),
+    postprocessing_buffer_(nullptr),
     needs_symtab_index_(false),
     needs_dynsym_index_(false),
     should_link_to_symtab_(false),
@@ -2345,12 +2345,12 @@ Output_section::Output_section(const char* name, elfcpp::Elf_Word type,
     tls_offset_(0),
     extra_segment_flags_(0),
     segment_alignment_(0),
-    checkpoint_(NULL),
+    checkpoint_(nullptr),
     lookup_maps_(new Output_section_lookup_maps),
     free_list_(),
-    free_space_fill_(NULL),
+    free_space_fill_(nullptr),
     patch_space_(0),
-    reloc_section_(NULL)
+    reloc_section_(nullptr)
 {
   // An unallocated section has no address.  Forcing this means that
   // we don't need special treatment for symbols defined in debug
@@ -2677,7 +2677,7 @@ Output_section::add_merge_input_section(Relobj* object, unsigned int shndx,
   bool is_string = (flags & elfcpp::SHF_STRINGS) != 0;
 
   // We cannot restore merged input section states.
-  gold_assert(this->checkpoint_ == NULL);
+  gold_assert(this->checkpoint_ == nullptr);
 
   // Look up merge sections by required properties.
   // Currently, we only invalidate the lookup maps in script processing
@@ -2687,7 +2687,7 @@ Output_section::add_merge_input_section(Relobj* object, unsigned int shndx,
   Merge_section_properties msp(is_string, entsize, addralign);
   Output_merge_base* pomb = this->lookup_maps_->find_merge_section(msp);
   bool is_new = false;
-  if (pomb != NULL)
+  if (pomb != nullptr)
     {
       gold_assert(pomb->is_string() == is_string
 		  && pomb->entsize() == entsize
@@ -2809,7 +2809,7 @@ Output_section::convert_input_sections_to_relaxed_sections(
   // By default, we look at the whole list.
   size_t limit = this->input_sections_.size();
 
-  if (this->checkpoint_ != NULL)
+  if (this->checkpoint_ != nullptr)
     {
       // Replace input sections with relaxed input section in the saved
       // copy of the input section list.
@@ -2886,7 +2886,7 @@ Output_section::update_flags_for_input_section(elfcpp::Elf_Xword flags)
 }
 
 // Find the merge section into which an input section with index SHNDX in
-// OBJECT has been added.  Return NULL if none found.
+// OBJECT has been added.  Return nullptr if none found.
 
 const Output_section_data*
 Output_section::find_merge_section(const Relobj* object,
@@ -2940,10 +2940,10 @@ Output_section::is_input_address_mapped(const Relobj* object,
 {
   // Look at the Output_section_data_maps first.
   const Output_section_data* posd = this->find_merge_section(object, shndx);
-  if (posd == NULL)
+  if (posd == nullptr)
     posd = this->find_relaxed_input_section(object, shndx);
 
-  if (posd != NULL)
+  if (posd != nullptr)
     {
       section_offset_type output_offset;
       bool found = posd->output_offset(object, shndx, offset, &output_offset);
@@ -2985,9 +2985,9 @@ Output_section::output_offset(const Relobj* object, unsigned int shndx,
 
   // Look at the Output_section_data_maps first.
   const Output_section_data* posd = this->find_merge_section(object, shndx);
-  if (posd == NULL)
+  if (posd == nullptr)
     posd = this->find_relaxed_input_section(object, shndx);
-  if (posd != NULL)
+  if (posd != nullptr)
     {
       section_offset_type output_offset;
       bool found = posd->output_offset(object, shndx, offset, &output_offset);
@@ -3018,9 +3018,9 @@ Output_section::output_address(const Relobj* object, unsigned int shndx,
 
   // Look at the Output_section_data_maps first.
   const Output_section_data* posd = this->find_merge_section(object, shndx);
-  if (posd == NULL)
+  if (posd == nullptr)
     posd = this->find_relaxed_input_section(object, shndx);
-  if (posd != NULL && posd->is_address_valid())
+  if (posd != nullptr && posd->is_address_valid())
     {
       section_offset_type output_offset;
       bool found = posd->output_offset(object, shndx, offset, &output_offset);
@@ -3061,7 +3061,7 @@ Output_section::find_starting_output_address(const Relobj* object,
 					     uint64_t* paddr) const
 {
   const Output_section_data* data = this->find_merge_section(object, shndx);
-  if (data == NULL)
+  if (data == nullptr)
     return false;
 
   // FIXME: This becomes a bottle-neck if we have many relaxed sections.
@@ -3152,7 +3152,7 @@ Output_section::set_final_data_size()
     {
       double pct = parameters->options().incremental_patch();
       size_t extra = static_cast<size_t>(data_size * pct);
-      if (this->free_space_fill_ != NULL
+      if (this->free_space_fill_ != nullptr
 	  && this->free_space_fill_->minimum_hole_size() > extra)
 	extra = this->free_space_fill_->minimum_hole_size();
       off_t new_size = align_address(data_size + extra, this->addralign());
@@ -3579,7 +3579,7 @@ Output_section::sort_attached_input_sections()
   if (this->attached_input_sections_are_sorted_)
     return;
 
-  if (this->checkpoint_ != NULL
+  if (this->checkpoint_ != nullptr
       && !this->checkpoint_->input_sections_saved())
     this->checkpoint_->save_input_sections();
 
@@ -3650,14 +3650,14 @@ Output_section::write_header(const Layout* layout,
   oshdr->put_sh_type(this->type_);
 
   elfcpp::Elf_Xword flags = this->flags_;
-  if (this->info_section_ != NULL && this->info_uses_section_index_)
+  if (this->info_section_ != nullptr && this->info_uses_section_index_)
     flags |= elfcpp::SHF_INFO_LINK;
   oshdr->put_sh_flags(flags);
 
   oshdr->put_sh_addr(this->address());
   oshdr->put_sh_offset(this->offset());
   oshdr->put_sh_size(this->data_size());
-  if (this->link_section_ != NULL)
+  if (this->link_section_ != nullptr)
     oshdr->put_sh_link(this->link_section_->out_shndx());
   else if (this->should_link_to_symtab_)
     oshdr->put_sh_link(layout->symtab_section_shndx());
@@ -3667,14 +3667,14 @@ Output_section::write_header(const Layout* layout,
     oshdr->put_sh_link(this->link_);
 
   elfcpp::Elf_Word info;
-  if (this->info_section_ != NULL)
+  if (this->info_section_ != nullptr)
     {
       if (this->info_uses_section_index_)
 	info = this->info_section_->out_shndx();
       else
 	info = this->info_section_->symtab_index();
     }
-  else if (this->info_symndx_ != NULL)
+  else if (this->info_symndx_ != nullptr)
     info = this->info_symndx_->symtab_index();
   else
     info = this->info_;
@@ -3725,7 +3725,7 @@ Output_section::do_write(Output_file* of)
 
   // For incremental links, fill in unused chunks in debug sections
   // with dummy compilation unit headers.
-  if (this->free_space_fill_ != NULL)
+  if (this->free_space_fill_ != nullptr)
     {
       for (Free_list::Const_iterator p = this->free_list_.begin();
 	   p != this->free_list_.end();
@@ -3751,7 +3751,7 @@ Output_section::create_postprocessing_buffer()
 {
   gold_assert(this->requires_postprocessing());
 
-  if (this->postprocessing_buffer_ != NULL)
+  if (this->postprocessing_buffer_ != nullptr)
     return;
 
   if (!this->input_sections_.empty())
@@ -3829,7 +3829,7 @@ Output_section::get_input_sections(
     const std::string& fill,
     std::list<Input_section>* input_sections)
 {
-  if (this->checkpoint_ != NULL
+  if (this->checkpoint_ != nullptr
       && !this->checkpoint_->input_sections_saved())
     this->checkpoint_->save_input_sections();
 
@@ -3922,7 +3922,7 @@ Output_section::add_script_input_section(const Input_section& sis)
 void
 Output_section::save_states()
 {
-  gold_assert(this->checkpoint_ == NULL);
+  gold_assert(this->checkpoint_ == nullptr);
   Checkpoint_output_section* checkpoint =
     new Checkpoint_output_section(this->addralign_, this->flags_,
 				  this->input_sections_,
@@ -3935,9 +3935,9 @@ Output_section::save_states()
 void
 Output_section::discard_states()
 {
-  gold_assert(this->checkpoint_ != NULL);
+  gold_assert(this->checkpoint_ != nullptr);
   delete this->checkpoint_;
-  this->checkpoint_ = NULL;
+  this->checkpoint_ = nullptr;
   gold_assert(this->fills_.empty());
 
   // Simply invalidate the fast lookup maps since we do not keep
@@ -3948,7 +3948,7 @@ Output_section::discard_states()
 void
 Output_section::restore_states()
 {
-  gold_assert(this->checkpoint_ != NULL);
+  gold_assert(this->checkpoint_ != nullptr);
   Checkpoint_output_section* checkpoint = this->checkpoint_;
 
   this->addralign_ = checkpoint->addralign();
@@ -4503,7 +4503,7 @@ Output_segment::set_section_list_addresses(Layout* layout, bool reset,
 	      if (!*in_tls)
 		{
 		  Output_segment* tls_segment = layout->tls_segment();
-		  gold_assert(tls_segment != NULL);
+		  gold_assert(tls_segment != nullptr);
 		  uint64_t segment_align = tls_segment->maximum_alignment();
 		  gold_assert(segment_align >= align);
 		  align = segment_align;
@@ -4545,7 +4545,7 @@ Output_segment::set_section_list_addresses(Layout* layout, bool reset,
 	      foff = off;
 	      if (off == -1)
 		{
-		  gold_assert((*p)->output_section() != NULL);
+		  gold_assert((*p)->output_section() != nullptr);
 		  gold_fallback(_("out of patch space for section %s; "
 				  "relink with --incremental-full"),
 				(*p)->output_section()->name());
@@ -4553,7 +4553,7 @@ Output_segment::set_section_list_addresses(Layout* layout, bool reset,
 	      (*p)->set_address_and_file_offset(addr + (off - startoff), foff);
 	      if ((*p)->data_size() > current_size)
 		{
-		  gold_assert((*p)->output_section() != NULL);
+		  gold_assert((*p)->output_section() != nullptr);
 		  gold_fallback(_("%s: section changed size; "
 				  "relink with --incremental-full"),
 				(*p)->output_section()->name());
@@ -4595,7 +4595,7 @@ Output_segment::set_section_list_addresses(Layout* layout, bool reset,
 		  unsigned long long dot =
 		    static_cast<unsigned long long>((*p)->address());
 
-		  if (os == NULL)
+		  if (os == nullptr)
 		    gold_error(_("dot moves backward in linker script "
 				 "from 0x%llx to 0x%llx"), previous_dot, dot);
 		  else
@@ -4613,7 +4613,7 @@ Output_segment::set_section_list_addresses(Layout* layout, bool reset,
 		   "set_section_list_addresses: %08lx %08lx %s",
 		   static_cast<long>(off),
 		   static_cast<long>((*p)->data_size()),
-		   ((*p)->output_section() != NULL
+		   ((*p)->output_section() != nullptr
 		    ? (*p)->output_section()->name() : "(special)"));
 
       // We want to ignore the size of a SHF_TLS SHT_NOBITS
@@ -4670,14 +4670,14 @@ Output_segment::set_offset(unsigned int increase)
     }
 
   // Find the first and last section by address.
-  const Output_data* first = NULL;
-  const Output_data* last_data = NULL;
-  const Output_data* last_bss = NULL;
+  const Output_data* first = nullptr;
+  const Output_data* last_data = nullptr;
+  const Output_data* last_bss = nullptr;
   for (Output_data_list::const_iterator p = pdl->begin();
        p != pdl->end();
        ++p)
     {
-      if (first == NULL
+      if (first == nullptr
 	  || (*p)->address() < first->address()
 	  || ((*p)->address() == first->address()
 	      && (*p)->data_size() < first->data_size()))
@@ -4688,7 +4688,7 @@ Output_segment::set_offset(unsigned int increase)
 	plast = &last_bss;
       else
 	plast = &last_data;
-      if (*plast == NULL
+      if (*plast == nullptr
 	  || (*p)->address() > (*plast)->address()
 	  || ((*p)->address() == (*plast)->address()
 	      && (*p)->data_size() > (*plast)->data_size()))
@@ -4702,14 +4702,14 @@ Output_segment::set_offset(unsigned int increase)
   this->are_addresses_set_ = true;
   this->offset_ = first->offset();
 
-  if (last_data == NULL)
+  if (last_data == nullptr)
     this->filesz_ = 0;
   else
     this->filesz_ = (last_data->address()
 		     + last_data->data_size()
 		     - this->vaddr_);
 
-  const Output_data* last = last_bss != NULL ? last_bss : last_data;
+  const Output_data* last = last_bss != nullptr ? last_bss : last_data;
   this->memsz_ = (last->address()
 		  + last->data_size()
 		  - this->vaddr_);
@@ -4774,7 +4774,7 @@ Output_segment::first_section() const
 	    return (*p)->output_section();
 	}
     }
-  return NULL;
+  return nullptr;
 }
 
 // Return the number of Output_sections in an Output_segment.
@@ -4811,7 +4811,7 @@ Output_segment::output_section_count_list(const Output_data_list* pdl) const
 Output_section*
 Output_segment::section_with_lowest_load_address() const
 {
-  Output_section* found = NULL;
+  Output_section* found = nullptr;
   uint64_t found_lma = 0;
   for (int i = 0; i < static_cast<int>(ORDER_MAX); ++i)
     this->lowest_load_address_in_list(&this->output_lists_[i], &found,
@@ -4836,7 +4836,7 @@ Output_segment::lowest_load_address_in_list(const Output_data_list* pdl,
       uint64_t lma = (os->has_load_address()
 		      ? os->load_address()
 		      : os->address());
-      if (*found == NULL || lma < *found_lma)
+      if (*found == nullptr || lma < *found_lma)
 	{
 	  *found = os;
 	  *found_lma = lma;
@@ -4942,7 +4942,7 @@ Output_file::Output_file(const char* name)
   : name_(name),
     o_(-1),
     file_size_(0),
-    base_(NULL),
+    base_(nullptr),
     map_is_anonymous_(false),
     map_is_allocated_(false),
     is_temporary_(false)
@@ -4951,7 +4951,7 @@ Output_file::Output_file(const char* name)
 
 // Try to open an existing file.  Returns false if the file doesn't
 // exist, has a size of 0 or can't be mmapped.  If BASE_NAME is not
-// NULL, open that file as the base for incremental linking, and
+// nullptr, open that file as the base for incremental linking, and
 // copy its contents to the new output file.  This routine can
 // be called for incremental updates, in which case WRITABLE should
 // be true, or by the incremental-dump utility, in which case
@@ -4964,7 +4964,7 @@ Output_file::open_base_file(const char* base_name, bool writable)
   if (strcmp(this->name_, "-") == 0)
     return false;
 
-  bool use_base_file = base_name != NULL;
+  bool use_base_file = base_name != nullptr;
   if (!use_base_file)
     base_name = this->name_;
   else if (strcmp(base_name, this->name_) == 0)
@@ -5119,7 +5119,7 @@ Output_file::resize(off_t file_size)
       else
 	{
 	  base = realloc(this->base_, file_size);
-	  if (base == NULL)
+	  if (base == nullptr)
 	    gold_nomem();
 	  if (file_size > this->file_size_)
 	    memset(static_cast<char*>(base) + this->file_size_, 0,
@@ -5143,12 +5143,12 @@ Output_file::resize(off_t file_size)
 bool
 Output_file::map_anonymous()
 {
-  void* base = ::mmap(NULL, this->file_size_, PROT_READ | PROT_WRITE,
+  void* base = ::mmap(nullptr, this->file_size_, PROT_READ | PROT_WRITE,
 		      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
   if (base == MAP_FAILED)
     {
       base = malloc(this->file_size_);
-      if (base == NULL)
+      if (base == nullptr)
 	return false;
       memset(base, 0, this->file_size_);
       this->map_is_allocated_ = true;
@@ -5195,7 +5195,7 @@ Output_file::map_no_anonymous(bool writable)
   int prot = PROT_READ;
   if (writable)
     prot |= PROT_WRITE;
-  base = ::mmap(NULL, this->file_size_, prot, MAP_SHARED, o, 0);
+  base = ::mmap(nullptr, this->file_size_, prot, MAP_SHARED, o, 0);
 
   // The mmap call might fail because of file system issues: the file
   // system might not support mmap at all, or it might not support
@@ -5245,7 +5245,7 @@ Output_file::unmap()
       if (::munmap(this->base_, this->file_size_) < 0)
 	gold_error(_("%s: munmap: %s"), this->name_, strerror(errno));
     }
-  this->base_ = NULL;
+  this->base_ = nullptr;
 }
 
 // Close the output file.

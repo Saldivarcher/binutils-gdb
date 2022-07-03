@@ -115,7 +115,7 @@ class Symbol
   std::string
   demangled_name() const;
 
-  // Return the symbol version.  This will return NULL for an
+  // Return the symbol version.  This will return nullptr for an
   // unversioned symbol.
   const char*
   version() const
@@ -123,7 +123,7 @@ class Symbol
 
   void
   clear_version()
-  { this->version_ = NULL; }
+  { this->version_ = nullptr; }
 
   // Return whether this version is the default for this symbol name
   // (eg, "foo@@V2" is a default version; "foo@V1" is not).  Only
@@ -131,7 +131,7 @@ class Symbol
   bool
   is_default() const
   {
-    gold_assert(this->version_ != NULL);
+    gold_assert(this->version_ != nullptr);
     return this->is_def_;
   }
 
@@ -522,7 +522,7 @@ class Symbol
   bool
   is_placeholder() const
   {
-    return this->source_ == FROM_OBJECT && this->object()->pluginobj() != NULL;
+    return this->source_ == FROM_OBJECT && this->object()->pluginobj() != nullptr;
   }
 
   // Return whether this is an undefined symbol.
@@ -805,7 +805,7 @@ class Symbol
   }
 
   // Return the output section where this symbol is defined.  Return
-  // NULL if the symbol has an absolute value.
+  // nullptr if the symbol has an absolute value.
   Output_section*
   output_section() const;
 
@@ -986,7 +986,7 @@ class Symbol
   // Symbol name (expected to point into a Stringpool).
   const char* name_;
   // Symbol version (expected to point into a Stringpool).  This may
-  // be NULL.
+  // be nullptr.
   const char* version_;
 
   union
@@ -1371,7 +1371,7 @@ class Warnings
     std::string text;
 
     Warning_location()
-      : object(NULL), text()
+      : object(nullptr), text()
     { }
 
     void
@@ -1561,7 +1561,7 @@ class Symbol_table
 
   // Look up a symbol.
   Symbol*
-  lookup(const char*, const char* version = NULL) const;
+  lookup(const char*, const char* version = nullptr) const;
 
   // Return the real symbol associated with the forwarder symbol FROM.
   Symbol*
@@ -1598,7 +1598,7 @@ class Symbol_table
   // Canonicalize a symbol name for use in the hash table.
   const char*
   canonicalize_name(const char* name)
-  { return this->namepool_.add(name, true, NULL); }
+  { return this->namepool_.add(name, true, nullptr); }
 
   // Possibly issue a warning for a reference to SYM at LOCATION which
   // is in OBJ.

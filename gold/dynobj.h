@@ -672,11 +672,11 @@ class Versions
   // The version references.
   Needs needs_;
   // The mapping from a canonicalized version/filename pair to a
-  // version index.  The filename may be NULL.
+  // version index.  The filename may be nullptr.
   Version_table version_table_;
   // Whether the version indexes have been set.
   bool is_finalized_;
-  // Contents of --version-script, if passed, or NULL.
+  // Contents of --version-script, if passed, or nullptr.
   const Version_script_info& version_script_;
   // Whether we need to insert a base version.  This is only used for
   // shared libraries and is cleared when the base version is defined.

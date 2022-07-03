@@ -61,7 +61,7 @@ static std::vector<const One_option*> registered_options;
 // dash, two, or require -z.  A single variable may be in more than
 // one of these data structures.
 typedef Unordered_map<std::string, One_option*> Option_map;
-static Option_map* long_options = NULL;
+static Option_map* long_options = nullptr;
 static One_option* short_options[128];
 
 void
@@ -75,7 +75,7 @@ One_option::register_option()
   // We can't make long_options a static Option_map because we can't
   // guarantee that will be initialized before register_option() is
   // first called.
-  if (long_options == NULL)
+  if (long_options == nullptr)
     long_options = new Option_map;
 
   // TWO_DASHES means that two dashes are preferred, but one is ok too.
@@ -86,7 +86,7 @@ One_option::register_option()
   gold_assert(shortname_as_int >= 0 && shortname_as_int < 128);
   if (this->shortname != '\0')
     {
-      gold_assert(short_options[shortname_as_int] == NULL);
+      gold_assert(short_options[shortname_as_int] == nullptr);
       short_options[shortname_as_int] = this;
     }
 }
@@ -187,7 +187,7 @@ help()
     printf(_("Report bugs to %s\n"), report);
 }
 
-// For bool, arg will be NULL (boolean options take no argument);
+// For bool, arg will be nullptr (boolean options take no argument);
 // we always just set to true.
 void
 parse_bool(const char*, const char*, bool* retval)
@@ -520,7 +520,7 @@ General_options::parse_section_start(const char*, const char* arg,
 				     Command_line*)
 {
   const char* eq = strchr(arg, '=');
-  if (eq == NULL)
+  if (eq == nullptr)
     {
       gold_error(_("invalid argument to --section-start; "
 		   "must be SECTION=ADDRESS"));
@@ -820,7 +820,7 @@ get_relative_sysroot(const char* from)
 {
   char* path = make_relative_prefix(gold::program_name, from,
 				    TARGET_SYSTEM_ROOT);
-  if (path != NULL)
+  if (path != nullptr)
     {
       struct stat s;
       if (::stat(path, &s) == 0 && S_ISDIR(s.st_mode))
@@ -828,7 +828,7 @@ get_relative_sysroot(const char* from)
       free(path);
     }
 
-  return NULL;
+  return nullptr;
 }
 
 // Return the default sysroot.  This is set by the --with-sysroot
@@ -841,14 +841,14 @@ get_default_sysroot()
 {
   const char* sysroot = TARGET_SYSTEM_ROOT;
   if (*sysroot == '\0')
-    return NULL;
+    return nullptr;
 
   if (TARGET_SYSTEM_ROOT_RELOCATABLE)
     {
       char* path = get_relative_sysroot(BINDIR);
-      if (path == NULL)
+      if (path == nullptr)
 	path = get_relative_sysroot(TOOLBINDIR);
-      if (path != NULL)
+      if (path != nullptr)
 	return path;
     }
 
@@ -860,8 +860,8 @@ get_default_sysroot()
 // takes an argument, the next word is taken to the be the argument.
 // If equals_only is set, then only the <option>=<arg> form is
 // accepted, not the <option><space><arg> form.  Returns a One_option
-// struct or NULL if argv[i] cannot be parsed as a long option.  In
-// the not-NULL case, *arg is set to the option's argument (NULL if
+// struct or nullptr if argv[i] cannot be parsed as a long option.  In
+// the not-nullptr case, *arg is set to the option's argument (nullptr if
 // the option takes no argument), and *i is advanced past this option.
 // NOTE: it is safe for argv and arg to point to the same place.
 gold::options::One_option*
@@ -878,7 +878,7 @@ parse_long_option(int argc, const char** argv, bool equals_only,
   gold::options::Option_map::iterator it
       = gold::options::long_options->find(option);
   if (it == gold::options::long_options->end())
-    return NULL;
+    return nullptr;
 
   gold::options::One_option* retval = it->second;
 
@@ -886,21 +886,21 @@ parse_long_option(int argc, const char** argv, bool equals_only,
   if (this_argv[0] != '-')  // no dashes at all: had better be "-z <longopt>"
     {
       if (retval->dashes != gold::options::DASH_Z)
-	return NULL;
+	return nullptr;
     }
   else if (this_argv[1] != '-')   // one dash
     {
       if (retval->dashes != gold::options::ONE_DASH
 	  && retval->dashes != gold::options::EXACTLY_ONE_DASH
 	  && retval->dashes != gold::options::TWO_DASHES)
-	return NULL;
+	return nullptr;
     }
   else                            // two dashes (or more!)
     {
       if (retval->dashes != gold::options::TWO_DASHES
 	  && retval->dashes != gold::options::EXACTLY_TWO_DASHES
 	  && retval->dashes != gold::options::ONE_DASH)
-	return NULL;
+	return nullptr;
     }
 
   // Now that we know the option is good (or else bad in a way that
@@ -913,7 +913,7 @@ parse_long_option(int argc, const char** argv, bool equals_only,
       if (equals)
 	usage(_("unexpected argument"), this_argv);
       else
-	*arg = NULL;
+	*arg = nullptr;
     }
   else
     {
@@ -934,9 +934,9 @@ parse_long_option(int argc, const char** argv, bool equals_only,
 // If "arg" is not present but the option takes an argument, the next
 // word is taken to the be the argument.  If the option does not take
 // an argument, it may be followed by another short option.  Returns a
-// One_option struct or NULL if argv[i] cannot be parsed as a short
-// option.  In the not-NULL case, *arg is set to the option's argument
-// (NULL if the option takes no argument), and *i is advanced past
+// One_option struct or nullptr if argv[i] cannot be parsed as a short
+// option.  In the not-nullptr case, *arg is set to the option's argument
+// (nullptr if the option takes no argument), and *i is advanced past
 // this option.  This function keeps *i the same if we parsed a short
 // option that does not take an argument, that looks to be followed by
 // another short option in the same word.
@@ -947,13 +947,13 @@ parse_short_option(int argc, const char** argv, int pos_in_argv_i,
   const char* const this_argv = argv[*i];
 
   if (this_argv[0] != '-')
-    return NULL;
+    return nullptr;
 
   // We handle -z as a special case.
   static gold::options::One_option dash_z("", gold::options::DASH_Z,
-					  'z', "", NULL, "Z-OPTION", false,
-					  NULL, false);
-  gold::options::One_option* retval = NULL;
+					  'z', "", nullptr, "Z-OPTION", false,
+					  nullptr, false);
+  gold::options::One_option* retval = nullptr;
   if (this_argv[pos_in_argv_i] == 'z')
     retval = &dash_z;
   else
@@ -963,13 +963,13 @@ parse_short_option(int argc, const char** argv, int pos_in_argv_i,
 	retval = gold::options::short_options[char_as_int];
     }
 
-  if (retval == NULL)
-    return NULL;
+  if (retval == nullptr)
+    return nullptr;
 
   // Figure out the option's argument, if any.
   if (!retval->takes_argument())
     {
-      *arg = NULL;
+      *arg = nullptr;
       // We only advance past this argument if it's the only one in argv.
       if (this_argv[pos_in_argv_i + 1] == '\0')
 	++(*i);
@@ -995,7 +995,7 @@ parse_short_option(int argc, const char** argv, int pos_in_argv_i,
       int dummy_i = 0;
       const char* dash_z_arg = *arg;
       retval = parse_long_option(1, arg, true, arg, &dummy_i);
-      if (retval == NULL)
+      if (retval == nullptr)
 	usage(_("unknown -z option"), dash_z_arg);
     }
 
@@ -1014,7 +1014,7 @@ General_options::General_options()
     icf_status_(ICF_NONE),
     static_(false),
     do_demangle_(false),
-    plugins_(NULL),
+    plugins_(nullptr),
     dynamic_list_(),
     have_dynamic_list_(false),
     incremental_mode_(INCREMENTAL_OFF),
@@ -1051,10 +1051,10 @@ General_options::oformat_enum() const
 void
 General_options::add_sysroot()
 {
-  if (this->sysroot() == NULL || this->sysroot()[0] == '\0')
+  if (this->sysroot() == nullptr || this->sysroot()[0] == '\0')
     {
       this->set_sysroot(get_default_sysroot());
-      if (this->sysroot() == NULL || this->sysroot()[0] == '\0')
+      if (this->sysroot() == nullptr || this->sysroot()[0] == '\0')
 	return;
     }
 
@@ -1093,7 +1093,7 @@ General_options::is_in_system_directory(const std::string& filename) const
 void
 General_options::add_plugin(const char* filename)
 {
-  if (this->plugins_ == NULL)
+  if (this->plugins_ == nullptr)
     this->plugins_ = new Plugin_manager(*this);
   this->plugins_->add_plugin(filename);
 }
@@ -1103,7 +1103,7 @@ General_options::add_plugin(const char* filename)
 void
 General_options::add_plugin_option(const char* arg)
 {
-  if (this->plugins_ == NULL)
+  if (this->plugins_ == nullptr)
     gold_fatal("--plugin-opt requires --plugin.");
   this->plugins_->add_plugin_option(arg);
 }
@@ -1184,7 +1184,7 @@ General_options::finalize()
     {
       // Testing COLLECT_NO_DEMANGLE makes our default demangling
       // behaviour identical to that of gcc's linker wrapper.
-      this->set_do_demangle(getenv("COLLECT_NO_DEMANGLE") == NULL);
+      this->set_do_demangle(getenv("COLLECT_NO_DEMANGLE") == nullptr);
     }
 
   // Parse the --orphan-handling argument.
@@ -1370,7 +1370,7 @@ General_options::finalize()
 
   if (!this->shared())
     {
-      if (this->filter() != NULL)
+      if (this->filter() != nullptr)
 	gold_fatal(_("-F/--filter may not used without -shared"));
       if (this->any_auxiliary())
 	gold_fatal(_("-f/--auxiliary may not be used without -shared"));
@@ -1583,8 +1583,8 @@ Command_line::process_one_option(int argc, const char** argv, int i,
     }
 
   int new_i = i;
-  options::One_option* option = NULL;
-  const char* arg = NULL;
+  options::One_option* option = nullptr;
+  const char* arg = nullptr;
 
   // First, try to process argv as a long option.
   option = parse_long_option(argc, argv, false, &arg, &new_i);

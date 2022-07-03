@@ -141,7 +141,7 @@ Stringpool_template<Stringpool_char>::string_hash(const Stringpool_char* s,
 }
 
 // Add the string S to the list of canonical strings.  Return a
-// pointer to the canonical string.  If PKEY is not NULL, set *PKEY to
+// pointer to the canonical string.  If PKEY is not nullptr, set *PKEY to
 // the key.  LENGTH is the length of S in characters.  Note that S may
 // not be NUL terminated.
 
@@ -269,7 +269,7 @@ Stringpool_template<Stringpool_char>::add_with_length(const Stringpool_char* s,
 	  gold_assert(k != p->second);
 	}
 
-      if (pkey != NULL)
+      if (pkey != nullptr)
 	*pkey = p->second;
       return p->first.string;
     }
@@ -283,7 +283,7 @@ Stringpool_template<Stringpool_char>::add_with_length(const Stringpool_char* s,
   typename String_set_type::const_iterator p = this->string_set_.find(hk);
   if (p != this->string_set_.end())
     {
-      if (pkey != NULL)
+      if (pkey != nullptr)
 	*pkey = p->second;
       return p->first.string;
     }
@@ -299,7 +299,7 @@ Stringpool_template<Stringpool_char>::add_with_length(const Stringpool_char* s,
   Insert_type ins = this->string_set_.insert(element);
   gold_assert(ins.second);
 
-  if (pkey != NULL)
+  if (pkey != nullptr)
     *pkey = k;
   return hk.string;
 }
@@ -312,9 +312,9 @@ Stringpool_template<Stringpool_char>::find(const Stringpool_char* s,
   Hashkey hk(s);
   typename String_set_type::const_iterator p = this->string_set_.find(hk);
   if (p == this->string_set_.end())
-    return NULL;
+    return nullptr;
 
-  if (pkey != NULL)
+  if (pkey != nullptr)
     *pkey = p->second;
 
   return p->first.string;

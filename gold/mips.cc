@@ -428,11 +428,11 @@ is_matching_lo16_reloc(unsigned int high_reloc, unsigned int lo16_reloc)
 // There are three types of entry:
 //
 //    (1) a SYMBOL + OFFSET address, where SYMBOL is local to an input object
-//          (object != NULL, symndx >= 0, tls_type != GOT_TLS_LDM)
+//          (object != nullptr, symndx >= 0, tls_type != GOT_TLS_LDM)
 //    (2) a SYMBOL address, where SYMBOL is not local to an input object
-//          (sym != NULL, symndx == -1)
+//          (sym != nullptr, symndx == -1)
 //    (3) a TLS LDM slot (there's only one of these per GOT.)
-//          (object != NULL, symndx == 0, tls_type == GOT_TLS_LDM)
+//          (object != nullptr, symndx == 0, tls_type == GOT_TLS_LDM)
 
 template<int size, bool big_endian>
 class Mips_got_entry
@@ -612,7 +612,7 @@ class Mips_symbol_hash
 struct Got_page_range
 {
   Got_page_range()
-    : next(NULL), min_addend(0), max_addend(0)
+    : next(nullptr), min_addend(0), max_addend(0)
   { }
 
   Got_page_range* next;
@@ -631,11 +631,11 @@ struct Got_page_range
 struct Got_page_entry
 {
   Got_page_entry()
-    : object(NULL), symndx(-1U), ranges(NULL)
+    : object(nullptr), symndx(-1U), ranges(nullptr)
   { }
 
   Got_page_entry(Object* object_, unsigned int symndx_)
-    : object(object_), symndx(symndx_), ranges(NULL)
+    : object(object_), symndx(symndx_), ranges(nullptr)
   { }
 
   // The input object that needs the GOT page entry.
@@ -694,7 +694,7 @@ class Mips_got_info
     : local_gotno_(0), page_gotno_(0), global_gotno_(0), reloc_only_gotno_(0),
       tls_gotno_(0), tls_ldm_offset_(-1U), global_got_symbols_(),
       got_entries_(), got_page_entries_(), got_page_offset_start_(0),
-      got_page_offset_next_(0), got_page_offsets_(), next_(NULL), index_(-1U),
+      got_page_offset_next_(0), got_page_offsets_(), next_(nullptr), index_(-1U),
       offset_(0)
   { }
 
@@ -1013,8 +1013,8 @@ class Mips_symbol : public Sized_symbol<size>
       pointer_equality_needed_(false), global_got_area_(GGA_NONE),
       global_gotoffset_(-1U), got_only_for_calls_(true), has_lazy_stub_(false),
       needs_mips_plt_(false), needs_comp_plt_(false), mips_plt_offset_(-1U),
-      comp_plt_offset_(-1U), mips16_fn_stub_(NULL), mips16_call_stub_(NULL),
-      mips16_call_fp_stub_(NULL), applied_secondary_got_fixup_(false)
+      comp_plt_offset_(-1U), mips16_fn_stub_(nullptr), mips16_call_stub_(nullptr),
+      mips16_call_fp_stub_(nullptr), applied_secondary_got_fixup_(false)
   { }
 
   // Return whether this is a MIPS16 symbol.
@@ -1290,7 +1290,7 @@ class Mips_symbol : public Sized_symbol<size>
   // Return whether symbol has MIPS16 fn stub.
   bool
   has_mips16_fn_stub() const
-  { return this->mips16_fn_stub_ != NULL; }
+  { return this->mips16_fn_stub_ != nullptr; }
 
   // Return MIPS16 call stub for a symbol.
   template<bool big_endian>
@@ -1309,7 +1309,7 @@ class Mips_symbol : public Sized_symbol<size>
   // Return whether symbol has MIPS16 call stub.
   bool
   has_mips16_call_stub() const
-  { return this->mips16_call_stub_ != NULL; }
+  { return this->mips16_call_stub_ != nullptr; }
 
   // Return MIPS16 call_fp stub for a symbol.
   template<bool big_endian>
@@ -1328,7 +1328,7 @@ class Mips_symbol : public Sized_symbol<size>
   // Return whether symbol has MIPS16 call_fp stub.
   bool
   has_mips16_call_fp_stub() const
-  { return this->mips16_call_fp_stub_ != NULL; }
+  { return this->mips16_call_fp_stub_ != nullptr; }
 
   bool
   get_applied_secondary_got_fixup() const
@@ -1455,7 +1455,7 @@ class Mips16_stub_section : public Mips16_stub_section_base
 
  public:
   Mips16_stub_section(Mips_relobj<size, big_endian>* object, unsigned int shndx)
-    : object_(object), shndx_(shndx), r_sym_(0), gsym_(NULL),
+    : object_(object), shndx_(shndx), r_sym_(0), gsym_(nullptr),
       found_r_mips_none_(false)
   {
     gold_assert(object->is_mips16_fn_stub_section(shndx)
@@ -1491,7 +1491,7 @@ class Mips16_stub_section : public Mips16_stub_section_base
   // Return whether stub is for a local function.
   bool
   is_for_local_function() const
-  { return this->gsym_ == NULL; }
+  { return this->gsym_ == nullptr; }
 
   // This method is called when a new relocation R_TYPE for local symbol R_SYM
   // is found in the stub section.  Try to find stub target.
@@ -1506,7 +1506,7 @@ class Mips16_stub_section : public Mips16_stub_section_base
     if (r_type == elfcpp::R_MIPS_NONE)
       {
         this->r_sym_ = r_sym;
-        this->gsym_ = NULL;
+        this->gsym_ = nullptr;
         this->found_r_mips_none_ = true;
       }
     else if (!is_target_found())
@@ -1536,7 +1536,7 @@ class Mips16_stub_section : public Mips16_stub_section_base
   // Return whether we found the stub target.
   bool
   is_target_found() const
-  { return this->r_sym_ != 0 || this->gsym_ != NULL;  }
+  { return this->r_sym_ != 0 || this->gsym_ != nullptr;  }
 
   // Return whether this is a fn stub.
   bool
@@ -1592,10 +1592,10 @@ class Mips_relobj : public Sized_relobj_file<size, big_endian>
       local_symbol_is_micromips_(), mips16_stub_sections_(),
       local_non_16bit_calls_(), local_16bit_calls_(), local_mips16_fn_stubs_(),
       local_mips16_call_stubs_(), gp_(0), has_reginfo_section_(false),
-      merge_processor_specific_data_(true), got_info_(NULL),
+      merge_processor_specific_data_(true), got_info_(nullptr),
       section_is_mips16_fn_stub_(), section_is_mips16_call_stub_(),
       section_is_mips16_call_fp_stub_(), pdr_shndx_(-1U),
-      attributes_section_data_(NULL), abiflags_(NULL), gprmask_(0),
+      attributes_section_data_(nullptr), abiflags_(nullptr), gprmask_(0),
       cprmask1_(0), cprmask2_(0), cprmask3_(0), cprmask4_(0)
   {
     this->is_pic_ = (ehdr.get_e_flags() & elfcpp::EF_MIPS_PIC) != 0;
@@ -1658,7 +1658,7 @@ class Mips_relobj : public Sized_relobj_file<size, big_endian>
     return stub_section;
   }
 
-  // Return MIPS16 fn stub section for local symbol R_SYM, or NULL if this
+  // Return MIPS16 fn stub section for local symbol R_SYM, or nullptr if this
   // object doesn't have fn stub for R_SYM.
   Mips16_stub_section<size, big_endian>*
   get_local_mips16_fn_stub(unsigned int r_sym) const
@@ -1667,7 +1667,7 @@ class Mips_relobj : public Sized_relobj_file<size, big_endian>
       this->local_mips16_fn_stubs_.find(r_sym);
     if (it != this->local_mips16_fn_stubs_.end())
       return (*it).second;
-    return NULL;
+    return nullptr;
   }
 
   // Record that this object has MIPS16 fn stub for local symbol.  This method
@@ -1682,7 +1682,7 @@ class Mips_relobj : public Sized_relobj_file<size, big_endian>
         r_sym, stub));
   }
 
-  // Return MIPS16 call stub section for local symbol R_SYM, or NULL if this
+  // Return MIPS16 call stub section for local symbol R_SYM, or nullptr if this
   // object doesn't have call stub for R_SYM.
   Mips16_stub_section<size, big_endian>*
   get_local_mips16_call_stub(unsigned int r_sym) const
@@ -1691,7 +1691,7 @@ class Mips_relobj : public Sized_relobj_file<size, big_endian>
       this->local_mips16_call_stubs_.find(r_sym);
     if (it != this->local_mips16_call_stubs_.end())
       return (*it).second;
-    return NULL;
+    return nullptr;
   }
 
   // Record that this object has MIPS16 call stub for local symbol.  This method
@@ -1952,10 +1952,10 @@ class Mips_relobj : public Sized_relobj_file<size, big_endian>
   // .pdr section index.
   unsigned int pdr_shndx_;
 
-  // Object attributes if there is a .gnu.attributes section or NULL.
+  // Object attributes if there is a .gnu.attributes section or nullptr.
   Attributes_section_data* attributes_section_data_;
 
-  // Object abiflags if there is a .MIPS.abiflags section or NULL.
+  // Object abiflags if there is a .MIPS.abiflags section or nullptr.
   Mips_abiflags<big_endian>* abiflags_;
 
   // gprmask from the .reginfo section of this object.
@@ -1984,8 +1984,8 @@ class Mips_output_data_got : public Output_data_got<size, big_endian>
   Mips_output_data_got(Target_mips<size, big_endian>* target,
       Symbol_table* symtab, Layout* layout)
     : Output_data_got<size, big_endian>(), target_(target),
-      symbol_table_(symtab), layout_(layout), static_relocs_(), got_view_(NULL),
-      first_global_got_dynsym_index_(-1U), primary_got_(NULL),
+      symbol_table_(symtab), layout_(layout), static_relocs_(), got_view_(nullptr),
+      first_global_got_dynsym_index_(-1U), primary_got_(nullptr),
       secondary_got_relocs_()
   {
     this->master_got_info_ = new Mips_got_info<size, big_endian>();
@@ -2117,7 +2117,7 @@ class Mips_output_data_got : public Output_data_got<size, big_endian>
     Mips_got_info<size, big_endian>* g = (!this->multi_got()
                                           ? this->master_got_info_
                                           : object->get_got_info());
-    gold_assert(g != NULL);
+    gold_assert(g != nullptr);
     return g->get_got_page_offset(value, this);
   }
 
@@ -2131,7 +2131,7 @@ class Mips_output_data_got : public Output_data_got<size, big_endian>
     else
       {
         Mips_got_info<size, big_endian>* g = object->get_got_info();
-        gold_assert(g != NULL);
+        gold_assert(g != nullptr);
         return gsym->got_offset(g->multigot_got_type(got_type));
       }
   }
@@ -2151,7 +2151,7 @@ class Mips_output_data_got : public Output_data_got<size, big_endian>
     Mips_got_info<size, big_endian>* g = (!this->multi_got()
                                           ? this->master_got_info_
                                           : object->get_got_info());
-    gold_assert(g != NULL);
+    gold_assert(g != nullptr);
     return g->tls_ldm_offset();
   }
 
@@ -2163,14 +2163,14 @@ class Mips_output_data_got : public Output_data_got<size, big_endian>
     Mips_got_info<size, big_endian>* g = (!this->multi_got()
                                           ? this->master_got_info_
                                           : object->get_got_info());
-    gold_assert(g != NULL);
+    gold_assert(g != nullptr);
     g->set_tls_ldm_offset(tls_ldm_offset);
   }
 
   // Return true for multi-GOT links.
   bool
   multi_got() const
-  { return this->primary_got_ != NULL; }
+  { return this->primary_got_ != nullptr; }
 
   // Return the offset of OBJECT's GOT from the start of .got section.
   unsigned int
@@ -2181,7 +2181,7 @@ class Mips_output_data_got : public Output_data_got<size, big_endian>
     else
       {
         Mips_got_info<size, big_endian>* g = object->get_got_info();
-        return g != NULL ? g->offset() : 0;
+        return g != nullptr ? g->offset() : 0;
       }
   }
 
@@ -2952,7 +2952,7 @@ symbol_refs_local(const Symbol* sym, bool has_dynsym_entry,
                   bool local_protected)
 {
   // If it's a local sym, of course we resolve locally.
-  if (sym == NULL)
+  if (sym == nullptr)
     return true;
 
   // STV_HIDDEN or STV_INTERNAL ones must be local.
@@ -3326,11 +3326,11 @@ class Target_mips : public Sized_target<size, big_endian>
 
  public:
   Target_mips(const Target::Target_info* info = &mips_info)
-    : Sized_target<size, big_endian>(info), got_(NULL), gp_(NULL), plt_(NULL),
-      got_plt_(NULL), rel_dyn_(NULL), rld_map_(NULL), copy_relocs_(),
-      dyn_relocs_(), la25_stub_(NULL), mips_mach_extensions_(),
-      mips_stubs_(NULL), attributes_section_data_(NULL), abiflags_(NULL),
-      mach_(0), layout_(NULL), got16_addends_(), has_abiflags_section_(false),
+    : Sized_target<size, big_endian>(info), got_(nullptr), gp_(nullptr), plt_(nullptr),
+      got_plt_(nullptr), rel_dyn_(nullptr), rld_map_(nullptr), copy_relocs_(),
+      dyn_relocs_(), la25_stub_(nullptr), mips_mach_extensions_(),
+      mips_stubs_(nullptr), attributes_section_data_(nullptr), abiflags_(nullptr),
+      mach_(0), layout_(nullptr), got16_addends_(), has_abiflags_section_(false),
       entry_symbol_is_compressed_(false), insn32_(false)
   {
     this->add_machine_extensions();
@@ -3476,7 +3476,7 @@ class Target_mips : public Sized_target<size, big_endian>
   unsigned int
   plt_entry_count() const
   {
-    if (this->plt_ == NULL)
+    if (this->plt_ == nullptr)
       return 0;
     return this->plt_->entry_count();
   }
@@ -3499,7 +3499,7 @@ class Target_mips : public Sized_target<size, big_endian>
   Mips_output_data_got<size, big_endian>*
   got_section() const
   {
-    gold_assert(this->got_ != NULL);
+    gold_assert(this->got_ != nullptr);
     return this->got_;
   }
 
@@ -3511,7 +3511,7 @@ class Target_mips : public Sized_target<size, big_endian>
   Mips_output_data_mips_stubs<size, big_endian>*
   mips_stubs_section() const
   {
-    gold_assert(this->mips_stubs_ != NULL);
+    gold_assert(this->mips_stubs_ != nullptr);
     return this->mips_stubs_;
   }
 
@@ -3523,7 +3523,7 @@ class Target_mips : public Sized_target<size, big_endian>
   Mips_output_data_la25_stub<size, big_endian>*
   la25_stub_section()
   {
-    gold_assert(this->la25_stub_ != NULL);
+    gold_assert(this->la25_stub_ != nullptr);
     return this->la25_stub_;
   }
 
@@ -3531,7 +3531,7 @@ class Target_mips : public Sized_target<size, big_endian>
   Mips_address
   gp_value() const
   {
-    if (this->gp_ != NULL)
+    if (this->gp_ != nullptr)
       return this->gp_->value();
     return 0;
   }
@@ -3541,7 +3541,7 @@ class Target_mips : public Sized_target<size, big_endian>
   Mips_address
   adjusted_gp_value(const Mips_relobj<size, big_endian>* object)
   {
-    if (this->gp_ == NULL)
+    if (this->gp_ == nullptr)
       return 0;
 
     bool multi_got = false;
@@ -3583,7 +3583,7 @@ class Target_mips : public Sized_target<size, big_endian>
   void
   remove_lazy_stub_entry(Mips_symbol<size>* sym)
   {
-    if (this->mips_stubs_ != NULL)
+    if (this->mips_stubs_ != nullptr)
       this->mips_stubs_->remove_entry(sym);
   }
 
@@ -3948,7 +3948,7 @@ class Target_mips : public Sized_target<size, big_endian>
   // Return whether there is a GOT section.
   bool
   has_got_section() const
-  { return this->got_ != NULL; }
+  { return this->got_ != nullptr; }
 
   // Check whether the given ELF header flags describe a 32-bit binary.
   bool
@@ -4081,7 +4081,7 @@ class Target_mips : public Sized_target<size, big_endian>
   section_size_type
   got_size() const
   {
-    gold_assert(this->got_ != NULL);
+    gold_assert(this->got_ != nullptr);
     return this->got_->data_size();
   }
 
@@ -4094,7 +4094,7 @@ class Target_mips : public Sized_target<size, big_endian>
   Mips_output_data_plt<size, big_endian>*
   plt_section() const
   {
-    gold_assert(this->plt_ != NULL);
+    gold_assert(this->plt_ != nullptr);
     return this->plt_;
   }
 
@@ -4102,7 +4102,7 @@ class Target_mips : public Sized_target<size, big_endian>
   const Mips_output_data_plt<size, big_endian>*
   got_plt_section() const
   {
-    gold_assert(this->got_plt_ != NULL);
+    gold_assert(this->got_plt_ != nullptr);
     return this->got_plt_;
   }
 
@@ -6378,7 +6378,7 @@ Mips_output_data_got<size, big_endian>::lay_out_got(Layout* layout,
         {
           Mips_relobj<size, big_endian>* object =
             Mips_relobj<size, big_endian>::as_mips_relobj(*p);
-          if (object->get_got_info() != NULL)
+          if (object->get_got_info() != nullptr)
             object->set_got_info(this->master_got_info_);
         }
 
@@ -6447,8 +6447,8 @@ void
 Mips_output_data_got<size, big_endian>::merge_gots(
     const Input_objects* input_objects)
 {
-  gold_assert(this->primary_got_ == NULL);
-  Mips_got_info<size, big_endian>* current = NULL;
+  gold_assert(this->primary_got_ == nullptr);
+  Mips_got_info<size, big_endian>* current = nullptr;
 
   for (Input_objects::Relobj_iterator p = input_objects->relobj_begin();
        p != input_objects->relobj_end();
@@ -6458,7 +6458,7 @@ Mips_output_data_got<size, big_endian>::merge_gots(
         Mips_relobj<size, big_endian>::as_mips_relobj(*p);
 
       Mips_got_info<size, big_endian>* g = object->get_got_info();
-      if (g == NULL)
+      if (g == nullptr)
         continue;
 
       g->count_got_entries();
@@ -6505,7 +6505,7 @@ Mips_output_data_got<size, big_endian>::merge_gots(
     }
 
   // If we do not find any suitable primary GOT, create an empty one.
-  if (this->primary_got_ == NULL)
+  if (this->primary_got_ == nullptr)
     this->primary_got_ = new Mips_got_info<size, big_endian>();
 
   // Link primary GOT with secondary GOTs.
@@ -6629,7 +6629,7 @@ Mips_output_data_got<size, big_endian>::do_write(Output_file* of)
           if (reloc.symbol_is_global())
             {
               Mips_symbol<size>* gsym = reloc.symbol();
-              gold_assert(gsym != NULL);
+              gold_assert(gsym != nullptr);
 
               unsigned got_offset = reloc.got_offset();
               gold_assert(got_offset < oview_size);
@@ -6659,7 +6659,7 @@ Mips_output_data_got<size, big_endian>::do_write(Output_file* of)
     return;
 
   Output_segment* tls_segment = this->layout_->tls_segment();
-  gold_assert(tls_segment != NULL);
+  gold_assert(tls_segment != nullptr);
 
   for (size_t i = 0; i < this->static_relocs_.size(); ++i)
     {
@@ -6693,7 +6693,7 @@ Mips_output_data_got<size, big_endian>::do_write(Output_file* of)
       else
         {
           const Mips_symbol<size>* gsym = reloc.symbol();
-          gold_assert(gsym != NULL);
+          gold_assert(gsym != nullptr);
 
           // We are doing static linking.  Issue an error and skip this
           // relocation if the symbol is undefined or in a discarded_section
@@ -6880,7 +6880,7 @@ Mips_relobj<size, big_endian>::do_read_symbols(Read_symbols_data* sd)
 
       if (shdr.get_sh_type() == elfcpp::SHT_GNU_ATTRIBUTES)
         {
-          gold_assert(this->attributes_section_data_ == NULL);
+          gold_assert(this->attributes_section_data_ == nullptr);
           section_offset_type section_offset = shdr.get_sh_offset();
           section_size_type section_size =
             convert_to_section_size_type(shdr.get_sh_size());
@@ -6892,7 +6892,7 @@ Mips_relobj<size, big_endian>::do_read_symbols(Read_symbols_data* sd)
 
       if (shdr.get_sh_type() == elfcpp::SHT_MIPS_ABIFLAGS)
         {
-          gold_assert(this->abiflags_ == NULL);
+          gold_assert(this->abiflags_ == nullptr);
           section_offset_type section_offset = shdr.get_sh_offset();
           section_size_type section_size =
             convert_to_section_size_type(shdr.get_sh_size());
@@ -7132,7 +7132,7 @@ Mips_relobj<size, big_endian>::discard_mips16_stub_sections(Symbol_table* symtab
             }
         }
       if (discard)
-        this->set_output_section(stub_section->shndx(), NULL);
+        this->set_output_section(stub_section->shndx(), nullptr);
    }
 }
 
@@ -7193,7 +7193,7 @@ Mips_output_data_la25_stub<size, big_endian>::create_stub_symbol(
     offset |= 1;
 
   // Make it a local function.
-  Symbol* new_sym = symtab->define_in_output_data(name.c_str(), NULL,
+  Symbol* new_sym = symtab->define_in_output_data(name.c_str(), nullptr,
                                       Symbol_table::PREDEFINED,
                                       target->la25_stub_section(),
                                       offset, symsize, elfcpp::STT_FUNC,
@@ -8431,9 +8431,9 @@ template<int size, bool big_endian>
 typename Target_mips<size, big_endian>::Reloc_section*
 Target_mips<size, big_endian>::rel_dyn_section(Layout* layout)
 {
-  if (this->rel_dyn_ == NULL)
+  if (this->rel_dyn_ == nullptr)
     {
-      gold_assert(layout != NULL);
+      gold_assert(layout != nullptr);
       this->rel_dyn_ = new Reloc_section(parameters->options().combreloc());
       layout->add_output_section_data(".rel.dyn", elfcpp::SHT_REL,
                                       elfcpp::SHF_ALLOC, this->rel_dyn_,
@@ -8457,9 +8457,9 @@ Mips_output_data_got<size, big_endian>*
 Target_mips<size, big_endian>::got_section(Symbol_table* symtab,
                                            Layout* layout)
 {
-  if (this->got_ == NULL)
+  if (this->got_ == nullptr)
     {
-      gold_assert(symtab != NULL && layout != NULL);
+      gold_assert(symtab != nullptr && layout != nullptr);
 
       this->got_ = new Mips_output_data_got<size, big_endian>(this, symtab,
                                                               layout);
@@ -8469,7 +8469,7 @@ Target_mips<size, big_endian>::got_section(Symbol_table* symtab,
                                       this->got_, ORDER_DATA, false);
 
       // Define _GLOBAL_OFFSET_TABLE_ at the start of the .got section.
-      symtab->define_in_output_data("_GLOBAL_OFFSET_TABLE_", NULL,
+      symtab->define_in_output_data("_GLOBAL_OFFSET_TABLE_", nullptr,
                                     Symbol_table::PREDEFINED,
                                     this->got_,
                                     0, 0, elfcpp::STT_OBJECT,
@@ -8487,22 +8487,22 @@ template<int size, bool big_endian>
 void
 Target_mips<size, big_endian>::set_gp(Layout* layout, Symbol_table* symtab)
 {
-  gold_assert(this->gp_ == NULL);
+  gold_assert(this->gp_ == nullptr);
 
   Sized_symbol<size>* gp =
     static_cast<Sized_symbol<size>*>(symtab->lookup("_gp"));
 
   // Set _gp symbol if the linker script hasn't created it.
-  if (gp == NULL || gp->source() != Symbol::IS_CONSTANT)
+  if (gp == nullptr || gp->source() != Symbol::IS_CONSTANT)
     {
       // If there is no .got section, gp should be based on .sdata.
-      Output_data* gp_section = (this->got_ != NULL
+      Output_data* gp_section = (this->got_ != nullptr
                                  ? this->got_->output_section()
                                  : layout->find_output_section(".sdata"));
 
-      if (gp_section != NULL)
+      if (gp_section != nullptr)
         gp = static_cast<Sized_symbol<size>*>(symtab->define_in_output_data(
-                                          "_gp", NULL, Symbol_table::PREDEFINED,
+                                          "_gp", nullptr, Symbol_table::PREDEFINED,
                                           gp_section, MIPS_GP_OFFSET, 0,
                                           elfcpp::STT_NOTYPE,
                                           elfcpp::STB_LOCAL,
@@ -8546,10 +8546,10 @@ Target_mips<size, big_endian>::do_set_dynsym_indexes(
           sym->set_dynsym_index(index);
           ++index;
           syms->push_back(sym);
-          dynpool->add(sym->name(), false, NULL);
+          dynpool->add(sym->name(), false, nullptr);
 
           // Record any version information.
-          if (sym->version() != NULL)
+          if (sym->version() != nullptr)
             versions->record_version(symtab, dynpool, sym);
 
           // If the symbol is defined in a dynamic object and is
@@ -8568,7 +8568,7 @@ Target_mips<size, big_endian>::do_set_dynsym_indexes(
       if (!sym->has_dynsym_index())
         {
           // Record any version information.
-          if (sym->version() != NULL)
+          if (sym->version() != nullptr)
             versions->record_version(symtab, dynpool, sym);
         }
     }
@@ -8588,7 +8588,7 @@ Target_mips<size, big_endian>::do_set_dynsym_indexes(
           sym->set_dynsym_index(index);
           ++index;
           syms->push_back(sym);
-          dynpool->add(sym->name(), false, NULL);
+          dynpool->add(sym->name(), false, nullptr);
 
           // If the symbol is defined in a dynamic object and is
           // referenced in a regular object, then mark the dynamic
@@ -8602,7 +8602,7 @@ Target_mips<size, big_endian>::do_set_dynsym_indexes(
   this->got_->set_first_global_got_dynsym_index(
     got_sym_count > 0 ? index - got_sym_count : -1U);
 
-  if (this->mips_stubs_ != NULL)
+  if (this->mips_stubs_ != nullptr)
     this->mips_stubs_->set_dynsym_count(index);
 
   return index;
@@ -8620,7 +8620,7 @@ Target_mips<size, big_endian>::make_plt_entry(Symbol_table* symtab,
   if (gsym->has_lazy_stub() || gsym->has_plt_offset())
     return;
 
-  if (this->plt_ == NULL)
+  if (this->plt_ == nullptr)
     {
       // Create the GOT section first.
       this->got_section(symtab, layout);
@@ -8656,7 +8656,7 @@ template<int size, bool big_endian>
 Mips_output_data_mips_stubs<size, big_endian>*
 Target_mips<size, big_endian>::mips_stubs_section(Layout* layout)
 {
-  if (this->mips_stubs_ == NULL)
+  if (this->mips_stubs_ == nullptr)
     {
       this->mips_stubs_ =
         new Mips_output_data_mips_stubs<size, big_endian>(this);
@@ -8674,7 +8674,7 @@ template<int size, bool big_endian>
 Mips_output_data_la25_stub<size, big_endian>*
 Target_mips<size, big_endian>::la25_stub_section(Layout* layout)
 {
-  if (this->la25_stub_ == NULL)
+  if (this->la25_stub_ == nullptr)
     {
       this->la25_stub_ = new Mips_output_data_la25_stub<size, big_endian>();
       layout->add_output_section_data(".text", elfcpp::SHT_PROGBITS,
@@ -9129,7 +9129,7 @@ Target_mips<size, big_endian>::infer_abiflags(
   elfcpp::Elf_Word e_flags = relobj->processor_specific_flags();
 
   this->update_abiflags_isa(relobj->name(), e_flags, abiflags);
-  if (pasd != NULL)
+  if (pasd != nullptr)
     {
       // Read fp_abi from the .gnu.attribute section.
       const Object_attribute* attr =
@@ -9181,7 +9181,7 @@ Target_mips<size, big_endian>::create_abiflags(
 
   this->infer_abiflags(relobj, &header_abiflags);
 
-  if (sec_abiflags == NULL)
+  if (sec_abiflags == nullptr)
     {
       // If there is no input .MIPS.abiflags section, use abiflags created
       // from elf header.
@@ -9293,11 +9293,11 @@ Target_mips<size, big_endian>::merge_obj_attributes(const std::string& name,
     const Attributes_section_data* pasd)
 {
   // Return if there is no attributes section data.
-  if (pasd == NULL)
+  if (pasd == nullptr)
     return;
 
   // If output has no object attributes, just copy.
-  if (this->attributes_section_data_ == NULL)
+  if (this->attributes_section_data_ == nullptr)
     {
       this->attributes_section_data_ = new Attributes_section_data(*pasd);
       return;
@@ -9321,7 +9321,7 @@ Target_mips<size, big_endian>::merge_obj_abiflags(const std::string& name,
     Mips_abiflags<big_endian>* in_abiflags)
 {
   // If output has no abiflags, just copy.
-  if (this->abiflags_ == NULL)
+  if (this->abiflags_ == nullptr)
   {
     this->abiflags_ = new Mips_abiflags<big_endian>(*in_abiflags);
     return;
@@ -9562,7 +9562,7 @@ Target_mips<size, big_endian>::do_adjust_elf_header(
           == elfcpp::EF_MIPS_CPIC)
     ei_abiversion = 1;
 
-  if (this->abiflags_ != NULL
+  if (this->abiflags_ != nullptr
       && (this->abiflags_->fp_abi == elfcpp::Val_GNU_MIPS_ABI_FP_64
           || this->abiflags_->fp_abi == elfcpp::Val_GNU_MIPS_ABI_FP_64A))
     ei_abiversion = 3;
@@ -9607,7 +9607,7 @@ Target_mips<size, big_endian>::do_make_elf_object(
     {
       gold_error(_("%s: unsupported ELF file type %d"),
                  name.c_str(), et);
-      return NULL;
+      return nullptr;
     }
 }
 
@@ -9625,18 +9625,18 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
   // DT_FINI have correct values.
   Mips_symbol<size>* init = static_cast<Mips_symbol<size>*>(
       symtab->lookup(parameters->options().init()));
-  if (init != NULL && (init->is_mips16() || init->is_micromips()))
+  if (init != nullptr && (init->is_mips16() || init->is_micromips()))
     init->set_value(init->value() | 1);
   Mips_symbol<size>* fini = static_cast<Mips_symbol<size>*>(
       symtab->lookup(parameters->options().fini()));
-  if (fini != NULL && (fini->is_mips16() || fini->is_micromips()))
+  if (fini != nullptr && (fini->is_mips16() || fini->is_micromips()))
     fini->set_value(fini->value() | 1);
 
   // Check whether the entry symbol is mips16 or micromips.  This is needed to
   // adjust entry address in ELF header.
   Mips_symbol<size>* entry =
     static_cast<Mips_symbol<size>*>(symtab->lookup(this->entry_symbol_name()));
-  this->entry_symbol_is_compressed_ = (entry != NULL && (entry->is_mips16()
+  this->entry_symbol_is_compressed_ = (entry != nullptr && (entry->is_mips16()
                                        || entry->is_micromips()));
 
   if (!parameters->doing_static_link()
@@ -9699,7 +9699,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
 
   // Create a .gnu.attributes section if we have merged any attributes
   // from inputs.
-  if (this->attributes_section_data_ != NULL)
+  if (this->attributes_section_data_ != nullptr)
     {
       Output_attributes_section_data* attributes_section =
         new Output_attributes_section_data(*this->attributes_section_data_);
@@ -9720,7 +9720,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
                                         elfcpp::SHF_ALLOC,
                                         abiflags_section, ORDER_INVALID, false);
 
-      if (!relocatable && os != NULL)
+      if (!relocatable && os != nullptr)
         {
           Output_segment* abiflags_segment =
             layout->make_output_segment(elfcpp::PT_MIPS_ABIFLAGS, elfcpp::PF_R);
@@ -9741,7 +9741,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
                                         elfcpp::SHF_ALLOC, reginfo_section,
                                         ORDER_INVALID, false);
 
-      if (!relocatable && os != NULL)
+      if (!relocatable && os != nullptr)
         {
           Output_segment* reginfo_segment =
             layout->make_output_segment(elfcpp::PT_MIPS_REGINFO,
@@ -9750,7 +9750,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
         }
     }
 
-  if (this->plt_ != NULL)
+  if (this->plt_ != nullptr)
     {
       // Set final PLT offsets for symbols.
       this->plt_section()->set_plt_offsets();
@@ -9762,7 +9762,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
       if (this->is_output_micromips()
           && !this->plt_section()->has_standard_entries())
         nonvis = elfcpp::STO_MICROMIPS >> 2;
-      symtab->define_in_output_data("_PROCEDURE_LINKAGE_TABLE_", NULL,
+      symtab->define_in_output_data("_PROCEDURE_LINKAGE_TABLE_", nullptr,
                                     Symbol_table::PREDEFINED,
                                     this->plt_,
                                     0, 0, elfcpp::STT_FUNC,
@@ -9771,13 +9771,13 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
                                     false, false);
     }
 
-  if (this->mips_stubs_ != NULL)
+  if (this->mips_stubs_ != nullptr)
     {
       // Define _MIPS_STUBS_ at the start of the .MIPS.stubs section.
       unsigned char nonvis = 0;
       if (this->is_output_micromips())
         nonvis = elfcpp::STO_MICROMIPS >> 2;
-      symtab->define_in_output_data("_MIPS_STUBS_", NULL,
+      symtab->define_in_output_data("_MIPS_STUBS_", nullptr,
                                     Symbol_table::PREDEFINED,
                                     this->mips_stubs_,
                                     0, 0, elfcpp::STT_FUNC,
@@ -9808,7 +9808,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
   if (this->has_got_section())
     this->got_section()->lay_out_got(layout, symtab, input_objects);
 
-  if (this->mips_stubs_ != NULL)
+  if (this->mips_stubs_ != nullptr)
     this->mips_stubs_->set_needs_dynsym_value();
 
   // Check for functions that might need $25 to be valid on entry.
@@ -9817,19 +9817,19 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
   symtab->for_all_symbols<size, Symbol_visitor>(Symbol_visitor(this, layout,
                                                                symtab));
 
-  // Add NULL segment.
+  // Add nullptr segment.
   if (!relocatable)
     layout->make_output_segment(elfcpp::PT_NULL, 0);
 
   // Fill in some more dynamic tags.
   // TODO(sasa): Add more dynamic tags.
-  const Reloc_section* rel_plt = (this->plt_ == NULL
-                                  ? NULL : this->plt_->rel_plt());
+  const Reloc_section* rel_plt = (this->plt_ == nullptr
+                                  ? nullptr : this->plt_->rel_plt());
   layout->add_target_dynamic_tags(true, this->got_, rel_plt,
                                   this->rel_dyn_, true, false);
 
   Output_data_dynamic* const odyn = layout->dynamic_data();
-  if (odyn != NULL
+  if (odyn != nullptr
       && !relocatable
       && !parameters->doing_static_link())
   {
@@ -9860,7 +9860,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
     odyn->add_constant(elfcpp::DT_MIPS_LOCAL_GOTNO,
                        this->got_->get_local_gotno());
 
-    if (this->plt_ != NULL)
+    if (this->plt_ != nullptr)
       // DT_MIPS_PLTGOT dynamic tag
       odyn->add_section_address(elfcpp::DT_MIPS_PLTGOT, this->got_plt_);
 
@@ -9874,7 +9874,7 @@ Target_mips<size, big_endian>::do_finalize_sections(Layout* layout,
 
         // __RLD_MAP will be filled in by the runtime loader to contain
         // a pointer to the _r_debug structure.
-        Symbol* rld_map = symtab->define_in_output_data("__RLD_MAP", NULL,
+        Symbol* rld_map = symtab->define_in_output_data("__RLD_MAP", nullptr,
                                             Symbol_table::PREDEFINED,
                                             this->rld_map_,
                                             0, 0, elfcpp::STT_OBJECT,
@@ -9910,7 +9910,7 @@ Target_mips<size, big_endian>::do_dynamic_tag_custom_value(elfcpp::DT tag) const
         // so just return vaddr of the first readable PT_LOAD segment.
         Output_segment* seg =
           this->layout_->find_output_segment(elfcpp::PT_LOAD, elfcpp::PF_R, 0);
-        gold_assert(seg != NULL);
+        gold_assert(seg != nullptr);
         return seg->vaddr();
       }
 
@@ -10314,7 +10314,7 @@ Target_mips<size, big_endian>::relocate_special_relocatable(
   unsigned int shndx = object->local_symbol_input_shndx(r_sym, &is_ordinary);
   gold_assert(is_ordinary);
   Output_section* os = object->output_section(shndx);
-  gold_assert(os != NULL);
+  gold_assert(os != nullptr);
   gold_assert(os->needs_symtab_index());
   unsigned int new_symndx = os->symtab_index();
 
@@ -10366,7 +10366,7 @@ Target_mips<size, big_endian>::relocate_special_relocatable(
     {
     case elfcpp::R_MIPS_26:
       reloc_status = Reloc_funcs::rel26(paddend, object, psymval,
-          offset_in_output_section, true, 0, sh_type == elfcpp::SHT_REL, NULL,
+          offset_in_output_section, true, 0, sh_type == elfcpp::SHT_REL, nullptr,
           false /*TODO(sasa): cross mode jump*/, r_type, this->jal_to_bal(),
           false, &calculated_value);
       break;
@@ -10821,7 +10821,7 @@ Target_mips<size, big_endian>::Scan::local(
     object,
     data_shndx,
     output_section,
-    (const Relatype*) NULL,
+    (const Relatype*) nullptr,
     &reloc,
     elfcpp::SHT_REL,
     r_type,
@@ -10854,7 +10854,7 @@ Target_mips<size, big_endian>::Scan::local(
     data_shndx,
     output_section,
     &reloc,
-    (const Reltype*) NULL,
+    (const Reltype*) nullptr,
     elfcpp::SHT_RELA,
     r_type,
     lsym, is_discarded);
@@ -11323,7 +11323,7 @@ Target_mips<size, big_endian>::Scan::global(
     data_shndx,
     output_section,
     &reloc,
-    (const Reltype*) NULL,
+    (const Reltype*) nullptr,
     elfcpp::SHT_RELA,
     r_type,
     gsym);
@@ -11349,7 +11349,7 @@ Target_mips<size, big_endian>::Scan::global(
     object,
     data_shndx,
     output_section,
-    (const Relatype*) NULL,
+    (const Relatype*) nullptr,
     &reloc,
     elfcpp::SHT_REL,
     r_type,
@@ -11375,7 +11375,7 @@ Target_mips<size, big_endian>::Relocate::should_apply_static_reloc(
   if ((output_section->flags() & elfcpp::SHF_ALLOC) == 0)
       return true;
 
-  if (gsym == NULL)
+  if (gsym == nullptr)
     return true;
   else
     {
@@ -11506,7 +11506,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
   const Mips_symbol<size>* mips_sym = Mips_symbol<size>::as_mips_sym(gsym);
 
   bool changed_symbol_value = false;
-  if (gsym == NULL)
+  if (gsym == nullptr)
     {
       target_is_16_bit_code = object->local_symbol_is_mips16(r_sym);
       target_is_micromips_code = object->local_symbol_is_micromips(r_sym);
@@ -11569,7 +11569,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
 
   // TRUE if the symbol referred to by this relocation is "_gp_disp".
   // Note that such a symbol must always be a global symbol.
-  bool gp_disp = (gsym != NULL && (strcmp(gsym->name(), "_gp_disp") == 0)
+  bool gp_disp = (gsym != nullptr && (strcmp(gsym->name(), "_gp_disp") == 0)
                   && !object->is_newabi());
 
   // TRUE if the symbol referred to by this relocation is "__gnu_local_gp".
@@ -11601,18 +11601,18 @@ Target_mips<size, big_endian>::Relocate::relocate(
   //
   // (c) the section allows direct references to MIPS16 functions.
   if (r_type != elfcpp::R_MIPS16_26
-      && ((mips_sym != NULL
+      && ((mips_sym != nullptr
            && mips_sym->has_mips16_fn_stub()
            && (r_type != elfcpp::R_MIPS16_CALL16 || mips_sym->need_fn_stub()))
-          || (mips_sym == NULL
-              && object->get_local_mips16_fn_stub(r_sym) != NULL))
+          || (mips_sym == nullptr
+              && object->get_local_mips16_fn_stub(r_sym) != nullptr))
       && !object->section_allows_mips16_refs(relinfo->data_shndx))
     {
       // This is a 32- or 64-bit call to a 16-bit function.  We should
       // have already noticed that we were going to need the
       // stub.
       Mips_address value;
-      if (mips_sym == NULL)
+      if (mips_sym == nullptr)
         value = object->get_local_mips16_fn_stub(r_sym)->output_address();
       else
         {
@@ -11637,16 +11637,16 @@ Target_mips<size, big_endian>::Relocate::relocate(
   // Note that we specifically exclude R_MIPS16_CALL16 from this behavior;
   // indirect calls should use an indirect stub instead.
   else if (r_type == elfcpp::R_MIPS16_26
-           && ((mips_sym != NULL
+           && ((mips_sym != nullptr
                 && (mips_sym->has_mips16_call_stub()
                     || mips_sym->has_mips16_call_fp_stub()))
-               || (mips_sym == NULL
-                   && object->get_local_mips16_call_stub(r_sym) != NULL))
-           && ((mips_sym != NULL && mips_sym->has_plt_offset())
+               || (mips_sym == nullptr
+                   && object->get_local_mips16_call_stub(r_sym) != nullptr))
+           && ((mips_sym != nullptr && mips_sym->has_plt_offset())
                || !target_is_16_bit_code))
     {
       Mips16_stub_section<size, big_endian>* call_stub;
-      if (mips_sym == NULL)
+      if (mips_sym == nullptr)
         call_stub = object->get_local_mips16_call_stub(r_sym);
       else
         {
@@ -11656,7 +11656,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
           if (mips_sym->has_mips16_call_stub()
               && mips_sym->has_mips16_call_fp_stub())
             {
-              call_stub = NULL;
+              call_stub = nullptr;
               for (unsigned int i = 1; i < object->shnum(); ++i)
                 {
                   if (object->is_mips16_call_fp_stub_section(i))
@@ -11667,7 +11667,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
                     }
 
                 }
-              if (call_stub == NULL)
+              if (call_stub == nullptr)
                 call_stub =
                   mips_sym->template get_mips16_call_stub<big_endian>();
             }
@@ -11683,7 +11683,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
     }
   // If this is a direct call to a PIC function, redirect to the
   // non-PIC stub.
-  else if (mips_sym != NULL
+  else if (mips_sym != nullptr
            && mips_sym->has_la25_stub()
            && relocation_needs_la25_stub<size, big_endian>(
                                        object, r_type, target_is_16_bit_code))
@@ -11698,7 +11698,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
   // entry is used if a standard PLT entry has also been made.
   else if ((r_type == elfcpp::R_MIPS16_26
             || r_type == elfcpp::R_MICROMIPS_26_S1)
-          && mips_sym != NULL
+          && mips_sym != nullptr
           && mips_sym->has_plt_offset()
           && mips_sym->has_comp_plt_offset()
           && mips_sym->has_mips_plt_offset())
@@ -11726,13 +11726,13 @@ Target_mips<size, big_endian>::Relocate::relocate(
   // symbol would be 16-bit code, and that direct jumps were therefore
   // acceptable.
   cross_mode_jump =
-    (!(gsym != NULL && gsym->is_weak_undefined())
+    (!(gsym != nullptr && gsym->is_weak_undefined())
      && ((r_type == elfcpp::R_MIPS16_26 && !target_is_16_bit_code)
          || (r_type == elfcpp::R_MICROMIPS_26_S1 && !target_is_micromips_code)
          || ((r_type == elfcpp::R_MIPS_26 || r_type == elfcpp::R_MIPS_JALR)
              && (target_is_16_bit_code || target_is_micromips_code))));
 
-  bool local = (mips_sym == NULL
+  bool local = (mips_sym == nullptr
                 || (mips_sym->got_only_for_calls()
                     ? symbol_calls_local(mips_sym, mips_sym->has_dynsym_index())
                     : symbol_references_local(mips_sym,
@@ -11761,7 +11761,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
   // The first operation in a record which references a symbol uses the symbol
   // implied by r_sym. The next operation in a record which references a symbol
   // uses the special symbol value given by the r_ssym field. A third operation
-  // in a record which references a symbol will assume a NULL symbol,
+  // in a record which references a symbol will assume a nullptr symbol,
   // i.e. value zero.
 
   // TODO(Vladimir)
@@ -11839,7 +11839,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
                                               extract_addend,
                                               this->calculate_only_,
                                               &this->calculated_value_);
-          if (mips_sym != NULL
+          if (mips_sym != nullptr
               && (mips_sym->is_mips16() || mips_sym->is_micromips())
               && mips_sym->global_got_area() == GGA_RELOC_ONLY)
             {
@@ -11892,7 +11892,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_26:
         case elfcpp::R_MICROMIPS_26_S1:
           reloc_status = Reloc_funcs::rel26(view, object, psymval, address,
-              gsym == NULL, r_addend, extract_addend, gsym, cross_mode_jump,
+              gsym == nullptr, r_addend, extract_addend, gsym, cross_mode_jump,
               r_types[i], target->jal_to_bal(), this->calculate_only_,
               &this->calculated_value_);
           break;
@@ -11943,7 +11943,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
           reloc_status = Reloc_funcs::relgprel(view, object, psymval,
                                              target->adjusted_gp_value(object),
                                              r_addend, extract_addend,
-                                             gsym == NULL, r_types[i],
+                                             gsym == nullptr, r_types[i],
                                              this->calculate_only_,
                                              &this->calculated_value_);
           break;
@@ -12036,7 +12036,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_CALL_HI16:
         case elfcpp::R_MICROMIPS_GOT_HI16:
         case elfcpp::R_MICROMIPS_CALL_HI16:
-          if (gsym != NULL)
+          if (gsym != nullptr)
             got_offset = target->got_section()->got_offset(gsym,
                                                            GOT_TYPE_STANDARD,
                                                            object);
@@ -12055,7 +12055,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_CALL_LO16:
         case elfcpp::R_MICROMIPS_GOT_LO16:
         case elfcpp::R_MICROMIPS_CALL_LO16:
-          if (gsym != NULL)
+          if (gsym != nullptr)
             got_offset = target->got_section()->got_offset(gsym,
                                                            GOT_TYPE_STANDARD,
                                                            object);
@@ -12073,7 +12073,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_GOT_DISP:
         case elfcpp::R_MICROMIPS_GOT_DISP:
         case elfcpp::R_MIPS_EH:
-          if (gsym != NULL)
+          if (gsym != nullptr)
             got_offset = target->got_section()->got_offset(gsym,
                                                            GOT_TYPE_STANDARD,
                                                            object);
@@ -12094,7 +12094,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_CALL16:
         case elfcpp::R_MIPS16_CALL16:
         case elfcpp::R_MICROMIPS_CALL16:
-          gold_assert(gsym != NULL);
+          gold_assert(gsym != nullptr);
           got_offset = target->got_section()->got_offset(gsym,
                                                          GOT_TYPE_STANDARD,
                                                          object);
@@ -12110,7 +12110,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_GOT16:
         case elfcpp::R_MIPS16_GOT16:
         case elfcpp::R_MICROMIPS_GOT16:
-          if (gsym != NULL)
+          if (gsym != nullptr)
             {
               got_offset = target->got_section()->got_offset(gsym,
                                                              GOT_TYPE_STANDARD,
@@ -12143,7 +12143,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_TLS_GD:
         case elfcpp::R_MIPS16_TLS_GD:
         case elfcpp::R_MICROMIPS_TLS_GD:
-          if (gsym != NULL)
+          if (gsym != nullptr)
             got_offset = target->got_section()->got_offset(gsym,
                                                            GOT_TYPE_TLS_PAIR,
                                                            object);
@@ -12160,7 +12160,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
         case elfcpp::R_MIPS_TLS_GOTTPREL:
         case elfcpp::R_MIPS16_TLS_GOTTPREL:
         case elfcpp::R_MICROMIPS_TLS_GOTTPREL:
-          if (gsym != NULL)
+          if (gsym != nullptr)
             got_offset = target->got_section()->got_offset(gsym,
                                                            GOT_TYPE_TLS_OFFSET,
                                                            object);
@@ -12207,7 +12207,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
           // This relocation is only a hint.  In some cases, we optimize
           // it into a bal instruction.  But we don't try to optimize
           // when the symbol does not resolve locally.
-          if (gsym == NULL
+          if (gsym == nullptr
               || symbol_calls_local(gsym, gsym->has_dynsym_index()))
             reloc_status = Reloc_funcs::reljalr(view, object, psymval, address,
                                                 r_addend, extract_addend,
@@ -12300,7 +12300,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
       if (update_got_entry)
         {
           Mips_output_data_got<size, big_endian>* got = target->got_section();
-          if (mips_sym != NULL && mips_sym->get_applied_secondary_got_fixup())
+          if (mips_sym != nullptr && mips_sym->get_applied_secondary_got_fixup())
             got->update_got_entry(got->get_primary_got_offset(mips_sym),
                                   psymval->value(object, 0));
           else
@@ -12317,7 +12317,7 @@ Target_mips<size, big_endian>::Relocate::relocate(
     case Reloc_funcs::STATUS_OKAY:
       break;
     case Reloc_funcs::STATUS_OVERFLOW:
-      if (gsym == NULL)
+      if (gsym == nullptr)
         gold_error_at_location(relinfo, relnum, r_offset,
                                _("relocation overflow: "
                                  "%u against local symbol %u in %s"),
@@ -12611,8 +12611,8 @@ const Target::Target_info Target_mips<size, big_endian>::mips_info =
   elfcpp::SHN_UNDEF,    // large_common_shndx
   0,                    // small_common_section_flags
   0,                    // large_common_section_flags
-  NULL,                 // attributes_section
-  NULL,                 // attributes_vendor
+  nullptr,                 // attributes_section
+  nullptr,                 // attributes_vendor
   "__start",		// entry_symbol_name
   32,			// hash_entry_size
   elfcpp::SHT_PROGBITS,	// unwind_section_type
@@ -12652,8 +12652,8 @@ const Target::Target_info Target_mips_nacl<size, big_endian>::mips_nacl_info =
   elfcpp::SHN_UNDEF,    // large_common_shndx
   0,                    // small_common_section_flags
   0,                    // large_common_section_flags
-  NULL,                 // attributes_section
-  NULL,                 // attributes_vendor
+  nullptr,                 // attributes_section
+  nullptr,                 // attributes_vendor
   "_start",             // entry_symbol_name
   32,			// hash_entry_size
   elfcpp::SHT_PROGBITS,	// unwind_section_type

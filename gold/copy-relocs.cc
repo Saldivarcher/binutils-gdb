@@ -175,7 +175,7 @@ Copy_relocs<sh_type, size, big_endian>::make_copy_reloc(
 
   if (is_readonly)
     {
-      if (this->dynrelro_ == NULL)
+      if (this->dynrelro_ == nullptr)
 	{
 	  this->dynrelro_ = new Output_data_space(addralign, "** dynrelro");
 	  layout->add_output_section_data(".data.rel.ro",
@@ -187,7 +187,7 @@ Copy_relocs<sh_type, size, big_endian>::make_copy_reloc(
     }
   else
     {
-      if (this->dynbss_ == NULL)
+      if (this->dynbss_ == nullptr)
 	{
 	  this->dynbss_ = new Output_data_space(addralign, "** dynbss");
 	  layout->add_output_section_data(".bss",

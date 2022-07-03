@@ -40,7 +40,7 @@ namespace gold
 // Mapfile constructor.
 
 Mapfile::Mapfile()
-  : map_file_(NULL),
+  : map_file_(nullptr),
     printed_archive_header_(false),
     printed_common_header_(false),
     printed_memory_map_header_(false)
@@ -51,7 +51,7 @@ Mapfile::Mapfile()
 
 Mapfile::~Mapfile()
 {
-  if (this->map_file_ != NULL)
+  if (this->map_file_ != nullptr)
     this->close();
 }
 
@@ -65,7 +65,7 @@ Mapfile::open(const char* map_filename)
   else
     {
       this->map_file_ = ::fopen(map_filename, "w");
-      if (this->map_file_ == NULL)
+      if (this->map_file_ == nullptr)
 	{
 	  gold_error(_("cannot open map file %s: %s"), map_filename,
 		     strerror(errno));
@@ -82,7 +82,7 @@ Mapfile::close()
 {
   if (fclose(this->map_file_) != 0)
     gold_error(_("cannot close map file: %s"), strerror(errno));
-  this->map_file_ = NULL;
+  this->map_file_ = nullptr;
 }
 
 // Advance to a column.
@@ -121,7 +121,7 @@ Mapfile::report_include_archive_member(const std::string& member_name,
 
   this->advance_to_column(member_name.length(), 30);
 
-  if (sym == NULL)
+  if (sym == nullptr)
     fprintf(this->map_file_, "%s", why);
   else
     {
@@ -210,7 +210,7 @@ Mapfile::print_input_section_symbols(
     {
       const Symbol* sym = relobj->global_symbol(i);
       bool is_ordinary;
-      if (sym != NULL
+      if (sym != nullptr
 	  && sym->source() == Symbol::FROM_OBJECT
 	  && sym->object() == relobj
 	  && sym->shndx(&is_ordinary) == shndx
@@ -246,7 +246,7 @@ Mapfile::print_input_section(Relobj* relobj, unsigned int shndx)
   uint64_t addr;
   if (!relobj->is_section_included(shndx))
     {
-      os = NULL;
+      os = nullptr;
       addr = 0;
     }
   else
@@ -269,7 +269,7 @@ Mapfile::print_input_section(Relobj* relobj, unsigned int shndx)
 	  static_cast<unsigned long long>(addr), sizebuf,
 	  relobj->name().c_str());
 
-  if (os != NULL)
+  if (os != nullptr)
     {
       switch (parameters->size_and_endianness())
 	{

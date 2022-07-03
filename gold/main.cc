@@ -179,14 +179,14 @@ main(int argc, char** argv)
                      program_name, args.c_str());
 
   // If the user asked for a map file, open it.
-  Mapfile* mapfile = NULL;
+  Mapfile* mapfile = nullptr;
   if (command_line.options().user_set_Map())
     {
       mapfile = new Mapfile();
       if (!mapfile->open(command_line.options().Map()))
 	{
 	  delete mapfile;
-	  mapfile = NULL;
+	  mapfile = nullptr;
 	}
     }
 
@@ -229,7 +229,7 @@ main(int argc, char** argv)
   Layout layout(command_line.number_of_input_files(),
 		&command_line.script_options());
 
-  if (layout.incremental_inputs() != NULL)
+  if (layout.incremental_inputs() != nullptr)
     layout.incremental_inputs()->report_command_line(argc, argv);
 
   if (parameters->options().section_ordering_file())
@@ -318,9 +318,9 @@ main(int argc, char** argv)
   // Output cross reference table.
   if (command_line.options().cref())
     input_objects.print_cref(&symtab,
-			     mapfile == NULL ? stdout : mapfile->file());
+			     mapfile == nullptr ? stdout : mapfile->file());
 
-  if (mapfile != NULL)
+  if (mapfile != nullptr)
     mapfile->close();
 
   if (parameters->options().fatal_warnings()

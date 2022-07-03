@@ -83,7 +83,7 @@ class Parameters
   // called, but it is needed by gold_exit.
   bool
   options_valid() const
-  { return this->options_ != NULL; }
+  { return this->options_ != nullptr; }
 
   // Return the options object.
   const General_options&
@@ -96,7 +96,7 @@ class Parameters
   // Return whether the target field has been set.
   bool
   target_valid() const
-  { return this->target_ != NULL; }
+  { return this->target_ != nullptr; }
 
   // The target of the output file we are generating.
   const Target&

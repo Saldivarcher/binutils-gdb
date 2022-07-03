@@ -366,7 +366,7 @@ Fde::write(unsigned char* oview, section_offset_type output_offset,
 
   // If this FDE is associated with a PLT, fill in the PLT's address
   // and size.
-  if (this->object_ == NULL)
+  if (this->object_ == nullptr)
     {
       gold_assert(memcmp(oview + offset + 8, "\0\0\0\0\0\0\0\0", 8) == 0);
       uint64_t paddress;
@@ -389,7 +389,7 @@ Fde::write(unsigned char* oview, section_offset_type output_offset,
     memset(oview + offset + length + 8, 0, aligned_full_length - (length + 8));
 
   // Tell the exception frame header about this FDE.
-  if (eh_frame_hdr != NULL)
+  if (eh_frame_hdr != nullptr)
     eh_frame_hdr->record_fde(output_offset + offset, fde_encoding);
 
   return offset + aligned_full_length;
@@ -419,7 +419,7 @@ Cie::set_output_offset(section_offset_type output_offset,
   // Add 4 for length and 4 for zero CIE identifier tag.
   length += 8;
 
-  if (this->object_ != NULL)
+  if (this->object_ != nullptr)
     {
       // Add a mapping so that relocations are applied correctly.
       this->object_->add_merge_mapping(output_data, this->shndx_,
@@ -529,7 +529,7 @@ operator<(const Cie& cie1, const Cie& cie2)
 
 Eh_frame::Eh_frame()
   : Output_section_data(Output_data::default_alignment()),
-    eh_frame_hdr_(NULL),
+    eh_frame_hdr_(nullptr),
     cie_offsets_(),
     unmergeable_cie_offsets_(),
     mappings_are_done_(false),
@@ -601,7 +601,7 @@ Eh_frame::add_ehframe_input_section(
 					  reloc_type, pcontents,
 					  contents_len, &new_cies))
     {
-      if (this->eh_frame_hdr_ != NULL)
+      if (this->eh_frame_hdr_ != nullptr)
 	this->eh_frame_hdr_->found_unrecognized_eh_frame_section();
 
       for (New_cies::iterator p = new_cies.begin();
@@ -749,7 +749,7 @@ Eh_frame::read_cie(Sized_relobj_file<size, big_endian>* object,
   const unsigned char* paug = p;
   const void* paugendv = memchr(p, '\0', pcieend - p);
   const unsigned char* paugend = static_cast<const unsigned char*>(paugendv);
-  if (paugend == NULL)
+  if (paugend == nullptr)
     return false;
   p = paugend + 1;
 
@@ -924,7 +924,7 @@ Eh_frame::read_cie(Sized_relobj_file<size, big_endian>* object,
 
   Cie cie(object, shndx, (pcie - 8) - pcontents, fde_encoding, 
 	  personality_name, pcie, pcieend - pcie);
-  Cie* cie_pointer = NULL;
+  Cie* cie_pointer = nullptr;
   if (mergeable)
     {
       Cie_offsets::iterator find_cie = this->cie_offsets_.find(&cie);
@@ -946,7 +946,7 @@ Eh_frame::read_cie(Sized_relobj_file<size, big_endian>* object,
 	}
     }
 
-  if (cie_pointer == NULL)
+  if (cie_pointer == nullptr)
     {
       cie_pointer = new Cie(cie);
       new_cies->push_back(std::make_pair(cie_pointer, mergeable));
@@ -1123,7 +1123,7 @@ Eh_frame::add_ehframe_for_plt(Output_data* plt, const unsigned char* cie_data,
 			      size_t cie_length, const unsigned char* fde_data,
 			      size_t fde_length)
 {
-  Cie cie(NULL, 0, 0, elfcpp::DW_EH_PE_pcrel | elfcpp::DW_EH_PE_sdata4, "",
+  Cie cie(nullptr, 0, 0, elfcpp::DW_EH_PE_pcrel | elfcpp::DW_EH_PE_sdata4, "",
 	  cie_data, cie_length);
   Cie_offsets::iterator find_cie = this->cie_offsets_.find(&cie);
   Cie* pcie;
@@ -1153,7 +1153,7 @@ Eh_frame::remove_ehframe_for_plt(Output_data* plt,
   if (!this->mappings_are_done_)
     return;
 
-  Cie cie(NULL, 0, 0, elfcpp::DW_EH_PE_pcrel | elfcpp::DW_EH_PE_sdata4, "",
+  Cie cie(nullptr, 0, 0, elfcpp::DW_EH_PE_pcrel | elfcpp::DW_EH_PE_sdata4, "",
 	  cie_data, cie_length);
   Cie_offsets::iterator find_cie = this->cie_offsets_.find(&cie);
   gold_assert (find_cie != this->cie_offsets_.end());

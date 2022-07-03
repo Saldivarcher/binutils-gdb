@@ -58,7 +58,7 @@ class Object_merge_map
               section_offset_type output_offset);
 
   // Get the output offset for an input address.  MERGE_MAP is the map
-  // we are looking for, or NULL if we don't care.  The input address
+  // we are looking for, or nullptr if we don't care.  The input address
   // is at offset OFFSET in section SHNDX.  This sets *OUTPUT_OFFSET
   // to the offset in the output section; this will be -1 if the bytes
   // are not being copied to the output.  This returns true if the
@@ -130,7 +130,7 @@ class Object_merge_map
     bool sorted;
 
     Input_merge_map()
-      : output_data(NULL), entries(), sorted(true)
+      : output_data(nullptr), entries(), sorted(true)
     { }
   };
 
@@ -154,7 +154,7 @@ class Object_merge_map
       Section_merge_maps;
 
   // Return a pointer to the Input_merge_map to use for the input
-  // section SHNDX, or NULL.
+  // section SHNDX, or nullptr.
   const Input_merge_map*
   get_input_merge_map(unsigned int shndx) const;
 
@@ -175,7 +175,7 @@ class Output_merge_base : public Output_section_data
  public:
   Output_merge_base(uint64_t entsize, uint64_t addralign)
     : Output_section_data(addralign), entsize_(entsize),
-      keeps_input_sections_(false), first_relobj_(NULL), first_shndx_(-1),
+      keeps_input_sections_(false), first_relobj_(nullptr), first_shndx_(-1),
       input_sections_()
   { }
 
@@ -202,7 +202,7 @@ class Output_merge_base : public Output_section_data
   { this->do_set_keeps_input_sections(); }
 
   // Return the object of the first merged input section.  This used
-  // for script processing.  This is NULL if merge section is empty.
+  // for script processing.  This is nullptr if merge section is empty.
   Relobj*
   first_relobj() const
   { return this->first_relobj_; }
@@ -213,7 +213,7 @@ class Output_merge_base : public Output_section_data
   unsigned int
   first_shndx() const
   { 
-    gold_assert(this->first_relobj_ != NULL);
+    gold_assert(this->first_relobj_ != nullptr);
     return this->first_shndx_;
   }
  
@@ -278,7 +278,7 @@ class Output_merge_data : public Output_merge_base
 {
  public:
   Output_merge_data(uint64_t entsize, uint64_t addralign)
-    : Output_merge_base(entsize, addralign), p_(NULL), len_(0), alc_(0),
+    : Output_merge_base(entsize, addralign), p_(nullptr), len_(0), alc_(0),
       input_count_(0),
       hashtable_(128, Merge_data_hash(this), Merge_data_eq(this))
   { }

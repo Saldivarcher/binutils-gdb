@@ -73,7 +73,7 @@ class Output_data_plt_tilegx : public Output_section_data
                          Output_data_space* got_plt,
                          Output_data_space* got_irelative)
     : Output_section_data(addralign), layout_(layout),
-      irelative_rel_(NULL), got_(got), got_plt_(got_plt),
+      irelative_rel_(nullptr), got_(got), got_plt_(got_plt),
       got_irelative_(got_irelative), count_(0),
       irelative_count_(0), free_list_()
   { this->init(layout); }
@@ -85,7 +85,7 @@ class Output_data_plt_tilegx : public Output_section_data
                          unsigned int plt_count)
     : Output_section_data((plt_count + 1) * plt_entry_size,
                           TILEGX_INST_BUNDLE_SIZE, false),
-      layout_(layout), irelative_rel_(NULL), got_(got),
+      layout_(layout), irelative_rel_(nullptr), got_(got),
       got_plt_(got_plt), got_irelative_(got_irelative), count_(plt_count),
       irelative_count_(0), free_list_()
   {
@@ -126,7 +126,7 @@ class Output_data_plt_tilegx : public Output_section_data
   // Return whether we created a section for IRELATIVE relocations.
   bool
   has_irelative_section() const
-  { return this->irelative_rel_ != NULL; }
+  { return this->irelative_rel_ != nullptr; }
 
   // Return the number of PLT entries.
   unsigned int
@@ -236,9 +236,9 @@ class Target_tilegx : public Sized_target<size, big_endian>
 
   Target_tilegx(const Target::Target_info* info = &tilegx_info)
     : Sized_target<size, big_endian>(info),
-      got_(NULL), plt_(NULL), got_plt_(NULL), got_irelative_(NULL),
-      global_offset_table_(NULL), tilegx_dynamic_(NULL), rela_dyn_(NULL),
-      rela_irelative_(NULL), copy_relocs_(elfcpp::R_TILEGX_COPY),
+      got_(nullptr), plt_(nullptr), got_plt_(nullptr), got_irelative_(nullptr),
+      global_offset_table_(nullptr), tilegx_dynamic_(nullptr), rela_dyn_(nullptr),
+      rela_irelative_(nullptr), copy_relocs_(elfcpp::R_TILEGX_COPY),
       got_mod_index_offset_(-1U),
       tls_get_addr_sym_defined_(false)
   { }
@@ -373,13 +373,13 @@ class Target_tilegx : public Sized_target<size, big_endian>
   // Return whether there is a GOT section.
   bool
   has_got_section() const
-  { return this->got_ != NULL; }
+  { return this->got_ != nullptr; }
 
   // Return the size of the GOT section.
   section_size_type
   got_size() const
   {
-    gold_assert(this->got_ != NULL);
+    gold_assert(this->got_ != nullptr);
     return this->got_->data_size();
   }
 
@@ -387,7 +387,7 @@ class Target_tilegx : public Sized_target<size, big_endian>
   unsigned int
   got_entry_count() const
   {
-    if (this->got_ == NULL)
+    if (this->got_ == nullptr)
       return 0;
     return this->got_size() / (size / 8);
   }
@@ -551,7 +551,7 @@ class Target_tilegx : public Sized_target<size, big_endian>
   Output_data_space*
   got_plt_section() const
   {
-    gold_assert(this->got_plt_ != NULL);
+    gold_assert(this->got_plt_ != nullptr);
     return this->got_plt_;
   }
 
@@ -578,7 +578,7 @@ class Target_tilegx : public Sized_target<size, big_endian>
   Output_data_plt_tilegx<size, big_endian>*
   plt_section() const
   {
-    gold_assert(this->plt_ != NULL);
+    gold_assert(this->plt_ != nullptr);
     return this->plt_;
   }
 
@@ -684,8 +684,8 @@ const Target::Target_info Target_tilegx<64, false>::tilegx_info =
   elfcpp::SHN_UNDEF,    // large_common_shndx
   0,                    // small_common_section_flags
   0,                    // large_common_section_flags
-  NULL,                 // attributes_section
-  NULL,                 // attributes_vendor
+  nullptr,                 // attributes_section
+  nullptr,                 // attributes_vendor
   "_start",		// entry_symbol_name
   32,			// hash_entry_size
   elfcpp::SHT_PROGBITS,	// unwind_section_type
@@ -713,8 +713,8 @@ const Target::Target_info Target_tilegx<32, false>::tilegx_info =
   elfcpp::SHN_UNDEF,    // large_common_shndx
   0,                    // small_common_section_flags
   0,                    // large_common_section_flags
-  NULL,                 // attributes_section
-  NULL,                 // attributes_vendor
+  nullptr,                 // attributes_section
+  nullptr,                 // attributes_vendor
   "_start",		// entry_symbol_name
   32,			// hash_entry_size
   elfcpp::SHT_PROGBITS,	// unwind_section_type
@@ -742,8 +742,8 @@ const Target::Target_info Target_tilegx<64, true>::tilegx_info =
   elfcpp::SHN_UNDEF,    // large_common_shndx
   0,                    // small_common_section_flags
   0,                    // large_common_section_flags
-  NULL,                 // attributes_section
-  NULL,                 // attributes_vendor
+  nullptr,                 // attributes_section
+  nullptr,                 // attributes_vendor
   "_start",		// entry_symbol_name
   32,			// hash_entry_size
   elfcpp::SHT_PROGBITS,	// unwind_section_type
@@ -771,8 +771,8 @@ const Target::Target_info Target_tilegx<32, true>::tilegx_info =
   elfcpp::SHN_UNDEF,    // large_common_shndx
   0,                    // small_common_section_flags
   0,                    // large_common_section_flags
-  NULL,                 // attributes_section
-  NULL,                  // attributes_vendor
+  nullptr,                 // attributes_section
+  nullptr,                  // attributes_vendor
   "_start",		// entry_symbol_name
   32,			// hash_entry_size
   elfcpp::SHT_PROGBITS,	// unwind_section_type
@@ -1861,9 +1861,9 @@ Output_data_got<size, big_endian>*
 Target_tilegx<size, big_endian>::got_section(Symbol_table* symtab,
                                              Layout* layout)
 {
-  if (this->got_ == NULL)
+  if (this->got_ == nullptr)
     {
-      gold_assert(symtab != NULL && layout != NULL);
+      gold_assert(symtab != nullptr && layout != nullptr);
 
       // When using -z now, we can treat .got.plt as a relro section.
       // Without -z now, it is modified after program startup by lazy
@@ -1885,7 +1885,7 @@ Target_tilegx<size, big_endian>::got_section(Symbol_table* symtab,
 
       // Define _GLOBAL_OFFSET_TABLE_ at the start of the PLT.
       this->global_offset_table_ =
-        symtab->define_in_output_data("_GLOBAL_OFFSET_TABLE_", NULL,
+        symtab->define_in_output_data("_GLOBAL_OFFSET_TABLE_", nullptr,
                                       Symbol_table::PREDEFINED,
                                       this->got_,
                                       0, 0, elfcpp::STT_OBJECT,
@@ -1897,7 +1897,7 @@ Target_tilegx<size, big_endian>::got_section(Symbol_table* symtab,
         // we need to keep the address of .dynamic section in the
         // first got entry for .so
         this->tilegx_dynamic_ =
-          symtab->define_in_output_data("_TILEGX_DYNAMIC_", NULL,
+          symtab->define_in_output_data("_TILEGX_DYNAMIC_", nullptr,
                                         Symbol_table::PREDEFINED,
                                         layout->dynamic_section(),
                                         0, 0, elfcpp::STT_OBJECT,
@@ -1948,9 +1948,9 @@ template<int size, bool big_endian>
 typename Target_tilegx<size, big_endian>::Reloc_section*
 Target_tilegx<size, big_endian>::rela_dyn_section(Layout* layout)
 {
-  if (this->rela_dyn_ == NULL)
+  if (this->rela_dyn_ == nullptr)
     {
-      gold_assert(layout != NULL);
+      gold_assert(layout != nullptr);
       this->rela_dyn_ = new Reloc_section(parameters->options().combreloc());
       layout->add_output_section_data(".rela.dyn", elfcpp::SHT_RELA,
                                       elfcpp::SHF_ALLOC, this->rela_dyn_,
@@ -1969,7 +1969,7 @@ template<int size, bool big_endian>
 typename Target_tilegx<size, big_endian>::Reloc_section*
 Target_tilegx<size, big_endian>::rela_irelative_section(Layout* layout)
 {
-  if (this->rela_irelative_ == NULL)
+  if (this->rela_irelative_ == nullptr)
     {
       // Make sure we have already created the dynamic reloc section.
       this->rela_dyn_section(layout);
@@ -2167,7 +2167,7 @@ typename Output_data_plt_tilegx<size, big_endian>::Reloc_section*
 Output_data_plt_tilegx<size, big_endian>::rela_irelative(Symbol_table* symtab,
                                                          Layout* layout)
 {
-  if (this->irelative_rel_ == NULL)
+  if (this->irelative_rel_ == nullptr)
     {
       // case we see any later on.
       this->irelative_rel_ = new Reloc_section(false);
@@ -2184,12 +2184,12 @@ Output_data_plt_tilegx<size, big_endian>::rela_irelative(Symbol_table* symtab,
           // STT_GNU_IFUNC symbols.  The library will use these
           // symbols to locate the IRELATIVE relocs at program startup
           // time.
-          symtab->define_in_output_data("__rela_iplt_start", NULL,
+          symtab->define_in_output_data("__rela_iplt_start", nullptr,
                                         Symbol_table::PREDEFINED,
                                         this->irelative_rel_, 0, 0,
                                         elfcpp::STT_NOTYPE, elfcpp::STB_GLOBAL,
                                         elfcpp::STV_HIDDEN, 0, false, true);
-          symtab->define_in_output_data("__rela_iplt_end", NULL,
+          symtab->define_in_output_data("__rela_iplt_end", nullptr,
                                         Symbol_table::PREDEFINED,
                                         this->irelative_rel_, 0, 0,
                                         elfcpp::STT_NOTYPE, elfcpp::STB_GLOBAL,
@@ -2525,7 +2525,7 @@ void
 Target_tilegx<size, big_endian>::make_plt_section(Symbol_table* symtab,
                                                   Layout* layout)
 {
-  if (this->plt_ == NULL)
+  if (this->plt_ == nullptr)
     {
       // Create the GOT sections first.
       this->got_section(symtab, layout);
@@ -2561,7 +2561,7 @@ Target_tilegx<size, big_endian>::make_plt_entry(Symbol_table* symtab,
   if (gsym->has_plt_offset())
     return;
 
-  if (this->plt_ == NULL)
+  if (this->plt_ == nullptr)
     this->make_plt_section(symtab, layout);
 
   this->plt_->add_entry(symtab, layout, gsym);
@@ -2578,7 +2578,7 @@ Target_tilegx<size, big_endian>::make_local_ifunc_plt_entry(
 {
   if (relobj->local_has_plt_offset(local_sym_index))
     return;
-  if (this->plt_ == NULL)
+  if (this->plt_ == nullptr)
     this->make_plt_section(symtab, layout);
   unsigned int plt_offset = this->plt_->add_local_ifunc_entry(symtab, layout,
                                                               relobj,
@@ -2592,7 +2592,7 @@ template<int size, bool big_endian>
 unsigned int
 Target_tilegx<size, big_endian>::plt_entry_count() const
 {
-  if (this->plt_ == NULL)
+  if (this->plt_ == nullptr)
     return 0;
   return this->plt_->entry_count();
 }
@@ -2624,7 +2624,7 @@ Target_tilegx<size, big_endian>::init_got_plt_for_update(Symbol_table* symtab,
                                        unsigned int got_count,
                                        unsigned int plt_count)
 {
-  gold_assert(this->got_ == NULL);
+  gold_assert(this->got_ == nullptr);
 
   this->got_ =
     new Output_data_got<size, big_endian>((got_count
@@ -2638,7 +2638,7 @@ Target_tilegx<size, big_endian>::init_got_plt_for_update(Symbol_table* symtab,
 
   // Define _GLOBAL_OFFSET_TABLE_ at the start of the GOT.
   this->global_offset_table_ =
-    symtab->define_in_output_data("_GLOBAL_OFFSET_TABLE_", NULL,
+    symtab->define_in_output_data("_GLOBAL_OFFSET_TABLE_", nullptr,
                                   Symbol_table::PREDEFINED,
                                   this->got_,
                                   0, 0, elfcpp::STT_OBJECT,
@@ -2648,7 +2648,7 @@ Target_tilegx<size, big_endian>::init_got_plt_for_update(Symbol_table* symtab,
 
   if (parameters->options().shared()) {
     this->tilegx_dynamic_ =
-            symtab->define_in_output_data("_TILEGX_DYNAMIC_", NULL,
+            symtab->define_in_output_data("_TILEGX_DYNAMIC_", nullptr,
                             Symbol_table::PREDEFINED,
                             layout->dynamic_section(),
                             0, 0, elfcpp::STT_OBJECT,
@@ -2711,7 +2711,7 @@ Target_tilegx<size, big_endian>::reserve_local_got_entry(
 {
   unsigned int got_offset = (got_index + TILEGX_GOT_RESERVE_COUNT)
                             * (size / 8);
-  Reloc_section* rela_dyn = this->rela_dyn_section(NULL);
+  Reloc_section* rela_dyn = this->rela_dyn_section(nullptr);
 
   this->got_->reserve_local(got_index, obj, r_sym, got_type);
   switch (got_type)
@@ -2752,7 +2752,7 @@ Target_tilegx<size, big_endian>::reserve_global_got_entry(
 {
   unsigned int got_offset = (got_index + TILEGX_GOT_RESERVE_COUNT)
                             * (size / 8);
-  Reloc_section* rela_dyn = this->rela_dyn_section(NULL);
+  Reloc_section* rela_dyn = this->rela_dyn_section(nullptr);
 
   this->got_->reserve_global(got_index, gsym, got_type);
   switch (got_type)
@@ -2804,7 +2804,7 @@ void
 Target_tilegx<size, big_endian>::register_global_plt_entry(
   Symbol_table* symtab, Layout* layout, unsigned int plt_index, Symbol* gsym)
 {
-  gold_assert(this->plt_ != NULL);
+  gold_assert(this->plt_ != nullptr);
   gold_assert(!gsym->has_plt_offset());
 
   this->plt_->reserve_slot(plt_index);
@@ -2826,7 +2826,7 @@ Target_tilegx<size, big_endian>::emit_copy_reloc(
                                      symtab->get_sized_symbol<size>(sym),
                                      os,
                                      offset,
-                                     this->rela_dyn_section(NULL));
+                                     this->rela_dyn_section(nullptr));
 }
 
 // Create a GOT entry for the TLS module index.
@@ -2839,7 +2839,7 @@ Target_tilegx<size, big_endian>::got_mod_index_entry(Symbol_table* symtab,
 {
   if (this->got_mod_index_offset_ == -1U)
     {
-      gold_assert(symtab != NULL && layout != NULL && object != NULL);
+      gold_assert(symtab != nullptr && layout != nullptr && object != nullptr);
       Reloc_section* rela_dyn = this->rela_dyn_section(layout);
       Output_data_got<size, big_endian>* got
          = this->got_section(symtab, layout);
@@ -3439,8 +3439,8 @@ Target_tilegx<size, big_endian>::Scan::local(Symbol_table* symtab,
                // so for TILEGX, we need the following hack.
                if (opt_t == tls::TLSOPT_NONE) {
                  if (!target->tls_get_addr_sym_defined_) {
-                   Symbol* sym = NULL;
-                   options::parse_set(NULL, "__tls_get_addr",
+                   Symbol* sym = nullptr;
+                   options::parse_set(nullptr, "__tls_get_addr",
                                      (gold::options::String_set*)
                                      &parameters->options().undefined());
                    symtab->add_undefined_symbols_from_command_line(layout);
@@ -4015,8 +4015,8 @@ Target_tilegx<size, big_endian>::Scan::global(Symbol_table* symtab,
                 if (opt_t == tls::TLSOPT_NONE) {
                   // FIXME:  it's better '__tls_get_addr' referenced explicitly
                   if (!target->tls_get_addr_sym_defined_) {
-                    Symbol* sym = NULL;
-                    options::parse_set(NULL, "__tls_get_addr",
+                    Symbol* sym = nullptr;
+                    options::parse_set(nullptr, "__tls_get_addr",
                                        (gold::options::String_set*)
                                        &parameters->options().undefined());
                     symtab->add_undefined_symbols_from_command_line(layout);
@@ -4235,10 +4235,10 @@ Target_tilegx<size, big_endian>::do_define_standard_symbols(
 {
   Output_section* feedback_section = layout->find_output_section(".feedback");
 
-  if (feedback_section != NULL)
+  if (feedback_section != nullptr)
     {
       symtab->define_in_output_data("__feedback_section_end",
-                    NULL,
+                    nullptr,
                     Symbol_table::PREDEFINED,
                     feedback_section,
                     0,
@@ -4261,8 +4261,8 @@ Target_tilegx<size, big_endian>::do_finalize_sections(
     const Input_objects*,
     Symbol_table* symtab)
 {
-  const Reloc_section* rel_plt = (this->plt_ == NULL
-                                  ? NULL
+  const Reloc_section* rel_plt = (this->plt_ == nullptr
+                                  ? nullptr
                                   : this->plt_->rela_plt());
   layout->add_target_dynamic_tags(false, this->got_plt_, rel_plt,
                                   this->rela_dyn_, true, true);
@@ -4275,7 +4275,7 @@ Target_tilegx<size, big_endian>::do_finalize_sections(
   // Set the size of the _GLOBAL_OFFSET_TABLE_ symbol to the size of
   // the .got section.
   Symbol* sym = this->global_offset_table_;
-  if (sym != NULL)
+  if (sym != nullptr)
     {
       uint64_t data_size = this->got_->current_data_size();
       symtab->get_sized_symbol<size>(sym)->set_symsize(data_size);
@@ -4289,7 +4289,7 @@ Target_tilegx<size, big_endian>::do_finalize_sections(
     }
 
   if (parameters->doing_static_link()
-      && (this->plt_ == NULL || !this->plt_->has_irelative_section()))
+      && (this->plt_ == nullptr || !this->plt_->has_irelative_section()))
     {
       // If linking statically, make sure that the __rela_iplt symbols
       // were defined if necessary, even if we didn't create a PLT.
@@ -4347,7 +4347,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
     typename elfcpp::Elf_types<size>::Elf_Addr address,
     section_size_type)
 {
-  if (view == NULL)
+  if (view == nullptr)
     return true;
 
   typedef Tilegx_relocate_functions<size, big_endian> TilegxReloc;
@@ -4359,13 +4359,13 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
 
   // Pick the value to use for symbols defined in the PLT.
   Symbol_value<size> symval;
-  if (gsym != NULL
+  if (gsym != nullptr
       && gsym->use_plt_offset(Scan::get_reference_flags(r_type)))
     {
       symval.set_output_value(target->plt_address_for_global(gsym));
       psymval = &symval;
     }
-  else if (gsym == NULL && psymval->is_ifunc_symbol())
+  else if (gsym == nullptr && psymval->is_ifunc_symbol())
     {
       unsigned int r_sym = elfcpp::elf_r_sym<size>(rela.get_r_info());
       if (object->local_has_plt_offset(r_sym))
@@ -4381,7 +4381,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
   // For tilegx, the GOT pointer points to the start of the GOT section.
   bool have_got_offset = false;
   int got_offset = 0;
-  int got_base = target->got_ != NULL
+  int got_base = target->got_ != nullptr
                  ? target->got_->current_data_size() >= 0x8000 ? 0x8000 : 0
                  : 0;
   unsigned int got_type = GOT_TYPE_STANDARD;
@@ -4394,7 +4394,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
     case elfcpp::R_TILEGX_IMM16_X1_HW0_LAST_GOT:
     case elfcpp::R_TILEGX_IMM16_X0_HW1_LAST_GOT:
     case elfcpp::R_TILEGX_IMM16_X1_HW1_LAST_GOT:
-      if (gsym != NULL)
+      if (gsym != nullptr)
         {
           gold_assert(gsym->has_got_offset(got_type));
           got_offset = gsym->got_offset(got_type) - got_base;
@@ -4456,7 +4456,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
 
     case elfcpp::R_TILEGX_JUMPOFF_X1:
     case elfcpp::R_TILEGX_JUMPOFF_X1_PLT:
-      gold_assert(gsym == NULL
+      gold_assert(gsym == nullptr
                   || gsym->has_plt_offset()
                   || gsym->final_value_is_known()
                   || (gsym->is_defined()
@@ -4569,7 +4569,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
     case elfcpp::R_TILEGX_IMM8_Y0_TLS_ADD:
     case elfcpp::R_TILEGX_IMM8_Y1_TLS_ADD:
       {
-        const bool is_final = (gsym == NULL
+        const bool is_final = (gsym == nullptr
                                ? !parameters->options().shared()
                                : gsym->final_value_is_known());
         tls::Tls_optimization opt_t =
@@ -4626,7 +4626,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
 	      // Fall through.
             do_update_value:
               if (have_got_offset) {
-                if (gsym != NULL) {
+                if (gsym != nullptr) {
                   gold_assert(gsym->has_got_offset(got_type));
                   got_offset = gsym->got_offset(got_type) - got_base;
                 } else {
@@ -4676,7 +4676,7 @@ Target_tilegx<size, big_endian>::Relocate::relocate(
             case elfcpp::R_TILEGX_IMM16_X1_HW1_LAST_TLS_LE:
               {
                 Output_segment *tls_segment = relinfo->layout->tls_segment();
-                if (tls_segment == NULL) {
+                if (tls_segment == nullptr) {
                   gold_assert(parameters->errors()->error_count() > 0
                               || issue_undefined_symbol_error(gsym));
                   return false;
@@ -4938,7 +4938,7 @@ template<int size, bool big_endian>
 uint64_t
 Target_tilegx<size, big_endian>::do_ehframe_datarel_base() const
 {
-  gold_assert(this->global_offset_table_ != NULL);
+  gold_assert(this->global_offset_table_ != nullptr);
   Symbol* sym = this->global_offset_table_;
   Sized_symbol<size>* ssym = static_cast<Sized_symbol<size>*>(sym);
   return ssym->value();

@@ -52,7 +52,7 @@ Arm_reloc_property::Tree_node::make_tree(const std::string& s)
   buffer[s.size()] = '\0';
   char* token = strtok(buffer, " ");
 
-  while (token != NULL)
+  while (token != nullptr)
     {
       if (strcmp(token, "(") == 0)
 	// Remember the node stack position for start of a new internal node.
@@ -74,7 +74,7 @@ Arm_reloc_property::Tree_node::make_tree(const std::string& s)
 	// Just push a leaf node to node_stack.
 	node_stack.push_back(new Tree_node(token));
 
-      token = strtok(NULL, " ");
+      token = strtok(nullptr, " ");
     }
 
   delete[] buffer;
@@ -265,7 +265,7 @@ Arm_reloc_property_table::Arm_reloc_property_table()
   const bool Y(true), N(false);
 
   for (unsigned int i = 0; i < Property_table_size; ++i)
-    this->table_[i] = NULL;
+    this->table_[i] = nullptr;
 
 #undef RD
 #define RD(name, type, deprecated, class, operation, is_implemented, \
@@ -297,7 +297,7 @@ Arm_reloc_property_table::reloc_name_in_error_message(unsigned int code)
 
   const Arm_reloc_property* arp = this->table_[code];
 
-  if (arp == NULL)
+  if (arp == nullptr)
     {
       char buffer[100];
       sprintf(buffer, _("invalid reloc %u"), code);
@@ -309,7 +309,7 @@ Arm_reloc_property_table::reloc_name_in_error_message(unsigned int code)
   gold_assert(reloc_type == Arm_reloc_property::RT_STATIC
 	      || !arp->is_implemented());
 
-  const char* prefix = NULL;
+  const char* prefix = nullptr;
   switch (reloc_type)
     {
     case Arm_reloc_property::RT_STATIC:

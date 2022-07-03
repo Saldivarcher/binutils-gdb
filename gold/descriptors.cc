@@ -64,7 +64,7 @@ namespace gold
 // adjusted downward if we run out of file descriptors.
 
 Descriptors::Descriptors()
-  : lock_(NULL), initialize_lock_(&this->lock_), open_descriptors_(),
+  : lock_(nullptr), initialize_lock_(&this->lock_), open_descriptors_(),
     stack_top_(-1), current_(0), limit_(8192 - 16)
 {
   this->open_descriptors_.reserve(128);
@@ -94,7 +94,7 @@ Descriptors::open(int descriptor, const char* name, int flags, int mode)
 		  < this->open_descriptors_.size());
       Open_descriptor* pod = &this->open_descriptors_[descriptor];
       if (pod->name == name
-	  || (pod->name != NULL && strcmp(pod->name, name) == 0))
+	  || (pod->name != nullptr && strcmp(pod->name, name) == 0))
 	{
 	  gold_assert(!pod->inuse);
 	  pod->inuse = true;
@@ -207,7 +207,7 @@ Descriptors::release(int descriptor, bool permanent)
     {
       if (::close(descriptor) < 0)
 	gold_warning(_("while closing %s: %s"), pod->name, strerror(errno));
-      pod->name = NULL;
+      pod->name = nullptr;
       --this->current_;
     }
   else
@@ -249,7 +249,7 @@ Descriptors::close_some_descriptor()
 	  --this->current_;
 	  gold_debug(DEBUG_FILES, "Closed descriptor %d for \"%s\"",
 		     i, pod->name);
-	  pod->name = NULL;
+	  pod->name = nullptr;
 	  if (last < 0)
 	    this->stack_top_ = pod->stack_next;
 	  else
@@ -277,13 +277,13 @@ Descriptors::close_all()
   for (size_t i = 0; i < this->open_descriptors_.size(); i++)
     {
       Open_descriptor* pod = &this->open_descriptors_[i];
-      if (pod->name != NULL && !pod->inuse && !pod->is_write)
+      if (pod->name != nullptr && !pod->inuse && !pod->is_write)
 	{
 	  if (::close(i) < 0)
 	    gold_warning(_("while closing %s: %s"), pod->name, strerror(errno));
 	  gold_debug(DEBUG_FILES, "Closed descriptor %d for \"%s\" (close_all)",
 		     static_cast<int>(i), pod->name);
-	  pod->name = NULL;
+	  pod->name = nullptr;
 	  pod->stack_next = -1;
 	  pod->is_on_stack = false;
 	}

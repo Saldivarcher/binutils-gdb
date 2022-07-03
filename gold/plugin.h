@@ -55,13 +55,13 @@ class Plugin
 {
  public:
   Plugin(const char* filename)
-    : handle_(NULL),
+    : handle_(nullptr),
       filename_(filename),
       args_(),
-      claim_file_handler_(NULL),
-      all_symbols_read_handler_(NULL),
-      cleanup_handler_(NULL),
-      new_input_handler_(NULL),
+      claim_file_handler_(nullptr),
+      all_symbols_read_handler_(nullptr),
+      cleanup_handler_(nullptr),
+      new_input_handler_(nullptr),
       cleanup_done_(false)
   { }
 
@@ -144,15 +144,15 @@ class Plugin_manager
 {
  public:
   Plugin_manager(const General_options& options)
-    : plugins_(), objects_(), deferred_layout_objects_(), input_file_(NULL),
+    : plugins_(), objects_(), deferred_layout_objects_(), input_file_(nullptr),
       plugin_input_file_(), rescannable_(), undefined_symbols_(),
       any_claimed_(false), in_replacement_phase_(false), any_added_(false),
       in_claim_file_handler_(false),
-      options_(options), workqueue_(NULL), task_(NULL), input_objects_(NULL),
-      symtab_(NULL), layout_(NULL), dirpath_(NULL), mapfile_(NULL),
-      this_blocker_(NULL), extra_search_path_(), lock_(NULL),
+      options_(options), workqueue_(nullptr), task_(nullptr), input_objects_(nullptr),
+      symtab_(nullptr), layout_(nullptr), dirpath_(nullptr), mapfile_(nullptr),
+      this_blocker_(nullptr), extra_search_path_(), lock_(nullptr),
       initialize_lock_(&lock_), defsym_defines_set_(),
-      recorder_(NULL)
+      recorder_(nullptr)
   { this->current_ = plugins_.end(); }
 
   ~Plugin_manager();
@@ -268,7 +268,7 @@ class Plugin_manager
   object(unsigned int handle) const
   {
     if (handle >= this->objects_.size())
-      return NULL;
+      return nullptr;
     return this->objects_[handle];
   }
 

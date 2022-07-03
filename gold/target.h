@@ -401,7 +401,7 @@ class Target
   }
 
   // Return the target-specific name of attributes section.  This is
-  // NULL if a target does not use attributes section or if it uses
+  // nullptr if a target does not use attributes section or if it uses
   // the default section name ".gnu.attributes".
   const char*
   attributes_section() const
@@ -416,7 +416,7 @@ class Target
   bool
   is_attributes_section(const char* name) const
   {
-    return ((this->pti_->attributes_section != NULL
+    return ((this->pti_->attributes_section != nullptr
 	     && strcmp(name, this->pti_->attributes_section) == 0)
 	    || strcmp(name, ".gnu.attributes") == 0);
   }
@@ -456,8 +456,8 @@ class Target
   { this->do_define_standard_symbols(symtab, layout); }
 
   // Return the output section name to use given an input section
-  // name, or NULL if no target specific name mapping is required.
-  // Set *PLEN to the length of the name if returning non-NULL.
+  // name, or nullptr if no target specific name mapping is required.
+  // Set *PLEN to the length of the name if returning non-nullptr.
   const char*
   output_section_name(const Relobj* relobj,
 		      const char* name,
@@ -794,7 +794,7 @@ class Target
   // This may be overridden by the child class.
   virtual const char*
   do_output_section_name(const Relobj*, const char*, size_t*) const
-  { return NULL; }
+  { return nullptr; }
 
   // This may be overridden by the child class.
   virtual void

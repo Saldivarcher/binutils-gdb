@@ -185,13 +185,13 @@ gc_process_relocs(
   const int reloc_size = Classify_reloc::reloc_size;
   const int sym_size = elfcpp::Elf_sizes<size>::sym_size;
 
-  Icf::Sections_reachable_info* secvec = NULL;
-  Icf::Symbol_info* symvec = NULL;
-  Icf::Addend_info* addendvec = NULL;
-  Icf::Offset_info* offsetvec = NULL;
-  Icf::Reloc_addend_size_info* reloc_addend_size_vec = NULL;
+  Icf::Sections_reachable_info* secvec = nullptr;
+  Icf::Symbol_info* symvec = nullptr;
+  Icf::Addend_info* addendvec = nullptr;
+  Icf::Offset_info* offsetvec = nullptr;
+  Icf::Reloc_addend_size_info* reloc_addend_size_vec = nullptr;
   bool is_icf_tracked = false;
-  const char* cident_section_name = NULL;
+  const char* cident_section_name = nullptr;
 
   std::string src_section_name = (parameters->options().icf_enabled()
                                   ? src_obj->section_name(src_indx)
@@ -232,7 +232,7 @@ gc_process_relocs(
 
       if (r_sym < local_count)
         {
-          gold_assert(plocal_syms != NULL);
+          gold_assert(plocal_syms != nullptr);
           typename elfcpp::Sym<size, big_endian> lsym(plocal_syms
                                                       + r_sym * sym_size);
 	  dst_indx = lsym.get_st_shndx();
@@ -247,13 +247,13 @@ gc_process_relocs(
 	      if (is_ordinary) 
 		(*secvec).push_back(Section_id(src_obj, dst_indx));
 	      else
-		(*secvec).push_back(Section_id(static_cast<Relobj*>(NULL), 0));
+		(*secvec).push_back(Section_id(static_cast<Relobj*>(nullptr), 0));
               // If the target of the relocation is an STT_SECTION symbol,
               // make a note of that by storing -1 in the symbol vector.
               if (lsym.get_st_type() == elfcpp::STT_SECTION)
 		(*symvec).push_back(reinterpret_cast<Symbol*>(-1));
 	      else
-		(*symvec).push_back(NULL);
+		(*symvec).push_back(nullptr);
 	      (*addendvec).push_back(std::make_pair(
 					static_cast<long long>(symvalue),
 					static_cast<long long>(addend)));
@@ -269,9 +269,9 @@ gc_process_relocs(
 	  if (is_ordinary
 	      && check_section_for_function_pointers
               && lsym.get_st_type() != elfcpp::STT_OBJECT
- 	      && scan.local_reloc_may_be_function_pointer(symtab, NULL, target,
+ 	      && scan.local_reloc_may_be_function_pointer(symtab, nullptr, target,
 							  src_obj, src_indx,
-			                       		  NULL, reloc, r_type,
+			                       		  nullptr, reloc, r_type,
 							  lsym))
             symtab->icf()->set_section_has_function_pointers(
               src_obj, lsym.get_st_shndx());
@@ -282,11 +282,11 @@ gc_process_relocs(
       else
         {
           Symbol* gsym = src_obj->global_symbol(r_sym);
-          gold_assert(gsym != NULL);
+          gold_assert(gsym != nullptr);
           if (gsym->is_forwarder())
             gsym = symtab->resolve_forwards(gsym);
 
-          dst_obj = NULL;
+          dst_obj = nullptr;
           dst_indx = 0;
           bool is_ordinary = false;
           if (gsym->source() == Symbol::FROM_OBJECT
@@ -303,10 +303,10 @@ gc_process_relocs(
 	  if (gsym->source() == Symbol::FROM_OBJECT
               && gsym->type() == elfcpp::STT_FUNC
               && check_section_for_function_pointers
-              && dst_obj != NULL
+              && dst_obj != nullptr
               && (!is_ordinary
                   || scan.global_reloc_may_be_function_pointer(
-                       symtab, NULL, target, src_obj, src_indx, NULL, reloc,
+                       symtab, nullptr, target, src_obj, src_indx, nullptr, reloc,
                        r_type, gsym)))
             symtab->icf()->set_section_has_function_pointers(dst_obj, dst_indx);
 
@@ -326,10 +326,10 @@ gc_process_relocs(
           if (is_icf_tracked)
             {
 	      Address symvalue = dst_off - addend;
-              if (is_ordinary && dst_obj != NULL)
+              if (is_ordinary && dst_obj != nullptr)
 		(*secvec).push_back(Section_id(dst_obj, dst_indx));
 	      else
-		(*secvec).push_back(Section_id(static_cast<Relobj*>(NULL), 0));
+		(*secvec).push_back(Section_id(static_cast<Relobj*>(nullptr), 0));
               (*symvec).push_back(gsym);
 	      (*addendvec).push_back(std::make_pair(
 					static_cast<long long>(symvalue),
@@ -341,7 +341,7 @@ gc_process_relocs(
                 get_embedded_addend_size<Classify_reloc>(r_type, src_obj));
 	    }
 
-          if (dst_obj == NULL)
+          if (dst_obj == nullptr)
             continue;
           if (!is_ordinary)
             continue;
@@ -352,7 +352,7 @@ gc_process_relocs(
 	  parameters->sized_target<size, big_endian>()
 	    ->gc_add_reference(symtab, src_obj, src_indx, dst_obj, dst_indx,
 			       dst_off);
-          if (cident_section_name != NULL)
+          if (cident_section_name != nullptr)
             {
               Garbage_collection::Cident_section_map::iterator ele =
                 symtab->gc()->cident_sections()->find(std::string(cident_section_name));

@@ -292,7 +292,7 @@ class Arm_reloc_property_table
   Arm_reloc_property_table();
 
   // Return an Arm_reloc_property object for CODE if it is a valid relocation
-  // code or NULL otherwise.
+  // code or nullptr otherwise.
   const Arm_reloc_property*
   get_reloc_property(unsigned int code) const
   {
@@ -300,18 +300,18 @@ class Arm_reloc_property_table
     return this->table_[code];
   }
 
-  // Like get_reloc_property but only return non-NULL if relocation code is
+  // Like get_reloc_property but only return non-nullptr if relocation code is
   // static and implemented.
   const Arm_reloc_property*
   get_implemented_static_reloc_property(unsigned int code) const
   {
     gold_assert(code < Property_table_size);
     const Arm_reloc_property* arp = this->table_[code];
-    return ((arp != NULL
+    return ((arp != nullptr
 	     && (arp->reloc_type() == Arm_reloc_property::RT_STATIC)
 	     && arp->is_implemented())
 	    ? arp
-	    : NULL);
+	    : nullptr);
   }
   
   // Return a string describing the relocation code that is not

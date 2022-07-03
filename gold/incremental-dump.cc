@@ -104,7 +104,7 @@ dump_incremental_inputs(const char* argv0, const char* filename,
     }
 
   const char* command_line = incremental_inputs.command_line();
-  if (command_line == NULL)
+  if (command_line == nullptr)
     {
       fprintf(stderr,
               "%s: %s: failed to get link command line\n",
@@ -119,7 +119,7 @@ dump_incremental_inputs(const char* argv0, const char* filename,
       Entry_reader input_file = incremental_inputs.input_file(i);
 
       const char* objname = input_file.filename();
-      if (objname == NULL)
+      if (objname == nullptr)
 	{
 	  fprintf(stderr,"%s: %s: failed to get file name for object %u\n",
 		  argv0, filename, i);
@@ -196,7 +196,7 @@ dump_incremental_inputs(const char* argv0, const char* filename,
 	continue;
 
       const char* objname = input_file.filename();
-      if (objname == NULL)
+      if (objname == nullptr)
 	{
 	  fprintf(stderr,"%s: %s: failed to get file name for object %u\n",
 		  argv0, filename, i);
@@ -279,7 +279,7 @@ dump_incremental_inputs(const char* argv0, const char* filename,
 	continue;
 
       const char* objname = input_file.filename();
-      if (objname == NULL)
+      if (objname == nullptr)
 	{
 	  fprintf(stderr,"%s: %s: failed to get file name for object %u\n",
 		  argv0, filename, i);
@@ -436,7 +436,7 @@ dump_incremental_inputs(const char* argv0, const char* filename,
 	continue;
 
       const char* objname = input_file.filename();
-      if (objname == NULL)
+      if (objname == nullptr)
 	{
 	  fprintf(stderr,"%s: %s: failed to get file name for object %u\n",
 		  argv0, filename, i);
@@ -463,7 +463,7 @@ main(int argc, char** argv)
 
   Output_file* file = new Output_file(filename);
 
-  bool t = file->open_base_file(NULL, false);
+  bool t = file->open_base_file(nullptr, false);
   if (!t)
     {
       fprintf(stderr, "%s: open_base_file(%s): %s\n", argv[0], filename,
@@ -473,7 +473,7 @@ main(int argc, char** argv)
 
   Incremental_binary* inc = open_incremental_binary(file);
 
-  if (inc == NULL)
+  if (inc == nullptr)
     {
       fprintf(stderr, "%s: open_incremental_binary(%s): %s\n", argv[0],
               filename, strerror(errno));

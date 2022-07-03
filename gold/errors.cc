@@ -39,7 +39,7 @@ namespace gold
 const int Errors::max_undefined_error_report;
 
 Errors::Errors(const char* program_name)
-  : program_name_(program_name), lock_(NULL), initialize_lock_(&this->lock_),
+  : program_name_(program_name), lock_(nullptr), initialize_lock_(&this->lock_),
     error_count_(0), warning_count_(0), undefined_symbols_()
 {
 }
@@ -195,7 +195,7 @@ Errors::undefined_symbol(const Symbol* sym, const std::string& location)
   }
 
   const char* const version = sym->version();
-  if (version == NULL)
+  if (version == nullptr)
     fprintf(stderr, _("%s: %s: undefined reference to '%s'\n"),
 	    location.c_str(), zmsg, sym->demangled_name().c_str());
   else

@@ -115,13 +115,13 @@ class Hold_optional_lock
   Hold_optional_lock(Lock* lock)
     : lock_(lock)
   {
-    if (this->lock_ != NULL)
+    if (this->lock_ != nullptr)
       this->lock_->acquire();
   }
 
   ~Hold_optional_lock()
   {
-    if (this->lock_ != NULL)
+    if (this->lock_ != nullptr)
       this->lock_->release();
   }
 

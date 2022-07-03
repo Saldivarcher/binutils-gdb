@@ -119,7 +119,7 @@ Workqueue_thread::thread_body(void* arg)
   // Delete the thread object as we exit.
   delete pwt;
 
-  return NULL;
+  return nullptr;
 }
 
 // Class Workqueue_threader_threadpool.

@@ -55,16 +55,16 @@ class Unblock_token : public Task
 
   ~Unblock_token()
   {
-    if (this->this_blocker_ != NULL)
+    if (this->this_blocker_ != nullptr)
       delete this->this_blocker_;
   }
 
   Task_token*
   is_runnable()
   {
-    if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+    if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
       return this->this_blocker_;
-    return NULL;
+    return nullptr;
   }
 
   void
@@ -127,7 +127,7 @@ Read_symbols::requeue(Workqueue* workqueue, Input_objects* input_objects,
 
   workqueue->queue(new Read_symbols(input_objects, symtab, layout, dirpath,
 				    dirindex, mapfile, input_argument,
-				    input_group, NULL, NULL, next_blocker));
+				    input_group, nullptr, nullptr, next_blocker));
 }
 
 // Return whether a Read_symbols task is runnable.  We can read an
@@ -142,7 +142,7 @@ Read_symbols::is_runnable()
       && this->dirpath_->token()->is_blocked())
     return this->dirpath_->token();
 
-  return NULL;
+  return nullptr;
 }
 
 // Return a Task_locker for a Read_symbols task.  We don't need any
@@ -151,7 +151,7 @@ Read_symbols::is_runnable()
 void
 Read_symbols::locks(Task_locker* tl)
 {
-  if (this->member_ != NULL)
+  if (this->member_ != nullptr)
     tl->add(this, this->next_blocker_);
 }
 
@@ -164,7 +164,7 @@ Read_symbols::run(Workqueue* workqueue)
   // the token. If the object is a member of a lib group, however,
   // the token was already added to the list of locks for the task,
   // and it will be unblocked automatically at the end of the task.
-  if (!this->do_read_symbols(workqueue) && this->member_ == NULL)
+  if (!this->do_read_symbols(workqueue) && this->member_ == nullptr)
     workqueue->queue_soon(new Unblock_token(this->this_blocker_,
 					    this->next_blocker_));
 }
@@ -201,8 +201,8 @@ Read_symbols::do_whole_lib_group(Workqueue* workqueue)
       workqueue->queue_soon(new Read_symbols(this->input_objects_,
 					     this->symtab_, this->layout_,
 					     this->dirpath_, this->dirindex_,
-					     this->mapfile_, arg, NULL,
-					     NULL, this_blocker, next_blocker));
+					     this->mapfile_, arg, nullptr,
+					     nullptr, this_blocker, next_blocker));
       this_blocker = next_blocker;
     }
 
@@ -242,12 +242,12 @@ Read_symbols::do_lib_group(Workqueue* workqueue)
       next_blocker->add_blocker();
 
       // Since this Read_symbols will not create an Add_symbols,
-      // just pass NULL as this_blocker.
+      // just pass nullptr as this_blocker.
       workqueue->queue_soon(new Read_symbols(this->input_objects_,
 					     this->symtab_, this->layout_,
 					     this->dirpath_, this->dirindex_,
-					     this->mapfile_, arg, NULL,
-					     m, NULL, next_blocker));
+					     this->mapfile_, arg, nullptr,
+					     m, nullptr, next_blocker));
     }
 
   add_lib_group_symbols->set_blocker(next_blocker, this->this_blocker_);
@@ -264,7 +264,7 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
 {
   if (this->input_argument_->is_group())
     {
-      gold_assert(this->input_group_ == NULL);
+      gold_assert(this->input_group_ == nullptr);
       this->do_group(workqueue);
       return true;
     }
@@ -322,9 +322,9 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
 	}
     }
 
-  Object* elf_obj = NULL;
+  Object* elf_obj = nullptr;
   bool unconfigured;
-  bool* punconfigured = NULL;
+  bool* punconfigured = nullptr;
   if (is_elf)
     {
       // This is an ELF object.
@@ -332,7 +332,7 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
       unconfigured = false;
       punconfigured = (input_file->will_search_for()
 		       ? &unconfigured
-		       : NULL);
+		       : nullptr);
       elf_obj = make_elf_object(input_file->filename(),
 				input_file, 0, ehdr, read_size,
 				punconfigured);
@@ -343,10 +343,10 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
       Pluginobj* obj = parameters->options().plugins()->claim_file(input_file,
                                                                    0, filesize,
 								   elf_obj);
-      if (obj != NULL)
+      if (obj != nullptr)
         {
 	  // Delete the elf_obj, this file has been claimed.
-	  if (elf_obj != NULL)
+	  if (elf_obj != nullptr)
 	    delete elf_obj;
 
           // The input file was claimed by a plugin, and its symbols
@@ -355,9 +355,9 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
           // We are done with the file at this point, so unlock it.
           obj->unlock(this);
 
-          if (this->member_ != NULL)
+          if (this->member_ != nullptr)
 	    {
-	      this->member_->sd_ = NULL;
+	      this->member_->sd_ = nullptr;
 	      this->member_->obj_ = obj;
 	      return true;
 	    }
@@ -370,8 +370,8 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
 						this->mapfile_,
 						this->input_argument_,
                                                 obj,
-                                                NULL,
-						NULL,
+                                                nullptr,
+						nullptr,
                                                 this->this_blocker_,
                                                 this->next_blocker_));
           return true;
@@ -382,7 +382,7 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
     {
       // This is an ELF object.
 
-      if (elf_obj == NULL)
+      if (elf_obj == nullptr)
 	{
 	  if (unconfigured)
 	    {
@@ -410,7 +410,7 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
 
       input_file->file().unlock(this);
 
-      if (this->member_ != NULL)
+      if (this->member_ != nullptr)
         {
           this->member_->sd_ = sd;
           this->member_->obj_ = elf_obj;
@@ -429,7 +429,7 @@ Read_symbols::do_read_symbols(Workqueue* workqueue)
 					    this->mapfile_,
 					    this->input_argument_,
 					    elf_obj,
-					    NULL,
+					    nullptr,
 					    sd,
 					    this->this_blocker_,
 					    this->next_blocker_));
@@ -498,7 +498,7 @@ Read_symbols::do_group(Workqueue* workqueue)
 					     this->symtab_, this->layout_,
 					     this->dirpath_, this->dirindex_,
 					     this->mapfile_, arg, input_group,
-					     NULL, this_blocker, next_blocker));
+					     nullptr, this_blocker, next_blocker));
       this_blocker = next_blocker;
     }
 
@@ -560,7 +560,7 @@ Read_symbols::get_name() const
 
 Add_symbols::~Add_symbols()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the next
   // input file.
@@ -572,11 +572,11 @@ Add_symbols::~Add_symbols()
 Task_token*
 Add_symbols::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
   if (this->object_->is_locked())
     return this->object_->token();
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -584,7 +584,7 @@ Add_symbols::locks(Task_locker* tl)
 {
   tl->add(this, this->next_blocker_);
   Task_token* token = this->object_->token();
-  if (token != NULL)
+  if (token != nullptr)
     tl->add(this, token);
 }
 
@@ -594,7 +594,7 @@ void
 Add_symbols::run(Workqueue*)
 {
   Pluginobj* pluginobj = this->object_->pluginobj();
-  if (pluginobj != NULL)
+  if (pluginobj != nullptr)
     {
       this->object_->add_symbols(this->symtab_, this->sd_, this->layout_);
       return;
@@ -603,9 +603,9 @@ Add_symbols::run(Workqueue*)
   if (!this->input_objects_->add_object(this->object_))
     {
       this->object_->discard_decompressed_sections();
-      gold_assert(this->sd_ != NULL);
+      gold_assert(this->sd_ != nullptr);
       delete this->sd_;
-      this->sd_ = NULL;
+      this->sd_ = nullptr;
       this->object_->release();
       delete this->object_;
     }
@@ -613,12 +613,12 @@ Add_symbols::run(Workqueue*)
     {
       Incremental_inputs* incremental_inputs =
           this->layout_->incremental_inputs();
-      if (incremental_inputs != NULL)
+      if (incremental_inputs != nullptr)
 	{
-          if (this->library_ != NULL && !this->library_->is_reported())
+          if (this->library_ != nullptr && !this->library_->is_reported())
             {
               Incremental_binary* ibase = this->layout_->incremental_base();
-              gold_assert(ibase != NULL);
+              gold_assert(ibase != nullptr);
               unsigned int lib_serial = this->library_->arg_serial();
               unsigned int lib_index = this->library_->input_file_index();
 	      Script_info* lib_script_info = ibase->get_script_info(lib_index);
@@ -635,7 +635,7 @@ Add_symbols::run(Workqueue*)
       this->object_->add_symbols(this->symtab_, this->sd_, this->layout_);
       this->object_->discard_decompressed_sections();
       delete this->sd_;
-      this->sd_ = NULL;
+      this->sd_ = nullptr;
       this->object_->release();
     }
 }
@@ -644,7 +644,7 @@ Add_symbols::run(Workqueue*)
 
 Read_member::~Read_member()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the next
   // input file.
@@ -655,9 +655,9 @@ Read_member::~Read_member()
 Task_token*
 Read_member::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -680,7 +680,7 @@ Read_member::run(Workqueue*)
 
 Check_script::~Check_script()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the next
   // input file.
@@ -691,9 +691,9 @@ Check_script::~Check_script()
 Task_token*
 Check_script::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -708,7 +708,7 @@ void
 Check_script::run(Workqueue*)
 {
   Incremental_inputs* incremental_inputs = this->layout_->incremental_inputs();
-  gold_assert(incremental_inputs != NULL);
+  gold_assert(incremental_inputs != nullptr);
   unsigned int arg_serial = this->input_reader_->arg_serial();
   Script_info* script_info =
       this->ibase_->get_script_info(this->input_file_index_);
@@ -720,7 +720,7 @@ Check_script::run(Workqueue*)
 
 Check_library::~Check_library()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the next
   // input file.
@@ -731,9 +731,9 @@ Check_library::~Check_library()
 Task_token*
 Check_library::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -748,9 +748,9 @@ void
 Check_library::run(Workqueue*)
 {
   Incremental_inputs* incremental_inputs = this->layout_->incremental_inputs();
-  gold_assert(incremental_inputs != NULL);
+  gold_assert(incremental_inputs != nullptr);
   Incremental_library* lib = this->ibase_->get_library(this->input_file_index_);
-  gold_assert(lib != NULL);
+  gold_assert(lib != nullptr);
   lib->copy_unused_symbols();
   // FIXME: Check that unused symbols remain unused.
   if (!lib->is_reported())
@@ -780,7 +780,7 @@ Input_group::~Input_group()
 
 Start_group::~Start_group()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the first
   // file in the group.
@@ -791,9 +791,9 @@ Start_group::~Start_group()
 Task_token*
 Start_group::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -814,7 +814,7 @@ Start_group::run(Workqueue*)
 
 Finish_group::~Finish_group()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the next
   // input file following the group.
@@ -825,9 +825,9 @@ Finish_group::~Finish_group()
 Task_token*
 Finish_group::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -866,7 +866,7 @@ Finish_group::run(Workqueue*)
       // For an incremental link, finish recording the layout information.
       Incremental_inputs* incremental_inputs =
           this->layout_->incremental_inputs();
-      if (incremental_inputs != NULL)
+      if (incremental_inputs != nullptr)
 	incremental_inputs->report_archive_end(*p);
     }
 
@@ -880,7 +880,7 @@ Finish_group::run(Workqueue*)
 
 Read_script::~Read_script()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
   // next_blocker_ is deleted by the task associated with the next
   // input file.
@@ -891,9 +891,9 @@ Read_script::~Read_script()
 Task_token*
 Read_script::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
-  return NULL;
+  return nullptr;
 }
 
 // We don't unlock next_blocker_ here.  If the script names any input
@@ -925,7 +925,7 @@ Read_script::run(Workqueue* workqueue)
     {
       // Queue up a task to unlock next_blocker.  We can't just unlock
       // it here, as we don't hold the workqueue lock.
-      workqueue->queue_soon(new Unblock_token(NULL, this->next_blocker_));
+      workqueue->queue_soon(new Unblock_token(nullptr, this->next_blocker_));
     }
 }
 

@@ -39,15 +39,15 @@ namespace gold
 inline void
 Symbol::override_version(const char* version)
 {
-  if (version == NULL)
+  if (version == nullptr)
     {
       // This is the case where this symbol is NAME/VERSION, and the
       // version was not marked as hidden.  That makes it the default
-      // version, so we create NAME/NULL.  Later we see another symbol
-      // NAME/NULL, and that symbol is overriding this one.  In this
-      // case, since NAME/VERSION is the default, we make NAME/NULL
+      // version, so we create NAME/nullptr.  Later we see another symbol
+      // NAME/nullptr, and that symbol is overriding this one.  In this
+      // case, since NAME/VERSION is the default, we make NAME/nullptr
       // override NAME/VERSION as well.  They are already the same
-      // Symbol structure.  Setting the VERSION_ field to NULL ensures
+      // Symbol structure.  Setting the VERSION_ field to nullptr ensures
       // that it will be output with the correct, empty, version.
       this->version_ = version;
     }
@@ -56,9 +56,9 @@ Symbol::override_version(const char* version)
       // This is the case where this symbol is NAME/VERSION_ONE, and
       // now we see NAME/VERSION_TWO, and NAME/VERSION_TWO is
       // overriding NAME.  If VERSION_ONE and VERSION_TWO are
-      // different, then this can only happen when VERSION_ONE is NULL
+      // different, then this can only happen when VERSION_ONE is nullptr
       // and VERSION_TWO is not hidden.
-      gold_assert(this->version_ == version || this->version_ == NULL);
+      gold_assert(this->version_ == version || this->version_ == nullptr);
       this->version_ = version;
     }
 }
@@ -97,7 +97,7 @@ Symbol::override_base(const elfcpp::Sym<size, big_endian>& sym,
   this->u2_.shndx = st_shndx;
   this->is_ordinary_shndx_ = is_ordinary;
   // Don't override st_type from plugin placeholder symbols.
-  if (object->pluginobj() == NULL)
+  if (object->pluginobj() == nullptr)
     this->type_ = sym.get_st_type();
   this->binding_ = sym.get_st_bind();
   this->override_visibility(sym.get_st_visibility());
@@ -136,13 +136,13 @@ Symbol_table::override(Sized_symbol<size>* tosym,
   if (tosym->has_alias())
     {
       Symbol* sym = this->weak_aliases_[tosym];
-      gold_assert(sym != NULL);
+      gold_assert(sym != nullptr);
       Sized_symbol<size>* ssym = this->get_sized_symbol<size>(sym);
       do
 	{
 	  ssym->override(fromsym, st_shndx, is_ordinary, object, version);
 	  sym = this->weak_aliases_[ssym];
-	  gold_assert(sym != NULL);
+	  gold_assert(sym != nullptr);
 	  ssym = this->get_sized_symbol<size>(sym);
 	}
       while (ssym != tosym);
@@ -312,7 +312,7 @@ Symbol_table::resolve(Sized_symbol<size>* to,
 
   // Record if we've seen this symbol in a real ELF object (i.e., the
   // symbol is referenced from outside the world known to the plugin).
-  if (object->pluginobj() == NULL && !object->is_dynamic())
+  if (object->pluginobj() == nullptr && !object->is_dynamic())
     to->set_in_real_elf();
 
   // If we're processing replacement files, allow new symbols to override
@@ -322,7 +322,7 @@ Symbol_table::resolve(Sized_symbol<size>* to,
   if (to->source() == Symbol::FROM_OBJECT)
     {
       Pluginobj* obj = to->object()->pluginobj();
-      if (obj != NULL
+      if (obj != nullptr
           && parameters->options().plugins()->in_replacement_phase())
         {
 	  bool adjust_common = false;
@@ -380,7 +380,7 @@ Symbol_table::resolve(Sized_symbol<size>* to,
 
   // Plugins don't provide a symbol type, so adopt the existing type
   // if the FROM symbol is from a plugin.
-  elfcpp::STT fromtype = (object->pluginobj() != NULL
+  elfcpp::STT fromtype = (object->pluginobj() != nullptr
 			  ? to->type()
 			  : sym.get_st_type());
   unsigned int frombits = symbol_to_bits(sym.get_st_bind(),
@@ -527,7 +527,7 @@ Symbol_table::should_override(const Symbol* to, unsigned int frombits,
       // --just-symbols, then don't warn.  This is for compatibility
       // with the GNU linker.  FIXME: This is a hack.
       if ((to->source() == Symbol::FROM_OBJECT && to->object()->just_symbols())
-          || (object != NULL && object->just_symbols()))
+          || (object != nullptr && object->just_symbols()))
         return false;
 
       if (!parameters->options().muldefs())
@@ -623,7 +623,7 @@ Symbol_table::should_override(const Symbol* to, unsigned int frombits,
       // in the same dynamic object, and the new definition is a
       // default version.
       if (to->object() == object
-          && to->version() == NULL
+          && to->version() == nullptr
           && is_default_version)
         return true;
       // Or, if the existing definition is in an unused --as-needed library,
@@ -959,8 +959,8 @@ Symbol::clone(const Symbol* from)
   // We aren't prepared to merge such.
   gold_assert(!this->has_symtab_index() && !from->has_symtab_index());
   gold_assert(!this->has_dynsym_index() && !from->has_dynsym_index());
-  gold_assert(this->got_offset_list() == NULL
-	      && from->got_offset_list() == NULL);
+  gold_assert(this->got_offset_list() == nullptr
+	      && from->got_offset_list() == nullptr);
   gold_assert(!this->has_plt_offset() && !from->has_plt_offset());
 
   if (!from->version_)
@@ -1016,7 +1016,7 @@ Symbol_table::should_override_with_special(const Symbol* to,
   bool adjust_dyn_def;
   unsigned int frombits = global_flag | regular_flag | def_flag;
   bool ret = Symbol_table::should_override(to, frombits, fromtype, defined,
-					   NULL, &adjust_common_sizes,
+					   nullptr, &adjust_common_sizes,
 					   &adjust_dyn_def, false);
   gold_assert(!adjust_common_sizes && !adjust_dyn_def);
   return ret;
@@ -1108,13 +1108,13 @@ Symbol_table::override_with_special(Sized_symbol<size>* tosym,
   if (tosym->has_alias())
     {
       Symbol* sym = this->weak_aliases_[tosym];
-      gold_assert(sym != NULL);
+      gold_assert(sym != nullptr);
       Sized_symbol<size>* ssym = this->get_sized_symbol<size>(sym);
       do
 	{
 	  ssym->override_with_special(fromsym);
 	  sym = this->weak_aliases_[ssym];
-	  gold_assert(sym != NULL);
+	  gold_assert(sym != nullptr);
 	  ssym = this->get_sized_symbol<size>(sym);
 	}
       while (ssym != tosym);

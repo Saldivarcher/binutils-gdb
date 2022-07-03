@@ -181,7 +181,7 @@ namespace gold
 // IS_SECN_OR_GROUP_UNIQUE : To check if a section or a group of identical
 //                            sections is already known to be unique.
 // SECTION_CONTENTS : Contains the section's text and relocs to sections
-//                    that cannot be folded.   SECTION_CONTENTS are NULL
+//                    that cannot be folded.   SECTION_CONTENTS are nullptr
 //                    implies that this function is being called for the
 //                    first time before the first iteration of icf.
 
@@ -202,7 +202,7 @@ preprocess_for_unique_sections(const std::vector<Section_id>& id_section,
       uint32_t cksum;
       Section_id secn = id_section[i];
       section_size_type plen;
-      if (section_contents == NULL)
+      if (section_contents == nullptr)
         {
           // Lock the object so we can read from it.  This is only called
           // single-threaded from queue_middle_tasks, so it is OK to lock.
@@ -311,7 +311,7 @@ get_section_contents(bool first_iteration,
 		       std::numeric_limits<section_offset_type>::max())
 {
   section_size_type plen;
-  const unsigned char* contents = NULL;
+  const unsigned char* contents = nullptr;
   if (first_iteration)
     contents = secn.first->section_contents(secn.second, &plen, false);
 
@@ -364,11 +364,11 @@ get_section_contents(bool first_iteration,
 	  if (gsym == reinterpret_cast<Symbol*>(-1))
 	    {
 	      is_section_symbol = true;
-	      gsym = NULL;
+	      gsym = nullptr;
 	    }
 
 	  if (first_iteration
-	      && it_v->first != NULL)
+	      && it_v->first != nullptr)
 	    {
 	      Symbol_location loc;
 	      loc.object = it_v->first;
@@ -401,13 +401,13 @@ get_section_contents(bool first_iteration,
 
 	  // If the symbol pointed to by the reloc is not in an ordinary
 	  // section or if the symbol type is not FROM_OBJECT, then the
-	  // object is NULL.
-	  if (it_v->first == NULL)
+	  // object is nullptr.
+	  if (it_v->first == nullptr)
             {
 	      if (first_iteration)
                 {
 		  // If the symbol name is available, use it.
-                  if (gsym != NULL)
+                  if (gsym != nullptr)
                       buffer.append(gsym->name());
                   // Append the addend.
                   buffer.append(addend_str);
@@ -435,7 +435,7 @@ get_section_contents(bool first_iteration,
             symtab->icf()->section_to_int_map();
           Icf::Uniq_secn_id_map::iterator section_id_map_it =
             section_id_map.find(reloc_secn);
-          bool is_sym_preemptible = (gsym != NULL
+          bool is_sym_preemptible = (gsym != nullptr
 				     && !gsym->is_from_dynobj()
 				     && !gsym->is_undefined()
 				     && gsym->is_preemptible());
@@ -537,7 +537,7 @@ get_section_contents(bool first_iteration,
                             const uint16_t* ptr_16 =
                               reinterpret_cast<const uint16_t*>(str_char);
                             unsigned int strlen_16 = 0;
-                            // Find the NULL character.
+                            // Find the nullptr character.
                             while(*(ptr_16 + strlen_16) != 0)
                                 strlen_16++;
                             buffer.append(str_char, strlen_16 * 2);
@@ -548,7 +548,7 @@ get_section_contents(bool first_iteration,
                             const uint32_t* ptr_32 =
                               reinterpret_cast<const uint32_t*>(str_char);
                             unsigned int strlen_32 = 0;
-                            // Find the NULL character.
+                            // Find the nullptr character.
                             while(*(ptr_32 + strlen_32) != 0)
                                 strlen_32++;
                             buffer.append(str_char, strlen_32 * 4);
@@ -571,7 +571,7 @@ get_section_contents(bool first_iteration,
                     }
 		  buffer.append("@");
                 }
-              else if (gsym != NULL)
+              else if (gsym != nullptr)
                 {
                   // If symbol name is available use that.
                   buffer.append(gsym->name());
@@ -688,7 +688,7 @@ match_sections(unsigned int iteration_num,
   if (iteration_num == 1)
     preprocess_for_unique_sections(id_section,
                                    is_secn_or_group_unique,
-                                   NULL);
+                                   nullptr);
   else
     preprocess_for_unique_sections(id_section,
                                    is_secn_or_group_unique,
@@ -729,7 +729,7 @@ match_sections(unsigned int iteration_num,
               continue;
             }
           this_secn_contents = get_section_contents(false, this_secn_cache,
-						    secn, secn, NULL,
+						    secn, secn, nullptr,
 						    symtab, (*kept_section_id));
         }
 
@@ -825,7 +825,7 @@ static bool
 is_function_ctor_or_dtor(const std::string& section_name)
 {
   const char* mangled_func_name = strrchr(section_name.c_str(), '.');
-  gold_assert(mangled_func_name != NULL);
+  gold_assert(mangled_func_name != nullptr);
   if ((is_prefix_of("._ZN", mangled_func_name)
        || is_prefix_of("._ZZ", mangled_func_name))
       && (is_gnu_v3_mangled_ctor(mangled_func_name + 1)
@@ -1070,7 +1070,7 @@ Icf::find_identical_sections(const Input_objects* input_objects,
     {
       const char* name = p->c_str();
       Symbol* sym = symtab->lookup(name);
-      if (sym == NULL)
+      if (sym == nullptr)
 	{
 	  gold_warning(_("Could not find symbol %s to unfold\n"), name);
 	}

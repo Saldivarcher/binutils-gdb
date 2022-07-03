@@ -43,7 +43,7 @@ Object_merge_map::~Object_merge_map()
     delete p->second;
 }
 
-// Get the Input_merge_map to use for an input section, or NULL.
+// Get the Input_merge_map to use for an input section, or nullptr.
 
 const Object_merge_map::Input_merge_map*
 Object_merge_map::get_input_merge_map(unsigned int shndx) const
@@ -56,7 +56,7 @@ Object_merge_map::get_input_merge_map(unsigned int shndx) const
       if (i->first == shndx)
 	return i->second;
     }
-  return NULL;
+  return nullptr;
 }
 
 // Get or create the Input_merge_map to use for an input section.
@@ -65,7 +65,7 @@ Object_merge_map::Input_merge_map*
 Object_merge_map::get_or_make_input_merge_map(
     const Output_section_data* output_data, unsigned int shndx) {
   Input_merge_map* map = this->get_input_merge_map(shndx);
-  if (map != NULL)
+  if (map != nullptr)
     {
       // For a given input section in a given object, every mapping
       // must be done with the same Merge_map.
@@ -140,7 +140,7 @@ Object_merge_map::get_output_offset(unsigned int shndx,
 				    section_offset_type* output_offset)
 {
   Input_merge_map* map = this->get_input_merge_map(shndx);
-  if (map == NULL)
+  if (map == nullptr)
     return false;
 
   if (!map->sorted)
@@ -176,8 +176,8 @@ const Output_section_data*
 Object_merge_map::find_merge_section(unsigned int shndx) const {
   const Object_merge_map::Input_merge_map* map =
     this->get_input_merge_map(shndx);
-  if (map == NULL)
-    return NULL;
+  if (map == nullptr)
+    return nullptr;
   return map->output_data;
 }
 
@@ -192,7 +192,7 @@ Object_merge_map::initialize_input_to_output_map(
 		  typename elfcpp::Elf_types<size>::Elf_Addr>* initialize_map)
 {
   Input_merge_map* map = this->get_input_merge_map(shndx);
-  gold_assert(map != NULL);
+  gold_assert(map != nullptr);
 
   gold_assert(initialize_map->empty());
   // We know how many entries we are going to add.
@@ -240,10 +240,10 @@ Output_merge_base::do_output_offset(const Relobj* object,
 void
 Output_merge_base::record_input_section(Relobj* relobj, unsigned int shndx)
 {
-  gold_assert(this->keeps_input_sections_ && relobj != NULL);
+  gold_assert(this->keeps_input_sections_ && relobj != nullptr);
   // If this is the first input section, record it.  We need do this because
   // this->input_sections_ is unordered.
-  if (this->first_relobj_ == NULL)
+  if (this->first_relobj_ == nullptr)
     {
       this->first_relobj_ = relobj;
       this->first_shndx_ = shndx;
@@ -316,7 +316,7 @@ Output_merge_data::add_constant(const unsigned char* p)
       else
 	this->alc_ *= 2;
       this->p_ = static_cast<unsigned char*>(realloc(this->p_, this->alc_));
-      if (this->p_ == NULL)
+      if (this->p_ == nullptr)
 	gold_nomem();
     }
 
@@ -394,9 +394,9 @@ Output_merge_data::set_final_data_size()
   // Release the memory we don't need.
   this->p_ = static_cast<unsigned char*>(realloc(this->p_, this->len_));
   // An Output_merge_data object may be empty and realloc is allowed
-  // to return a NULL pointer in this case.  An Output_merge_data is empty
+  // to return a nullptr pointer in this case.  An Output_merge_data is empty
   // if all its input sections have sizes that are not multiples of entsize.
-  gold_assert(this->p_ != NULL || this->len_ == 0);
+  gold_assert(this->p_ != nullptr || this->len_ == 0);
   this->set_data_size(this->len_);
 }
 
@@ -465,7 +465,7 @@ Output_merge_string<Char_type>::do_add_input_section(Relobj* object,
 		     "not null terminated"),
 		   object->name().c_str(),
 		   object->section_name(shndx).c_str());
-      // Find the end of the last NULL-terminated string in the buffer.
+      // Find the end of the last nullptr-terminated string in the buffer.
       while (pend0 > p && pend0[-1] != 0)
 	--pend0;
     }
@@ -620,7 +620,7 @@ const char*
 Output_merge_string<Char_type>::string_name()
 {
   gold_unreachable();
-  return NULL;
+  return nullptr;
 }
 
 template<>

@@ -48,7 +48,7 @@ namespace gold
 Task_token*
 Read_relocs::is_runnable()
 {
-  return this->object_->is_locked() ? this->object_->token() : NULL;
+  return this->object_->is_locked() ? this->object_->token() : nullptr;
 }
 
 // Lock the file.
@@ -57,7 +57,7 @@ void
 Read_relocs::locks(Task_locker* tl)
 {
   Task_token* token = this->object_->token();
-  if (token != NULL)
+  if (token != nullptr)
     tl->add(this, token);
 }
 
@@ -104,7 +104,7 @@ Read_relocs::get_name() const
 
 Gc_process_relocs::~Gc_process_relocs()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
 }
 
@@ -116,11 +116,11 @@ Gc_process_relocs::~Gc_process_relocs()
 Task_token*
 Gc_process_relocs::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
   if (this->object_->is_locked())
     return this->object_->token();
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -149,7 +149,7 @@ Gc_process_relocs::get_name() const
 
 Scan_relocs::~Scan_relocs()
 {
-  if (this->this_blocker_ != NULL)
+  if (this->this_blocker_ != nullptr)
     delete this->this_blocker_;
 }
 
@@ -161,11 +161,11 @@ Scan_relocs::~Scan_relocs()
 Task_token*
 Scan_relocs::is_runnable()
 {
-  if (this->this_blocker_ != NULL && this->this_blocker_->is_blocked())
+  if (this->this_blocker_ != nullptr && this->this_blocker_->is_blocked())
     return this->this_blocker_;
   if (this->object_->is_locked())
     return this->object_->token();
-  return NULL;
+  return nullptr;
 }
 
 // Return the locks we hold: one on the file, one on the symbol table
@@ -175,7 +175,7 @@ void
 Scan_relocs::locks(Task_locker* tl)
 {
   Task_token* token = this->object_->token();
-  if (token != NULL)
+  if (token != nullptr)
     tl->add(this, token);
   tl->add(this, this->next_blocker_);
 }
@@ -187,7 +187,7 @@ Scan_relocs::run(Workqueue*)
 {
   this->object_->scan_relocs(this->symtab_, this->layout_, this->rd_);
   delete this->rd_;
-  this->rd_ = NULL;
+  this->rd_ = nullptr;
   this->object_->release();
 }
 
@@ -213,21 +213,21 @@ Relocate_task::is_runnable()
   if (this->object_->is_locked())
     return this->object_->token();
 
-  return NULL;
+  return nullptr;
 }
 
 // We want to lock the file while we run.  We want to unblock
 // INPUT_SECTIONS_BLOCKER and FINAL_BLOCKER when we are done.
-// INPUT_SECTIONS_BLOCKER may be NULL.
+// INPUT_SECTIONS_BLOCKER may be nullptr.
 
 void
 Relocate_task::locks(Task_locker* tl)
 {
-  if (this->input_sections_blocker_ != NULL)
+  if (this->input_sections_blocker_ != nullptr)
     tl->add(this, this->input_sections_blocker_);
   tl->add(this, this->final_blocker_);
   Task_token* token = this->object_->token();
-  if (token != NULL)
+  if (token != nullptr)
     tl->add(this, token);
 }
 
@@ -293,7 +293,7 @@ Sized_relobj_file<size, big_endian>::do_read_relocs(Read_relocs_data* rd)
 	}
 
       Output_section* os = out_sections[shndx];
-      if (os == NULL)
+      if (os == nullptr)
 	continue;
 
       // We are scanning relocations in order to fill out the GOT and
@@ -362,7 +362,7 @@ Sized_relobj_file<size, big_endian>::do_read_relocs(Read_relocs_data* rd)
   // Read the local symbols.
   gold_assert(this->symtab_shndx_ != -1U);
   if (this->symtab_shndx_ == 0 || this->local_symbol_count_ == 0)
-    rd->local_symbols = NULL;
+    rd->local_symbols = nullptr;
   else
     {
       typename This::Shdr symtabshdr(pshdrs
@@ -391,8 +391,8 @@ Sized_relobj_file<size, big_endian>::do_gc_process_relocs(Symbol_table* symtab,
     parameters->sized_target<size, big_endian>();
 
   const unsigned char* local_symbols;
-  if (rd->local_symbols == NULL)
-    local_symbols = NULL;
+  if (rd->local_symbols == nullptr)
+    local_symbols = nullptr;
   else
     local_symbols = rd->local_symbols->data();
 
@@ -431,13 +431,13 @@ Sized_relobj_file<size, big_endian>::do_scan_relocs(Symbol_table* symtab,
     parameters->sized_target<size, big_endian>();
 
   const unsigned char* local_symbols;
-  if (rd->local_symbols == NULL)
-    local_symbols = NULL;
+  if (rd->local_symbols == nullptr)
+    local_symbols = nullptr;
   else
     local_symbols = rd->local_symbols->data();
 
   // For incremental links, allocate the counters for incremental relocations.
-  if (layout->incremental_inputs() != NULL)
+  if (layout->incremental_inputs() != nullptr)
     this->allocate_incremental_reloc_counts();
 
   for (Read_relocs_data::Relocs_list::iterator p = rd->relocs.begin();
@@ -450,7 +450,7 @@ Sized_relobj_file<size, big_endian>::do_scan_relocs(Symbol_table* symtab,
       if (parameters->options().gc_sections()
 	  || parameters->options().icf_enabled())
         {
-          if (p->output_section == NULL)
+          if (p->output_section == nullptr)
             continue;
         }
       if (!parameters->options().relocatable())
@@ -467,13 +467,13 @@ Sized_relobj_file<size, big_endian>::do_scan_relocs(Symbol_table* symtab,
 				local_symbols);
 	  if (parameters->options().emit_relocs())
 	    this->emit_relocs_scan(symtab, layout, local_symbols, p);
-	  if (layout->incremental_inputs() != NULL)
+	  if (layout->incremental_inputs() != nullptr)
 	    this->incremental_relocs_scan(p);
 	}
       else
 	{
 	  Relocatable_relocs* rr = this->relocatable_relocs(p->reloc_shndx);
-	  gold_assert(rr != NULL);
+	  gold_assert(rr != nullptr);
 	  rr->set_reloc_count(p->reloc_count);
 	  target->scan_relocatable_relocs(symtab, layout, this,
 					  p->data_shndx, p->sh_type,
@@ -487,17 +487,17 @@ Sized_relobj_file<size, big_endian>::do_scan_relocs(Symbol_table* symtab,
 	}
 
       delete p->contents;
-      p->contents = NULL;
+      p->contents = nullptr;
     }
 
   // For incremental links, finalize the allocation of relocations.
-  if (layout->incremental_inputs() != NULL)
+  if (layout->incremental_inputs() != nullptr)
     this->finalize_incremental_relocs(layout, true);
 
-  if (rd->local_symbols != NULL)
+  if (rd->local_symbols != nullptr)
     {
       delete rd->local_symbols;
-      rd->local_symbols = NULL;
+      rd->local_symbols = nullptr;
     }
 }
 
@@ -515,7 +515,7 @@ Sized_relobj_file<size, big_endian>::emit_relocs_scan(
       parameters->sized_target<size, big_endian>();
 
   Relocatable_relocs* rr = this->relocatable_relocs(p->reloc_shndx);
-  gold_assert(rr != NULL);
+  gold_assert(rr != nullptr);
   rr->set_reloc_count(p->reloc_count);
   target->emit_relocs_scan(
     symtab,
@@ -609,7 +609,7 @@ Sized_relobj_file<size, big_endian>::do_relocate(const Symbol_table* symtab,
   this->initialize_input_to_output_maps();
 
   // Make the views available through get_output_view() for the duration
-  // of this routine.  This RAII class will reset output_views_ to NULL
+  // of this routine.  This RAII class will reset output_views_ to nullptr
   // when the views go out of scope.
   struct Set_output_views
   {
@@ -620,7 +620,7 @@ Sized_relobj_file<size, big_endian>::do_relocate(const Symbol_table* symtab,
     }
 
     ~Set_output_views()
-    { *ppviews_ = NULL; }
+    { *ppviews_ = nullptr; }
 
     const Views** ppviews_;
   };
@@ -637,7 +637,7 @@ Sized_relobj_file<size, big_endian>::do_relocate(const Symbol_table* symtab,
   // Write out the accumulated views.
   for (unsigned int i = 1; i < shnum; ++i)
     {
-      if (views[i].view != NULL)
+      if (views[i].view != nullptr)
 	{
 	  if (views[i].is_ctors_reverse_view)
 	    this->reverse_words(views[i].view, views[i].view_size);
@@ -692,10 +692,10 @@ Sized_relobj_file<size, big_endian>::write_sections(const Layout* layout,
     {
       View_size* pvs = &(*pviews)[i];
 
-      pvs->view = NULL;
+      pvs->view = nullptr;
 
       const Output_section* os = out_sections[i];
-      if (os == NULL)
+      if (os == nullptr)
 	continue;
       Address output_offset = out_offsets[i];
 
@@ -715,9 +715,9 @@ Sized_relobj_file<size, big_endian>::write_sections(const Layout* layout,
 	  // The size and file offset are stored in the
 	  // Relocatable_relocs structure.
 	  Relocatable_relocs* rr = this->relocatable_relocs(i);
-	  gold_assert(rr != NULL);
+	  gold_assert(rr != nullptr);
 	  Output_data* posd = rr->output_data();
-	  gold_assert(posd != NULL);
+	  gold_assert(posd != nullptr);
 
 	  pvs->offset = posd->offset();
 	  pvs->view_size = posd->data_size();
@@ -928,7 +928,7 @@ Sized_relobj_file<size, big_endian>::relocate_section_range(
 	}
 
       Output_section* os = out_sections[index];
-      if (os == NULL)
+      if (os == nullptr)
 	{
 	  // This relocation section is against a section which we
 	  // discarded.
@@ -936,9 +936,9 @@ Sized_relobj_file<size, big_endian>::relocate_section_range(
 	}
       Address output_offset = out_offsets[index];
 
-      gold_assert((*pviews)[index].view != NULL);
+      gold_assert((*pviews)[index].view != nullptr);
       if (parameters->options().relocatable())
-	gold_assert((*pviews)[i].view != NULL);
+	gold_assert((*pviews)[i].view != nullptr);
 
       if (this->adjust_shndx(shdr.get_sh_link()) != this->symtab_shndx_)
 	{
@@ -984,7 +984,7 @@ Sized_relobj_file<size, big_endian>::relocate_section_range(
       Address address = (*pviews)[index].address;
       section_size_type view_size = (*pviews)[index].view_size;
 
-      Reloc_symbol_changes* reloc_map = NULL;
+      Reloc_symbol_changes* reloc_map = nullptr;
       if (this->uses_split_stack() && output_offset != invalid_address)
 	{
 	  typename This::Shdr data_shdr(pshdrs + index * This::shdr_size);
@@ -994,7 +994,7 @@ Sized_relobj_file<size, big_endian>::relocate_section_range(
 				     &reloc_map, target);
 	}
 
-      Relocatable_relocs* rr = NULL;
+      Relocatable_relocs* rr = nullptr;
       if (parameters->options().emit_relocs()
 	  || parameters->options().relocatable())
 	rr = this->relocatable_relocs(i);
@@ -1032,7 +1032,7 @@ Sized_relobj_file<size, big_endian>::do_get_output_view(
     unsigned int shndx,
     section_size_type* plen) const
 {
-  gold_assert(this->output_views_ != NULL);
+  gold_assert(this->output_views_ != nullptr);
   gold_assert(shndx < this->output_views_->size());
   const View_size& v = (*this->output_views_)[shndx];
   *plen = v.view_size;
@@ -1099,7 +1099,7 @@ Sized_relobj_file<size, big_endian>::incremental_relocs_write_reltype(
   // Get a view for the .gnu_incremental_relocs section.
 
   Incremental_inputs* inputs = relinfo->layout->incremental_inputs();
-  gold_assert(inputs != NULL);
+  gold_assert(inputs != nullptr);
   const off_t relocs_off = inputs->relocs_section()->offset();
   const off_t relocs_size = inputs->relocs_section()->data_size();
   unsigned char* const view = of->get_output_view(relocs_off, relocs_size);
@@ -1260,7 +1260,7 @@ Sized_relobj_file<size, big_endian>::split_stack_adjust_reltype(
 	continue;
 
       const Symbol* gsym = this->global_symbol(r_sym);
-      gold_assert(gsym != NULL);
+      gold_assert(gsym != nullptr);
       if (gsym->is_forwarder())
 	gsym = symtab->resolve_forwards(gsym);
 
@@ -1339,7 +1339,7 @@ Sized_relobj_file<size, big_endian>::split_stack_adjust_reltype(
       if (!from.empty())
 	{
 	  gold_assert(!to.empty());
-	  Symbol* tosym = NULL;
+	  Symbol* tosym = nullptr;
 
 	  // Find relocations in the relevant function which are for
 	  // FROM.
@@ -1363,10 +1363,10 @@ Sized_relobj_file<size, big_endian>::split_stack_adjust_reltype(
 	      const Symbol* gsym = this->global_symbol(r_sym);
 	      if (from == gsym->name())
 		{
-		  if (tosym == NULL)
+		  if (tosym == nullptr)
 		    {
 		      tosym = symtab->lookup(to.c_str());
-		      if (tosym == NULL)
+		      if (tosym == nullptr)
 			{
 			  this->error(_("could not convert call "
 					"to '%s' to '%s'"),
@@ -1375,7 +1375,7 @@ Sized_relobj_file<size, big_endian>::split_stack_adjust_reltype(
 			}
 		    }
 
-		  if (*reloc_map == NULL)
+		  if (*reloc_map == nullptr)
 		    *reloc_map = new Reloc_symbol_changes(reloc_count);
 		  (*reloc_map)->set(i, tosym);
 		}

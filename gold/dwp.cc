@@ -108,7 +108,7 @@ class Dwo_file
 {
  public:
   Dwo_file(const char* name)
-    : name_(name), obj_(NULL), input_file_(NULL), is_compressed_(),
+    : name_(name), obj_(nullptr), input_file_(nullptr), is_compressed_(),
       sect_offsets_(), str_offset_map_()
   { }
 
@@ -362,7 +362,7 @@ class Sized_relobj_dwo : public Sized_relobj<size, big_endian>
   // Get global symbols.
   const Symbols*
   do_get_global_symbols() const
-  { return NULL; }
+  { return nullptr; }
 
   // Return the value of a local symbol.
   uint64_t
@@ -449,7 +449,7 @@ class Dwp_output_file
  public:
   Dwp_output_file(const char* name)
     : name_(name), machine_(0), size_(0), big_endian_(false), osabi_(0),
-      abiversion_(0), fd_(NULL), next_file_offset_(0), shnum_(1), sections_(),
+      abiversion_(0), fd_(nullptr), next_file_offset_(0), shnum_(1), sections_(),
       section_id_map_(), shoff_(0), shstrndx_(0), have_strings_(false),
       stringpool_(), shstrtab_(), cu_index_(), tu_index_(), last_type_sig_(0),
       last_tu_slot_(0)
@@ -520,7 +520,7 @@ class Dwp_output_file
     typedef std::vector<const Unit_set*> Section_table;
 
     Dwp_index()
-      : capacity_(0), used_(0), hash_table_(NULL), section_table_(),
+      : capacity_(0), used_(0), hash_table_(nullptr), section_table_(),
         section_mask_(0)
     { }
 
@@ -686,8 +686,8 @@ class Dwo_name_info_reader : public Dwarf_info_reader
 {
  public:
   Dwo_name_info_reader(Relobj* object, unsigned int shndx)
-    : Dwarf_info_reader(false, object, NULL, 0, shndx, 0, 0),
-      files_(NULL)
+    : Dwarf_info_reader(false, object, nullptr, 0, shndx, 0, 0),
+      files_(nullptr)
   { }
 
   ~Dwo_name_info_reader()
@@ -718,8 +718,8 @@ class Unit_reader : public Dwarf_info_reader
 {
  public:
   Unit_reader(bool is_type_unit, Relobj* object, unsigned int shndx)
-    : Dwarf_info_reader(is_type_unit, object, NULL, 0, shndx, 0, 0),
-      output_file_(NULL), sections_(NULL)
+    : Dwarf_info_reader(is_type_unit, object, nullptr, 0, shndx, 0, 0),
+      output_file_(nullptr), sections_(nullptr)
   { }
 
   ~Unit_reader()
@@ -750,7 +750,7 @@ static const char*
 get_dwarf_section_name(elfcpp::DW_SECT section_id)
 {
   static const char* dwarf_section_names[] = {
-    NULL, // unused
+    nullptr, // unused
     ".debug_info.dwo",         // DW_SECT_INFO = 1
     ".debug_types.dwo",        // DW_SECT_TYPES = 2
     ".debug_abbrev.dwo",       // DW_SECT_ABBREV = 3
@@ -801,7 +801,7 @@ Sized_relobj_dwo<size, big_endian>::setup()
   Compressed_section_map* compressed_sections =
       build_compressed_section_map<size, big_endian>(
 	  pshdrs, this->shnum(), names, section_names_size, this, true);
-  if (compressed_sections != NULL && !compressed_sections->empty())
+  if (compressed_sections != nullptr && !compressed_sections->empty())
     this->set_compressed_sections(compressed_sections);
 }
 
@@ -828,9 +828,9 @@ Sized_relobj_dwo<size, big_endian>::do_section_contents(
 
 Dwo_file::~Dwo_file()
 {
-  if (this->obj_ != NULL)
+  if (this->obj_ != nullptr)
     delete this->obj_;
-  if (this->input_file_ != NULL)
+  if (this->input_file_ != nullptr)
     delete this->input_file_;
 }
 
@@ -840,7 +840,7 @@ Dwo_file::~Dwo_file()
 void
 Dwo_file::read_executable(File_list* files)
 {
-  this->obj_ = this->make_object(NULL);
+  this->obj_ = this->make_object(nullptr);
 
   unsigned int shnum = this->shnum();
   this->is_compressed_.resize(shnum);
@@ -985,7 +985,7 @@ Dwo_file::read(Dwp_output_file* output_file)
 bool
 Dwo_file::verify(const File_list& files)
 {
-  this->obj_ = this->make_object(NULL);
+  this->obj_ = this->make_object(nullptr);
 
   unsigned int shnum = this->shnum();
   this->is_compressed_.resize(shnum);
@@ -1031,7 +1031,7 @@ Dwo_file::make_object(Dwp_output_file* output_file)
   this->input_file_ = input_file;
   Dirsearch dirpath;
   int index;
-  if (!input_file->open(dirpath, NULL, &index))
+  if (!input_file->open(dirpath, nullptr, &index))
     gold_fatal(_("%s: can't open"), this->name_);
   
   // Check that it's an ELF file.
@@ -1104,7 +1104,7 @@ Dwo_file::sized_make_object(const unsigned char* p, Input_file* input_file,
   Sized_relobj_dwo<size, big_endian>* obj =
       new Sized_relobj_dwo<size, big_endian>(this->name_, input_file, ehdr);
   obj->setup();
-  if (output_file != NULL)
+  if (output_file != nullptr)
     output_file->record_target_info(
 	this->name_, ehdr.get_e_machine(), size, big_endian,
 	ehdr.get_ei_osabi(),
@@ -1568,7 +1568,7 @@ Dwp_output_file::record_target_info(const char*, int machine,
     gold_unreachable();
 
   this->fd_ = ::fopen(this->name_, "wb");
-  if (this->fd_ == NULL)
+  if (this->fd_ == nullptr)
     gold_fatal(_("%s: %s"), this->name_, strerror(errno));
 
   // Write zeroes for the ELF header initially.  We'll write
@@ -1633,7 +1633,7 @@ Dwp_output_file::add_contribution(elfcpp::DW_SECT section_id,
     {
       section_name = this->shstrtab_.add_with_length(section_name,
 						     strlen(section_name),
-						     false, NULL);
+						     false, nullptr);
       shndx = this->add_output_section(section_name, align);
       this->section_id_map_[section_id] = shndx;
     }
@@ -1881,7 +1881,7 @@ Dwp_output_file::finalize()
   this->shstrndx_ = this->shnum_++;
   const char* shstrtab_name =
       this->shstrtab_.add_with_length(".shstrtab", sizeof(".shstrtab") - 1,
-				      false, NULL);
+				      false, nullptr);
   this->shstrtab_.set_string_offsets();
   section_size_type shstrtab_len = this->shstrtab_.get_strtab_size();
   buf = new unsigned char[shstrtab_len];
@@ -1893,7 +1893,7 @@ Dwp_output_file::finalize()
   delete[] buf;
   file_offset += shstrtab_len;
 
-  // Write the section header table.  The first entry is a NULL entry.
+  // Write the section header table.  The first entry is a nullptr entry.
   // This is followed by the debug sections, and finally we write the
   // .shstrtab section header.
   file_offset = align_offset(file_offset, this->size_ == 32 ? 4 : 8);
@@ -1905,7 +1905,7 @@ Dwp_output_file::finalize()
     sh0_size = this->shnum_;
   if (this->shstrndx_ >= elfcpp::SHN_LORESERVE)
     sh0_link = this->shstrndx_;
-  this->write_shdr(NULL, 0, 0, 0, 0, sh0_size, sh0_link, 0, 0, 0);
+  this->write_shdr(nullptr, 0, 0, 0, 0, sh0_size, sh0_link, 0, 0, 0);
   for (unsigned int i = 0; i < this->sections_.size(); ++i)
     {
       Section& sect = this->sections_[i];
@@ -1919,12 +1919,12 @@ Dwp_output_file::finalize()
   this->write_ehdr();
 
   // Close the file.
-  if (this->fd_ != NULL)
+  if (this->fd_ != nullptr)
     {
       if (::fclose(this->fd_) != 0)
 	gold_fatal(_("%s: %s"), this->name_, strerror(errno));
     }
-  this->fd_ = NULL;
+  this->fd_ = nullptr;
 }
 
 // Write the contributions to an output section.
@@ -1951,7 +1951,7 @@ Dwp_output_file::write_new_section(const char* section_name,
 {
   section_name = this->shstrtab_.add_with_length(section_name,
 						 strlen(section_name),
-						 false, NULL);
+						 false, nullptr);
   unsigned int shndx = this->add_output_section(section_name, align);
   Section& section = this->sections_[shndx - 1];
   off_t file_offset = this->next_file_offset_;
@@ -2189,7 +2189,7 @@ Dwp_output_file::sized_write_shdr(const char* name, unsigned int type,
   unsigned char buf[shdr_size];
   elfcpp::Shdr_write<size, big_endian> shdr(buf);
 
-  shdr.put_sh_name(name == NULL ? 0 : this->shstrtab_.get_offset(name));
+  shdr.put_sh_name(name == nullptr ? 0 : this->shstrtab_.get_offset(name));
   shdr.put_sh_type(type);
   shdr.put_sh_flags(flags);
   shdr.put_sh_addr(addr);
@@ -2211,7 +2211,7 @@ void
 Dwo_name_info_reader::visit_compilation_unit(off_t, off_t, Dwarf_die* die)
 {
   const char* dwo_name = die->string_attribute(elfcpp::DW_AT_GNU_dwo_name);
-  if (dwo_name != NULL)
+  if (dwo_name != nullptr)
     {
       uint64_t dwo_id = die->uint_attribute(elfcpp::DW_AT_GNU_dwo_id);
       this->files_->push_back(Dwo_file_entry(dwo_id, dwo_name));
@@ -2296,13 +2296,13 @@ enum Dwp_options {
 
 struct option dwp_options[] =
   {
-    { "exec", required_argument, NULL, 'e' },
-    { "help", no_argument, NULL, 'h' },
-    { "output", required_argument, NULL, 'o' },
-    { "verbose", no_argument, NULL, 'v' },
-    { "verify-only", no_argument, NULL, VERIFY_ONLY },
-    { "version", no_argument, NULL, 'V' },
-    { NULL, 0, NULL, 0 }
+    { "exec", required_argument, nullptr, 'e' },
+    { "help", no_argument, nullptr, 'h' },
+    { "output", required_argument, nullptr, 'o' },
+    { "verbose", no_argument, nullptr, 'v' },
+    { "verify-only", no_argument, nullptr, VERIFY_ONLY },
+    { "version", no_argument, nullptr, 'V' },
+    { nullptr, 0, nullptr, 0 }
   };
 
 // Print usage message and exit.
@@ -2375,11 +2375,11 @@ main(int argc, char** argv)
   // Collect file names and options.
   File_list files;
   std::string output_filename;
-  const char* exe_filename = NULL;
+  const char* exe_filename = nullptr;
   bool verbose = false;
   bool verify_only = false;
   int c;
-  while ((c = getopt_long(argc, argv, "e:ho:vV", dwp_options, NULL)) != -1)
+  while ((c = getopt_long(argc, argv, "e:ho:vV", dwp_options, nullptr)) != -1)
     {
       switch (c)
         {
@@ -2407,14 +2407,14 @@ main(int argc, char** argv)
 
   if (output_filename.empty())
     {
-      if (exe_filename == NULL)
+      if (exe_filename == nullptr)
 	gold_fatal(_("no output file specified"));
       output_filename.assign(exe_filename);
       output_filename.append(".dwp");
     }
 
   // Get list of .dwo files from the executable.
-  if (exe_filename != NULL)
+  if (exe_filename != nullptr)
     {
       Dwo_file exe_file(exe_filename);
       exe_file.read_executable(&files);
@@ -2424,7 +2424,7 @@ main(int argc, char** argv)
   for (int i = optind; i < argc; ++i)
     files.push_back(Dwo_file_entry(0, argv[i]));
 
-  if (exe_filename == NULL && files.empty())
+  if (exe_filename == nullptr && files.empty())
     gold_fatal(_("no input files and no executable specified"));
 
   if (verify_only)

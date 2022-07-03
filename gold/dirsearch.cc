@@ -65,7 +65,7 @@ void
 Dir_cache::read_files()
 {
   DIR* d = opendir(this->dirname_);
-  if (d == NULL)
+  if (d == nullptr)
     {
       // We ignore directories which do not exist or are actually file
       // names.
@@ -76,7 +76,7 @@ Dir_cache::read_files()
     }
 
   dirent* de;
-  while ((de = readdir(d)) != NULL)
+  while ((de = readdir(d)) != nullptr)
     this->files_.insert(std::string(de->d_name));
 
   if (closedir(d) != 0)
@@ -135,7 +135,7 @@ Dir_caches::add(const char* dirname)
 {
   {
     gold::Hold_lock hl(this->lock_);
-    if (this->lookup(dirname) != NULL)
+    if (this->lookup(dirname) != nullptr)
       return;
   }
 
@@ -157,7 +157,7 @@ Dir_caches::lookup(const char* dirname) const
 {
   Cache_hash::const_iterator p = this->caches_.find(dirname);
   if (p == this->caches_.end())
-    return NULL;
+    return nullptr;
   return p->second;
 }
 
@@ -197,7 +197,7 @@ class Dir_cache_task : public gold::Task
 gold::Task_token*
 Dir_cache_task::is_runnable()
 {
-  return NULL;
+  return nullptr;
 }
 
 // Return the locks to hold.  We use a blocker lock to prevent file
@@ -228,7 +228,7 @@ void
 Dirsearch::initialize(Workqueue* workqueue,
 		      const General_options::Dir_list* directories)
 {
-  gold_assert(caches == NULL);
+  gold_assert(caches == nullptr);
   caches = new Dir_caches;
   this->directories_ = directories;
   this->token_.add_blockers(directories->size());
@@ -256,7 +256,7 @@ Dirsearch::find(const std::vector<std::string>& names,
     {
       const Search_directory* p = &this->directories_->at(i);
       Dir_cache* pdc = caches->lookup(p->name().c_str());
-      gold_assert(pdc != NULL);
+      gold_assert(pdc != nullptr);
       for (std::vector<std::string>::const_iterator n = names.begin();
 	   n != names.end();
 	   ++n)

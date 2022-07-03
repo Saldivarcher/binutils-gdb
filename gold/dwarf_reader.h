@@ -207,15 +207,15 @@ class Dwarf_abbrev_table
   };
 
   Dwarf_abbrev_table()
-    : abbrev_shndx_(0), abbrev_offset_(0), buffer_(NULL), buffer_end_(NULL),
-      owns_buffer_(false), buffer_pos_(NULL), high_abbrev_codes_()
+    : abbrev_shndx_(0), abbrev_offset_(0), buffer_(nullptr), buffer_end_(nullptr),
+      owns_buffer_(false), buffer_pos_(nullptr), high_abbrev_codes_()
   {
     memset(this->low_abbrev_codes_, 0, sizeof(this->low_abbrev_codes_));
   }
 
   ~Dwarf_abbrev_table()
   {
-    if (this->owns_buffer_ && this->buffer_ != NULL)
+    if (this->owns_buffer_ && this->buffer_ != nullptr)
       delete[] this->buffer_;
     this->clear_abbrev_codes();
   }
@@ -241,7 +241,7 @@ class Dwarf_abbrev_table
   get_abbrev(unsigned int code)
   {
     if (code < this->low_abbrev_code_max_
-	&& this->low_abbrev_codes_[code] != NULL)
+	&& this->low_abbrev_codes_[code] != nullptr)
       return this->low_abbrev_codes_[code];
     return this->do_get_abbrev(code);
   }
@@ -337,16 +337,16 @@ class Dwarf_ranges_table
 {
  public:
   Dwarf_ranges_table(Dwarf_info_reader* dwinfo)
-    : dwinfo_(dwinfo), ranges_shndx_(0), ranges_buffer_(NULL),
-      ranges_buffer_end_(NULL), owns_ranges_buffer_(false),
-      ranges_reloc_mapper_(NULL), reloc_type_(0), output_section_offset_(0)
+    : dwinfo_(dwinfo), ranges_shndx_(0), ranges_buffer_(nullptr),
+      ranges_buffer_end_(nullptr), owns_ranges_buffer_(false),
+      ranges_reloc_mapper_(nullptr), reloc_type_(0), output_section_offset_(0)
   { }
 
   ~Dwarf_ranges_table()
   {
-    if (this->owns_ranges_buffer_ && this->ranges_buffer_ != NULL)
+    if (this->owns_ranges_buffer_ && this->ranges_buffer_ != nullptr)
       delete[] this->ranges_buffer_;
-    if (this->ranges_reloc_mapper_ != NULL)
+    if (this->ranges_reloc_mapper_ != nullptr)
       delete this->ranges_reloc_mapper_;
   }
 
@@ -409,15 +409,15 @@ class Dwarf_pubnames_table
 {
  public:
   Dwarf_pubnames_table(Dwarf_info_reader* dwinfo, bool is_pubtypes)
-    : dwinfo_(dwinfo), buffer_(NULL), buffer_end_(NULL), owns_buffer_(false),
-      offset_size_(0), pinfo_(NULL), end_of_table_(NULL),
+    : dwinfo_(dwinfo), buffer_(nullptr), buffer_end_(nullptr), owns_buffer_(false),
+      offset_size_(0), pinfo_(nullptr), end_of_table_(nullptr),
       is_pubtypes_(is_pubtypes), is_gnu_style_(false),
       unit_length_(0), cu_offset_(0)
   { }
 
   ~Dwarf_pubnames_table()
   {
-    if (this->owns_buffer_ && this->buffer_ != NULL)
+    if (this->owns_buffer_ && this->buffer_ != nullptr)
       delete[] this->buffer_;
   }
 
@@ -515,7 +515,7 @@ class Dwarf_die
   unsigned int
   tag() const
   {
-    if (this->abbrev_code_ == NULL)
+    if (this->abbrev_code_ == nullptr)
       return 0;
     return this->abbrev_code_->tag;
   }
@@ -524,7 +524,7 @@ class Dwarf_die
   bool
   has_children() const
   {
-    gold_assert(this->abbrev_code_ != NULL);
+    gold_assert(this->abbrev_code_ != nullptr);
     return this->abbrev_code_->has_children;
   }
 
@@ -532,7 +532,7 @@ class Dwarf_die
   bool
   has_sibling_attribute() const
   {
-    gold_assert(this->abbrev_code_ != NULL);
+    gold_assert(this->abbrev_code_ != nullptr);
     return this->abbrev_code_->has_sibling_attribute;
   }
 
@@ -544,7 +544,7 @@ class Dwarf_die
   const char*
   name()
   {
-    if (this->name_ == NULL)
+    if (this->name_ == nullptr)
       this->set_name();
     return this->name_;
   }
@@ -554,7 +554,7 @@ class Dwarf_die
   const char*
   linkage_name()
   {
-    if (this->linkage_name_ == NULL)
+    if (this->linkage_name_ == nullptr)
       this->set_linkage_name();
     return this->linkage_name_;
   }
@@ -711,10 +711,10 @@ class Dwarf_info_reader
     : object_(object), symtab_(symtab),
       symtab_size_(symtab_size), shndx_(shndx), reloc_shndx_(reloc_shndx),
       reloc_type_(reloc_type), abbrev_shndx_(0), string_shndx_(0),
-      buffer_(NULL), buffer_end_(NULL), cu_offset_(0), cu_length_(0),
+      buffer_(nullptr), buffer_end_(nullptr), cu_offset_(0), cu_length_(0),
       offset_size_(0), address_size_(0), cu_version_(0),
       abbrev_table_(), ranges_table_(this),
-      reloc_mapper_(NULL), string_buffer_(NULL), string_buffer_end_(NULL),
+      reloc_mapper_(nullptr), string_buffer_(nullptr), string_buffer_end_(nullptr),
       owns_string_buffer_(false), string_output_section_offset_(0)
   {
     // For DWARF 4, we infer the unit type from the section name.
@@ -726,9 +726,9 @@ class Dwarf_info_reader
   virtual
   ~Dwarf_info_reader()
   {
-    if (this->reloc_mapper_ != NULL)
+    if (this->reloc_mapper_ != nullptr)
       delete this->reloc_mapper_;
-    if (this->owns_string_buffer_ && this->string_buffer_ != NULL)
+    if (this->owns_string_buffer_ && this->string_buffer_ != nullptr)
       delete[] this->string_buffer_;
   }
 
@@ -757,7 +757,7 @@ class Dwarf_info_reader
     const unsigned char* p = this->buffer_ + this->cu_offset_ + offset;
     if (this->check_buffer(p + 1))
       return p;
-    return NULL;
+    return nullptr;
   }
 
   // Read a possibly unaligned integer of SIZE.
@@ -1002,7 +1002,7 @@ class Dwarf_line_info
   // file and line-number, as a string: "file:lineno".  If unable
   // to do the mapping, returns the empty string.  You must call
   // read_line_mappings() before calling this function.  If
-  // 'other_lines' is non-NULL, fills that in with other line
+  // 'other_lines' is non-nullptr, fills that in with other line
   // numbers assigned to the same offset.
   std::string
   addr2line(unsigned int shndx, off_t offset,
@@ -1042,9 +1042,9 @@ class Sized_dwarf_line_info : public Dwarf_line_info
   virtual
   ~Sized_dwarf_line_info()
   {
-    if (this->buffer_start_ != NULL)
+    if (this->buffer_start_ != nullptr)
       delete[] this->buffer_start_;
-    if (this->str_buffer_start_ != NULL)
+    if (this->str_buffer_start_ != nullptr)
       delete[] this->str_buffer_start_;
   }
 

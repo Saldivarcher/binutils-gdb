@@ -86,7 +86,7 @@ static const int INCREMENTAL_SHLIB_SYM_FLAGS_SHIFT = 30;
 bool
 can_incremental_update(unsigned int sh_type);
 
-// Create an Incremental_binary object for FILE. Returns NULL is this is not
+// Create an Incremental_binary object for FILE. Returns nullptr is this is not
 // possible, e.g. FILE is not an ELF file or has an unsupported target.
 
 Incremental_binary*
@@ -177,25 +177,25 @@ class Incremental_input_entry
   { return this->as_needed_; }
 
   // Return a pointer to the derived Incremental_script_entry object.
-  // Return NULL for input entries that are not script files.
+  // Return nullptr for input entries that are not script files.
   Incremental_script_entry*
   script_entry()
   { return this->do_script_entry(); }
 
   // Return a pointer to the derived Incremental_object_entry object.
-  // Return NULL for input entries that are not object files.
+  // Return nullptr for input entries that are not object files.
   Incremental_object_entry*
   object_entry()
   { return this->do_object_entry(); }
 
   // Return a pointer to the derived Incremental_dynobj_entry object.
-  // Return NULL for input entries that are not shared object files.
+  // Return nullptr for input entries that are not shared object files.
   Incremental_dynobj_entry*
   dynobj_entry()
   { return this->do_dynobj_entry(); }
 
   // Return a pointer to the derived Incremental_archive_entry object.
-  // Return NULL for input entries that are not archive files.
+  // Return nullptr for input entries that are not archive files.
   Incremental_archive_entry*
   archive_entry()
   { return this->do_archive_entry(); }
@@ -206,28 +206,28 @@ class Incremental_input_entry
   do_type() const = 0;
 
   // Return a pointer to the derived Incremental_script_entry object.
-  // Return NULL for input entries that are not script files.
+  // Return nullptr for input entries that are not script files.
   virtual Incremental_script_entry*
   do_script_entry()
-  { return NULL; }
+  { return nullptr; }
 
   // Return a pointer to the derived Incremental_object_entry object.
-  // Return NULL for input entries that are not object files.
+  // Return nullptr for input entries that are not object files.
   virtual Incremental_object_entry*
   do_object_entry()
-  { return NULL; }
+  { return nullptr; }
 
   // Return a pointer to the derived Incremental_dynobj_entry object.
-  // Return NULL for input entries that are not shared object files.
+  // Return nullptr for input entries that are not shared object files.
   virtual Incremental_dynobj_entry*
   do_dynobj_entry()
-  { return NULL; }
+  { return nullptr; }
 
   // Return a pointer to the derived Incremental_archive_entry object.
-  // Return NULL for input entries that are not archive files.
+  // Return nullptr for input entries that are not archive files.
   virtual Incremental_archive_entry*
   do_archive_entry()
-  { return NULL; }
+  { return nullptr; }
 
  private:
   // Key of the filename string in the section stringtable.
@@ -264,12 +264,12 @@ class Script_info
  public:
   Script_info(const std::string& filename)
     : filename_(filename), input_file_index_(0),
-      incremental_script_entry_(NULL)
+      incremental_script_entry_(nullptr)
   { }
 
   Script_info(const std::string& filename, unsigned int input_file_index)
     : filename_(filename), input_file_index_(input_file_index),
-      incremental_script_entry_(NULL)
+      incremental_script_entry_(nullptr)
   { }
 
   // Store a pointer to the incremental information for this script.
@@ -560,9 +560,9 @@ class Incremental_inputs
 
   Incremental_inputs()
     : inputs_(), command_line_(), command_line_key_(0),
-      strtab_(new Stringpool()), current_object_(NULL),
-      current_object_entry_(NULL), inputs_section_(NULL),
-      symtab_section_(NULL), relocs_section_(NULL),
+      strtab_(new Stringpool()), current_object_(nullptr),
+      current_object_entry_(nullptr), inputs_section_(nullptr),
+      symtab_section_(nullptr), relocs_section_(nullptr),
       reloc_count_(0)
   { }
 
@@ -581,7 +581,7 @@ class Incremental_inputs
   void
   report_archive_end(Library_base* arch);
 
-  // Record the info for object file OBJ.  If ARCH is not NULL,
+  // Record the info for object file OBJ.  If ARCH is not nullptr,
   // attach the object file to the archive.
   void
   report_object(Object* obj, unsigned int arg_serial, Library_base* arch,
@@ -774,7 +774,7 @@ class Incremental_inputs_reader
   static const unsigned int global_sym_entry_size = 20;
 
   Incremental_inputs_reader()
-    : p_(NULL), strtab_(NULL, 0), input_file_count_(0)
+    : p_(nullptr), strtab_(nullptr, 0), input_file_count_(0)
   { }
 
   Incremental_inputs_reader(const unsigned char* p,
@@ -1155,7 +1155,7 @@ class Incremental_inputs_reader
     const char* s;
     if (this->strtab_.get_c_string(offset, &s))
       return s;
-    return NULL;
+    return nullptr;
   }
 
   // Base address of the .gnu_incremental_inputs section.
@@ -1173,7 +1173,7 @@ class Incremental_symtab_reader
 {
  public:
   Incremental_symtab_reader()
-    : p_(NULL), len_(0)
+    : p_(nullptr), len_(0)
   { }
 
   Incremental_symtab_reader(const unsigned char* p, off_t len)
@@ -1214,7 +1214,7 @@ class Incremental_relocs_reader
   static const unsigned int reloc_size = 8 + 2 * field_size;
 
   Incremental_relocs_reader()
-    : p_(NULL), len_(0)
+    : p_(nullptr), len_(0)
   { }
 
   Incremental_relocs_reader(const unsigned char* p, off_t len)
@@ -1268,7 +1268,7 @@ class Incremental_got_plt_reader
 {
  public:
   Incremental_got_plt_reader()
-    : p_(NULL), got_count_(0), got_desc_p_(NULL), plt_desc_p_(NULL)
+    : p_(nullptr), got_count_(0), got_desc_p_(nullptr), plt_desc_p_(nullptr)
   { }
 
   Incremental_got_plt_reader(const unsigned char* p) : p_(p)
@@ -1434,7 +1434,7 @@ class Incremental_binary
   file_has_changed(unsigned int n) const
   { return this->do_file_has_changed(n); }
 
-  // Return the Input_argument for input file N.  Returns NULL if
+  // Return the Input_argument for input file N.  Returns nullptr if
   // the Input_argument is not available.
   const Input_argument*
   get_input_argument(unsigned int n) const
@@ -1442,7 +1442,7 @@ class Incremental_binary
     const Input_reader* input_file = this->do_get_input_reader(n);
     unsigned int arg_serial = input_file->arg_serial();
     if (arg_serial == 0 || arg_serial > this->input_args_map_.size())
-      return NULL;
+      return nullptr;
     return this->input_args_map_[arg_serial - 1];
   }
 
@@ -1789,7 +1789,7 @@ class Sized_incremental_binary : public Incremental_binary
   elfcpp::Elf_file<size, big_endian, Incremental_binary> elf_file_;
 
   // Vector of pointers to the input objects for the unchanged files.
-  // For replaced files, the corresponding pointer is NULL.
+  // For replaced files, the corresponding pointer is nullptr.
   std::vector<Sized_relobj_incr<size, big_endian>*> input_objects_;
 
   // Map section index to an Output_section in the updated layout.
@@ -2196,7 +2196,7 @@ class Incremental_library : public Library_base
  public:
   Incremental_library(const char* filename, unsigned int input_file_index,
 		      const Incremental_binary::Input_reader* input_reader)
-    : Library_base(NULL), filename_(filename),
+    : Library_base(nullptr), filename_(filename),
       input_file_index_(input_file_index), input_reader_(input_reader),
       unused_symbols_(), is_reported_(false)
   { }

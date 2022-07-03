@@ -93,7 +93,7 @@ Target::do_make_elf_object_implementation(
     {
       gold_error(_("%s: unsupported ELF file type %d"),
 		 name.c_str(), et);
-      return NULL;
+      return nullptr;
     }
 }
 

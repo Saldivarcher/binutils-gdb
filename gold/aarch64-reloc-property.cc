@@ -129,7 +129,7 @@ AArch64_reloc_property_table::AArch64_reloc_property_table()
 {
   const bool Y(true), N(false);
   for (unsigned int i = 0; i < Property_table_size; ++i)
-    table_[i] = NULL;
+    table_[i] = nullptr;
 
 #define RL_CHECK_ALIGN2   (1  << 16)
 #define RL_CHECK_ALIGN4   (3  << 16)
@@ -167,7 +167,7 @@ AArch64_reloc_property_table::reloc_name_in_error_message(unsigned int code)
   int tidx = code_to_array_index(code);
   const AArch64_reloc_property* arp = this->table_[tidx];
 
-  if (arp == NULL)
+  if (arp == nullptr)
     {
       char buffer[100];
       sprintf(buffer, _("invalid reloc %u"), code);
@@ -179,7 +179,7 @@ AArch64_reloc_property_table::reloc_name_in_error_message(unsigned int code)
   gold_assert(reloc_type == AArch64_reloc_property::RT_STATIC
 	      || !arp->is_implemented());
 
-  const char* prefix = NULL;
+  const char* prefix = nullptr;
   switch (reloc_type)
     {
     case AArch64_reloc_property::RT_STATIC:

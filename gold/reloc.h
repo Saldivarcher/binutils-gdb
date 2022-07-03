@@ -258,7 +258,7 @@ class Relocatable_relocs
   };
 
   Relocatable_relocs()
-    : reloc_strategies_(), output_reloc_count_(0), posd_(NULL)
+    : reloc_strategies_(), output_reloc_count_(0), posd_(nullptr)
   { }
 
   // Record the number of relocs.
@@ -279,7 +279,7 @@ class Relocatable_relocs
   void
   set_output_data(Output_data* posd)
   {
-    gold_assert(this->posd_ == NULL);
+    gold_assert(this->posd_ == nullptr);
     this->posd_ = posd;
   }
 
@@ -1143,7 +1143,7 @@ class Track_relocs
 {
  public:
   Track_relocs()
-    : prelocs_(NULL), len_(0), pos_(0), reloc_size_(0)
+    : prelocs_(nullptr), len_(0), pos_(0), reloc_size_(0)
   { }
 
   // Initialize the Track_relocs object.  OBJECT is the object holding

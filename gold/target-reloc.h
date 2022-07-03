@@ -74,7 +74,7 @@ scan_relocs(
 
       if (r_sym < local_count)
 	{
-	  gold_assert(plocal_syms != NULL);
+	  gold_assert(plocal_syms != nullptr);
 	  typename elfcpp::Sym<size, big_endian> lsym(plocal_syms
 						      + r_sym * sym_size);
 	  unsigned int shndx = lsym.get_st_shndx();
@@ -103,7 +103,7 @@ scan_relocs(
       else
 	{
 	  Symbol* gsym = object->global_symbol(r_sym);
-	  gold_assert(gsym != NULL);
+	  gold_assert(gsym != nullptr);
 	  if (gsym->is_forwarder())
 	    gsym = symtab->resolve_forwards(gsym);
 
@@ -176,7 +176,7 @@ inline bool
 issue_undefined_symbol_error(const Symbol* sym)
 {
   // We only report global symbols.
-  if (sym == NULL)
+  if (sym == nullptr)
     return false;
 
   // We only report undefined symbols.
@@ -200,7 +200,7 @@ issue_undefined_symbol_error(const Symbol* sym)
   // See if we've been told to ignore whether this symbol is
   // undefined.
   const char* const u = parameters->options().unresolved_symbols();
-  if (u != NULL)
+  if (u != nullptr)
     {
       if (strcmp(u, "ignore-all") == 0)
 	return false;
@@ -236,7 +236,7 @@ issue_discarded_error(
 {
   Sized_relobj_file<size, big_endian>* object = relinfo->object;
 
-  if (gsym == NULL)
+  if (gsym == nullptr)
     {
       gold_error_at_location(
 	  relinfo, shndx, offset,
@@ -265,7 +265,7 @@ issue_discarded_error(
       if (key_symndx != 0)
 	gold_info(_("  section group signature: \"%s\""),
 		  object->get_symbol_name(key_symndx));
-      if (kept_obj != NULL)
+      if (kept_obj != nullptr)
 	gold_info(_("  prevailing definition is from %s"),
 		  kept_obj->name().c_str());
     }
@@ -296,8 +296,8 @@ issue_discarded_error(
 // the output section.
 
 // RELOC_SYMBOL_CHANGES is used for -fsplit-stack support.  If it is
-// not NULL, it is a vector indexed by relocation index.  If that
-// entry is not NULL, it points to a global symbol which used as the
+// not nullptr, it is a vector indexed by relocation index.  If that
+// entry is not nullptr, it points to a global symbol which used as the
 // symbol for the relocation, ignoring the symbol index in the
 // relocation.
 
@@ -352,12 +352,12 @@ relocate_section(
       const Symbol_value<size> *psymval;
       bool is_defined_in_discarded_section;
       unsigned int shndx;
-      const Symbol* gsym = NULL;
+      const Symbol* gsym = nullptr;
       if (r_sym < local_count
-	  && (reloc_symbol_changes == NULL
-	      || (*reloc_symbol_changes)[i] == NULL))
+	  && (reloc_symbol_changes == nullptr
+	      || (*reloc_symbol_changes)[i] == nullptr))
 	{
-	  sym = NULL;
+	  sym = nullptr;
 	  psymval = object->local_symbol(r_sym);
 
           // If the local symbol belongs to a section we are discarding,
@@ -375,13 +375,13 @@ relocate_section(
 	}
       else
 	{
-	  if (reloc_symbol_changes != NULL
-	      && (*reloc_symbol_changes)[i] != NULL)
+	  if (reloc_symbol_changes != nullptr
+	      && (*reloc_symbol_changes)[i] != nullptr)
 	    gsym = (*reloc_symbol_changes)[i];
 	  else
 	    {
 	      gsym = object->global_symbol(r_sym);
-	      gold_assert(gsym != NULL);
+	      gold_assert(gsym != nullptr);
 	      if (gsym->is_forwarder())
 		gsym = relinfo->symtab->resolve_forwards(gsym);
 	    }
@@ -438,19 +438,19 @@ relocate_section(
 	}
 
       // If OFFSET is out of range, still let the target decide to
-      // ignore the relocation.  Pass in NULL as the VIEW argument so
+      // ignore the relocation.  Pass in nullptr as the VIEW argument so
       // that it can return quickly without trashing an invalid memory
       // address.
       unsigned char *v = view + offset;
       if (offset < 0 || static_cast<section_size_type>(offset) >= view_size)
-	v = NULL;
+	v = nullptr;
 
       if (!relocate.relocate(relinfo, Classify_reloc::sh_type, target,
 			     output_section, i, prelocs, sym, psymval,
 			     v, view_address + offset, view_size))
 	continue;
 
-      if (v == NULL)
+      if (v == nullptr)
 	{
 	  gold_error_at_location(relinfo, i, offset,
 				 _("reloc has bad offset %zu"),
@@ -460,12 +460,12 @@ relocate_section(
 
       if (issue_undefined_symbol_error(sym))
 	gold_undefined_symbol_at_location(sym, relinfo, i, offset);
-      else if (sym != NULL
+      else if (sym != nullptr
 	       && sym->visibility() != elfcpp::STV_DEFAULT
 	       && (sym->is_strong_undefined() || sym->is_from_dynobj()))
 	visibility_error(sym);
 
-      if (sym != NULL && sym->has_warning())
+      if (sym != nullptr && sym->has_warning())
 	relinfo->symtab->issue_warning(sym, relinfo, i, offset);
     }
 }
@@ -505,7 +505,7 @@ apply_relocation(const Relocate_info<size, big_endian>* relinfo,
     symval.set_is_ifunc_symbol();
 
   Relocate relocate;
-  relocate.relocate(relinfo, elfcpp::SHT_RELA, target, NULL,
+  relocate.relocate(relinfo, elfcpp::SHT_RELA, target, nullptr,
 		    -1U, relbuf, sym, &symval,
 		    view + r_offset, address + r_offset, view_size);
 }
@@ -738,7 +738,7 @@ scan_relocatable_relocs(
 	    strategy = scan.global_strategy(r_type, object, r_sym);
 	  else
 	    {
-	      gold_assert(plocal_syms != NULL);
+	      gold_assert(plocal_syms != nullptr);
 	      typename elfcpp::Sym<size, big_endian> lsym(plocal_syms
 							  + r_sym * sym_size);
 	      unsigned int shndx = lsym.get_st_shndx();
@@ -828,7 +828,7 @@ relocate_relocs(
 
       // Get the new symbol index.
 
-      Output_section* os = NULL;
+      Output_section* os = nullptr;
       unsigned int new_symndx;
       if (r_sym < local_count)
 	{
@@ -862,7 +862,7 @@ relocate_relocs(
 		  object->local_symbol_input_shndx(r_sym, &is_ordinary);
 		gold_assert(is_ordinary);
 		os = object->output_section(shndx);
-		gold_assert(os != NULL);
+		gold_assert(os != nullptr);
 		gold_assert(os->needs_symtab_index());
 		new_symndx = os->symtab_index();
 	      }
@@ -875,7 +875,7 @@ relocate_relocs(
       else
 	{
 	  const Symbol* gsym = object->global_symbol(r_sym);
-	  gold_assert(gsym != NULL);
+	  gold_assert(gsym != nullptr);
 	  if (gsym->is_forwarder())
 	    gsym = relinfo->symtab->resolve_forwards(gsym);
 
@@ -947,7 +947,7 @@ relocate_relocs(
 		// link, we need to adjust the addend.
 		if (!relocatable)
 		  {
-		    gold_assert(os != NULL);
+		    gold_assert(os != nullptr);
 		    addend -= os->address();
 		  }
 		Classify_reloc::put_r_addend(&reloc_write, addend);

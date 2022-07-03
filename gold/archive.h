@@ -48,7 +48,7 @@ class Incremental_archive_entry;
 struct Archive_member
 {
   Archive_member()
-      : obj_(NULL), sd_(NULL), arg_serial_(0)
+      : obj_(nullptr), sd_(nullptr), arg_serial_(0)
   { }
   Archive_member(Object* obj, Read_symbols_data* sd)
       : obj_(obj), sd_(sd), arg_serial_(0)
@@ -67,7 +67,7 @@ class Library_base
 {
  public:
   Library_base(Task* task)
-    : task_(task), incremental_info_(NULL)
+    : task_(task), incremental_info_(nullptr)
   { }
 
   virtual
@@ -449,7 +449,7 @@ class Add_archive_symbols : public Task
   std::string
   get_name() const
   {
-    if (this->archive_ == NULL)
+    if (this->archive_ == nullptr)
       return "Add_archive_symbols";
     return "Add_archive_symbols " + this->archive_->file().filename();
   }
@@ -528,7 +528,7 @@ class Add_lib_group_symbols : public Task
                         Input_objects* input_objects,
                         Lib_group* lib, Task_token* next_blocker)
       : symtab_(symtab), layout_(layout), input_objects_(input_objects),
-        lib_(lib), readsyms_blocker_(NULL), this_blocker_(NULL),
+        lib_(lib), readsyms_blocker_(nullptr), this_blocker_(nullptr),
         next_blocker_(next_blocker)
   { }
 
@@ -549,7 +549,7 @@ class Add_lib_group_symbols : public Task
   void
   set_blocker(Task_token* readsyms_blocker, Task_token* this_blocker)
   {
-    gold_assert(this->readsyms_blocker_ == NULL && this->this_blocker_ == NULL);
+    gold_assert(this->readsyms_blocker_ == nullptr && this->this_blocker_ == nullptr);
     this->readsyms_blocker_ = readsyms_blocker;
     this->this_blocker_ = this_blocker;
   }

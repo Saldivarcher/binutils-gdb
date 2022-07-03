@@ -82,13 +82,13 @@ class Expression
   // Return the value of an expression which is permitted to refer to
   // the dot symbol.  DOT_VALUE is the absolute value of the dot
   // symbol.  DOT_SECTION is the section in which dot is defined; it
-  // should be NULL if the dot symbol has an absolute value (e.g., is
+  // should be nullptr if the dot symbol has an absolute value (e.g., is
   // defined in a SECTIONS clause outside of any output section
   // definition).  This sets *RESULT_SECTION to indicate where the
   // value is defined.  If the value is absolute *RESULT_SECTION will
-  // be NULL.  Note that the returned value is still an absolute
+  // be nullptr.  Note that the returned value is still an absolute
   // value; to get a section relative value the caller must subtract
-  // the section address.  If RESULT_ALIGNMENT is not NULL, this sets
+  // the section address.  If RESULT_ALIGNMENT is not nullptr, this sets
   // *RESULT_ALIGNMENT to the alignment of the value of that alignment
   // is larger than *RESULT_ALIGNMENT; this will only be non-zero if
   // this is an ALIGN expression.  If IS_SECTION_DOT_ASSIGMENT is true,
@@ -192,7 +192,7 @@ class Version_script_info
   symbol_is_local(const char* symbol) const
   {
     bool is_global;
-    return (this->get_symbol_version(symbol, NULL, &is_global)
+    return (this->get_symbol_version(symbol, nullptr, &is_global)
 	    && !is_global);
   }
 
@@ -249,7 +249,7 @@ class Version_script_info
   {
     Version_tree_match(const Version_tree* r, bool ig,
 		       const Version_expression* e)
-      : real(r), is_global(ig), expression(e), ambiguous(NULL)
+      : real(r), is_global(ig), expression(e), ambiguous(nullptr)
     { }
 
     // The Version_tree that we return.
@@ -260,7 +260,7 @@ class Version_script_info
     // Point back to the Version_expression for which we created this
     // match.
     const Version_expression* expression;
-    // If not NULL, another Version_tree that defines the symbol.
+    // If not nullptr, another Version_tree that defines the symbol.
     const Version_tree* ambiguous;
   };
 
@@ -272,7 +272,7 @@ class Version_script_info
   struct Glob
   {
     Glob()
-      : expression(NULL), version(NULL), is_global(false)
+      : expression(nullptr), version(nullptr), is_global(false)
     { }
 
     Glob(const Version_expression* e, const Version_tree* v, bool ig)
@@ -337,7 +337,7 @@ class Symbol_assignment
   Symbol_assignment(const char* name, size_t namelen, bool is_defsym,
 		    Expression* val, bool provide, bool hidden)
     : name_(name, namelen), val_(val), is_defsym_(is_defsym),
-      provide_(provide), hidden_(hidden), sym_(NULL)
+      provide_(provide), hidden_(hidden), sym_(nullptr)
   { }
 
   // Add the symbol to the symbol table.
@@ -543,7 +543,7 @@ class Script_options
 
   // Set section addresses using a SECTIONS clause.  Return the
   // segment which should hold the file header and segment headers;
-  // this may return NULL, in which case the headers are not in a
+  // this may return nullptr, in which case the headers are not in a
   // loadable segment.
   Output_segment*
   set_section_addresses(Symbol_table*, Layout*);

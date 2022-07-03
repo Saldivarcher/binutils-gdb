@@ -64,7 +64,7 @@ class Output_file
 
   // Try to open an existing file. Returns false if the file doesn't
   // exist, has a size of 0 or can't be mmaped.  This method is
-  // thread-unsafe.  If BASE_NAME is not NULL, use the contents of
+  // thread-unsafe.  If BASE_NAME is not nullptr, use the contents of
   // that file as the base for incremental linking.
   bool
   open_base_file(const char* base_name, bool writable);
@@ -455,11 +455,11 @@ class Output_data
   // Return the output section, if there is one.
   virtual Output_section*
   do_output_section()
-  { return NULL; }
+  { return nullptr; }
 
   virtual const Output_section*
   do_output_section() const
-  { return NULL; }
+  { return nullptr; }
 
   // Return the output section index, if there is an output section.
   virtual unsigned int
@@ -758,7 +758,7 @@ class Output_section_data : public Output_data
  public:
   Output_section_data(off_t data_size, uint64_t addralign,
 		      bool is_data_size_fixed)
-    : Output_data(), output_section_(NULL), addralign_(addralign)
+    : Output_data(), output_section_(nullptr), addralign_(addralign)
   {
     this->set_data_size(data_size);
     if (is_data_size_fixed)
@@ -766,7 +766,7 @@ class Output_section_data : public Output_data
   }
 
   Output_section_data(uint64_t addralign)
-    : Output_data(), output_section_(NULL), addralign_(addralign)
+    : Output_data(), output_section_(nullptr), addralign_(addralign)
   { }
 
   // Return the output section.
@@ -1114,7 +1114,7 @@ class Output_data_strtab : public Output_section_data
 
 // A relocation can be against a global symbol, a local symbol, a
 // local section symbol, an output section, or the undefined symbol at
-// index 0.  We represent the latter by using a NULL global symbol.
+// index 0.  We represent the latter by using a nullptr global symbol.
 
 template<int sh_type, bool dynamic, int size, bool big_endian>
 class Output_reloc;
@@ -1250,7 +1250,7 @@ class Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>
   get_relobj() const
   {
     if (this->shndx_ == INVALID_CODE)
-      return NULL;
+      return nullptr;
     return this->u2_.relobj;
   }
 
@@ -1310,7 +1310,7 @@ class Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>
     // be templatized, so we use Sized_relobj here.
     Sized_relobj<size, big_endian>* relobj;
     // For a global symbol (this->local_sym_index_ == GSYM_CODE, the
-    // symbol.  If this is NULL, it indicates a relocation against the
+    // symbol.  If this is nullptr, it indicates a relocation against the
     // undefined 0 symbol.
     Symbol* gsym;
     // For a relocation against an output section
@@ -1326,7 +1326,7 @@ class Output_reloc<elfcpp::SHT_REL, dynamic, size, big_endian>
     // input section being used to specify the reloc address.
     Sized_relobj<size, big_endian>* relobj;
     // If this->shndx_ is INVALID_CODE, the output data being used to
-    // specify the reloc address.  This may be NULL if the reloc
+    // specify the reloc address.  This may be nullptr if the reloc
     // address is absolute.
     Output_data* od;
   } u2_;
@@ -1671,7 +1671,7 @@ class Output_data_reloc_base : public Output_data_reloc_generic
     if (reloc.is_relative())
       this->bump_relative_reloc_count();
     Sized_relobj<size, big_endian>* relobj = reloc.get_relobj();
-    if (relobj != NULL)
+    if (relobj != nullptr)
       relobj->add_dyn_reloc(this->relocs_.size() - 1);
   }
 
@@ -2742,7 +2742,7 @@ class Output_data_dynamic : public Output_section_data
   // Add a new dynamic entry with a string.
   void
   add_string(elfcpp::DT tag, const char* str)
-  { this->add_entry(Dynamic_entry(tag, this->pool_->add(str, true, NULL))); }
+  { this->add_entry(Dynamic_entry(tag, this->pool_->add(str, true, nullptr))); }
 
   void
   add_string(elfcpp::DT tag, const std::string& str)
@@ -2793,7 +2793,7 @@ class Output_data_dynamic : public Output_section_data
 		: DYNAMIC_SECTION_ADDRESS)
     {
       this->u_.od = od;
-      this->od2 = NULL;
+      this->od2 = nullptr;
     }
 
     // Create an entry with the size of two sections.
@@ -3056,7 +3056,7 @@ class Output_section_lookup_maps
     this->is_valid_ = true;
   }
 
-  // Find a merge section by merge section properties.  Return NULL if none
+  // Find a merge section by merge section properties.  Return nullptr if none
   // is found.
   Output_merge_base*
   find_merge_section(const Merge_section_properties& msp) const
@@ -3064,7 +3064,7 @@ class Output_section_lookup_maps
     gold_assert(this->is_valid_);
     Merge_sections_by_properties::const_iterator p =
       this->merge_sections_by_properties_.find(msp);
-    return p != this->merge_sections_by_properties_.end() ? p->second : NULL;
+    return p != this->merge_sections_by_properties_.end() ? p->second : nullptr;
   }
 
   // Add a merge section pointed by POMB with properties MSP.
@@ -3085,7 +3085,7 @@ class Output_section_lookup_maps
     gold_assert(this->is_valid_);
     Relaxed_input_sections_by_id::const_iterator p =
       this->relaxed_input_sections_by_id_.find(Const_section_id(object, shndx));
-    return p != this->relaxed_input_sections_by_id_.end() ? p->second : NULL;
+    return p != this->relaxed_input_sections_by_id_.end() ? p->second : nullptr;
   }
 
   // Add a relaxed input section pointed by POMB and whose original input
@@ -3312,7 +3312,7 @@ class Output_section : public Output_data
   void
   set_link(unsigned int v)
   {
-    gold_assert(this->link_section_ == NULL
+    gold_assert(this->link_section_ == nullptr
 		&& !this->should_link_to_symtab_
 		&& !this->should_link_to_dynsym_);
     this->link_ = v;
@@ -3322,7 +3322,7 @@ class Output_section : public Output_data
   void
   set_should_link_to_symtab()
   {
-    gold_assert(this->link_section_ == NULL
+    gold_assert(this->link_section_ == nullptr
 		&& this->link_ == 0
 		&& !this->should_link_to_dynsym_);
     this->should_link_to_symtab_ = true;
@@ -3332,7 +3332,7 @@ class Output_section : public Output_data
   void
   set_should_link_to_dynsym()
   {
-    gold_assert(this->link_section_ == NULL
+    gold_assert(this->link_section_ == nullptr
 		&& this->link_ == 0
 		&& !this->should_link_to_symtab_);
     this->should_link_to_dynsym_ = true;
@@ -3342,8 +3342,8 @@ class Output_section : public Output_data
   unsigned int
   info() const
   {
-    gold_assert(this->info_section_ == NULL
-		&& this->info_symndx_ == NULL);
+    gold_assert(this->info_section_ == nullptr
+		&& this->info_symndx_ == nullptr);
     return this->info_;
   }
 
@@ -3351,10 +3351,10 @@ class Output_section : public Output_data
   void
   set_info_section(const Output_section* os)
   {
-    gold_assert((this->info_section_ == NULL
+    gold_assert((this->info_section_ == nullptr
 		 || (this->info_section_ == os
 		     && this->info_uses_section_index_))
-		&& this->info_symndx_ == NULL
+		&& this->info_symndx_ == nullptr
 		&& this->info_ == 0);
     this->info_section_ = os;
     this->info_uses_section_index_= true;
@@ -3364,8 +3364,8 @@ class Output_section : public Output_data
   void
   set_info_symndx(const Symbol* sym)
   {
-    gold_assert(this->info_section_ == NULL
-		&& (this->info_symndx_ == NULL
+    gold_assert(this->info_section_ == nullptr
+		&& (this->info_symndx_ == nullptr
 		    || this->info_symndx_ == sym)
 		&& this->info_ == 0);
     this->info_symndx_ = sym;
@@ -3375,10 +3375,10 @@ class Output_section : public Output_data
   void
   set_info_section_symndx(const Output_section* os)
   {
-    gold_assert((this->info_section_ == NULL
+    gold_assert((this->info_section_ == nullptr
 		 || (this->info_section_ == os
 		     && !this->info_uses_section_index_))
-		&& this->info_symndx_ == NULL
+		&& this->info_symndx_ == nullptr
 		&& this->info_ == 0);
     this->info_section_ = os;
     this->info_uses_section_index_ = false;
@@ -3388,8 +3388,8 @@ class Output_section : public Output_data
   void
   set_info(unsigned int v)
   {
-    gold_assert(this->info_section_ == NULL
-		&& this->info_symndx_ == NULL
+    gold_assert(this->info_section_ == nullptr
+		&& this->info_symndx_ == nullptr
 		&& (this->info_ == 0
 		    || this->info_ == v));
     this->info_ = v;
@@ -3403,7 +3403,7 @@ class Output_section : public Output_data
   void
   checkpoint_set_addralign(uint64_t val)
   {
-    if (this->checkpoint_ != NULL)
+    if (this->checkpoint_ != nullptr)
       this->checkpoint_->set_addralign(val);
   }
 
@@ -3605,7 +3605,7 @@ class Output_section : public Output_data
   unsigned char*
   postprocessing_buffer() const
   {
-    gold_assert(this->postprocessing_buffer_ != NULL);
+    gold_assert(this->postprocessing_buffer_ != nullptr);
     return this->postprocessing_buffer_;
   }
 
@@ -3694,7 +3694,7 @@ class Output_section : public Output_data
       : shndx_(0), p2align_(0)
     {
       this->u1_.data_size = 0;
-      this->u2_.object = NULL;
+      this->u2_.object = nullptr;
     }
 
     // For an ordinary input section.
@@ -4024,7 +4024,7 @@ class Output_section : public Output_data
       const std::vector<Output_relaxed_input_section*>& sections);
 
   // Find a relaxed input section to an input section in OBJECT
-  // with index SHNDX.  Return NULL if none is found.
+  // with index SHNDX.  Return nullptr if none is found.
   const Output_relaxed_input_section*
   find_relaxed_input_section(const Relobj* object, unsigned int shndx) const;
 
@@ -4444,7 +4444,7 @@ class Output_section : public Output_data
 			   uint64_t entsize);
 
   // Find the merge section into which an input section with index SHNDX in
-  // OBJECT has been added.  Return NULL if none found.
+  // OBJECT has been added.  Return nullptr if none found.
   const Output_section_data*
   find_merge_section(const Relobj* object, unsigned int shndx) const;
 
@@ -4482,14 +4482,14 @@ class Output_section : public Output_data
   // The file offset is in the parent class.
   // Set the section link field to the index of this section.
   const Output_data* link_section_;
-  // If link_section_ is NULL, this is the link field.
+  // If link_section_ is nullptr, this is the link field.
   unsigned int link_;
   // Set the section info field to the index of this section.
   const Output_section* info_section_;
-  // If info_section_ is NULL, set the info field to the symbol table
+  // If info_section_ is nullptr, set the info field to the symbol table
   // index of this symbol.
   const Symbol* info_symndx_;
-  // If info_section_ and info_symndx_ are NULL, this is the section
+  // If info_section_ and info_symndx_ are nullptr, this is the section
   // info field.
   unsigned int info_;
   // The section type.
@@ -4735,7 +4735,7 @@ class Output_segment
   first_section_load_address() const
   {
     const Output_section* os = this->first_section();
-    gold_assert(os != NULL);
+    gold_assert(os != nullptr);
     return os->has_load_address() ? os->load_address() : os->address();
   }
 

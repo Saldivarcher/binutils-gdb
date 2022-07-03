@@ -214,7 +214,7 @@ class Stringpool_template
 
   // Add the string S to the pool.  This returns a canonical permanent
   // pointer to the string in the pool.  If COPY is true, the string
-  // is copied into permanent storage.  If PKEY is not NULL, this sets
+  // is copied into permanent storage.  If PKEY is not nullptr, this sets
   // *PKEY to the key for the string.
   const Stringpool_char*
   add(const Stringpool_char* s, bool copy, Key* pkey);
@@ -230,7 +230,7 @@ class Stringpool_template
   add_with_length(const Stringpool_char* s, size_t len, bool copy, Key* pkey);
 
   // If the string S is present in the pool, return the canonical
-  // string pointer.  Otherwise, return NULL.  If PKEY is not NULL,
+  // string pointer.  Otherwise, return nullptr.  If PKEY is not nullptr,
   // set *PKEY to the key.
   const Stringpool_char*
   find(const Stringpool_char* s, Key* pkey) const;
@@ -341,7 +341,7 @@ class Stringpool_template
     // This goes in an STL container, so we need a default
     // constructor.
     Hashkey()
-      : string(NULL), length(0), hash_code(0)
+      : string(nullptr), length(0), hash_code(0)
     { }
 
     // Note that these constructors are relatively expensive, because

@@ -42,7 +42,7 @@ namespace gold
 Task_token*
 Allocate_commons_task::is_runnable()
 {
-  return NULL;
+  return nullptr;
 }
 
 // Release a blocker.
@@ -87,9 +87,9 @@ template<int size>
 bool
 Sort_commons<size>::operator()(const Symbol* pa, const Symbol* pb) const
 {
-  if (pa == NULL)
+  if (pa == nullptr)
     return false;
-  if (pb == NULL)
+  if (pb == nullptr)
     return true;
 
   const Symbol_table* symtab = this->symtab_;
@@ -238,7 +238,7 @@ Symbol_table::do_allocate_commons_list(
 	  *p = sym;
 	}
       if (!sym->is_common())
-	*p = NULL;
+	*p = nullptr;
       else
 	{
 	  any = true;
@@ -296,11 +296,11 @@ Symbol_table::do_allocate_commons_list(
     {
       // When doing an incremental update, we need to allocate each common
       // directly from the output section's free list.
-      poc = NULL;
+      poc = nullptr;
       os = layout->find_output_section(name);
     }
 
-  if (os != NULL)
+  if (os != nullptr)
     {
       if (commons_section_type == COMMONS_SMALL)
 	os->set_is_small_section();
@@ -316,7 +316,7 @@ Symbol_table::do_allocate_commons_list(
        ++p)
     {
       Symbol* sym = *p;
-      if (sym == NULL)
+      if (sym == nullptr)
 	break;
 
       // Because we followed forwarding symbols above, but we didn't
@@ -334,10 +334,10 @@ Symbol_table::do_allocate_commons_list(
       // Record the symbol in the map file now, before we change its
       // value.  Pass the size in separately so that we don't have to
       // templatize the map code, which is not performance sensitive.
-      if (mapfile != NULL)
+      if (mapfile != nullptr)
 	mapfile->report_allocate_common(sym, ssym->symsize());
 
-      if (poc != NULL)
+      if (poc != nullptr)
 	{
 	  off = align_address(off, ssym->value());
 	  ssym->allocate_common(poc, off);
@@ -355,7 +355,7 @@ Symbol_table::do_allocate_commons_list(
 	}
     }
 
-  if (poc != NULL)
+  if (poc != nullptr)
     poc->set_current_data_size(off);
 
   commons->clear();

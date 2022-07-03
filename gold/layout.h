@@ -229,7 +229,7 @@ class Kept_section
 
  public:
   Kept_section()
-    : object_(NULL), shndx_(0), is_comdat_(false), is_group_name_(false)
+    : object_(nullptr), shndx_(0), is_comdat_(false), is_group_name_(false)
   { this->u_.linkonce_size = 0; }
 
   // We need to support copies for the signature map in the Layout
@@ -258,7 +258,7 @@ class Kept_section
   void
   set_object(Relobj* object)
   {
-    gold_assert(this->object_ == NULL);
+    gold_assert(this->object_ == nullptr);
     this->object_ = object;
   }
 
@@ -856,7 +856,7 @@ class Layout
   output_file_size() const
   { return this->output_file_size_; }
 
-  // Return the TLS segment.  This will return NULL if there isn't
+  // Return the TLS segment.  This will return nullptr if there isn't
   // one.
   Output_segment*
   tls_segment() const
@@ -866,7 +866,7 @@ class Layout
   Output_section*
   symtab_section() const
   {
-    gold_assert(this->symtab_section_ != NULL);
+    gold_assert(this->symtab_section_ != nullptr);
     return this->symtab_section_;
   }
 
@@ -882,7 +882,7 @@ class Layout
   Output_section*
   dynsym_section() const
   {
-    gold_assert(this->dynsym_section_ != NULL);
+    gold_assert(this->dynsym_section_ != nullptr);
     return this->dynsym_section_;
   }
 
@@ -905,12 +905,12 @@ class Layout
   void
   write_sections_after_input_sections(Output_file* of);
 
-  // Return an output section named NAME, or NULL if there is none.
+  // Return an output section named NAME, or nullptr if there is none.
   Output_section*
   find_output_section(const char* name) const;
 
   // Return an output segment of type TYPE, with segment flags SET set
-  // and segment flags CLEAR clear.  Return NULL if there is none.
+  // and segment flags CLEAR clear.  Return nullptr if there is none.
   Output_segment*
   find_output_segment(elfcpp::PT type, elfcpp::Elf_Word set,
 		      elfcpp::Elf_Word clear) const;
@@ -938,7 +938,7 @@ class Layout
   script_options() const
   { return this->script_options_; }
 
-  // Return the object managing inputs in incremental build. NULL in
+  // Return the object managing inputs in incremental build. nullptr in
   // non-incremental builds.
   Incremental_inputs*
   incremental_inputs() const
@@ -1077,7 +1077,7 @@ class Layout
     const char* signature;
 
     Group_signature()
-      : section(NULL), signature(NULL)
+      : section(nullptr), signature(nullptr)
     { }
 
     Group_signature(Output_section* sectiona, const char* signaturea)

@@ -38,8 +38,8 @@ namespace gold
 inline void
 Task_list::push_back(Task* t)
 {
-  gold_assert(t->list_next() == NULL);
-  if (this->head_ == NULL)
+  gold_assert(t->list_next() == nullptr);
+  if (this->head_ == nullptr)
     {
       this->head_ = t;
       this->tail_ = t;
@@ -56,8 +56,8 @@ Task_list::push_back(Task* t)
 inline void
 Task_list::push_front(Task* t)
 {
-  gold_assert(t->list_next() == NULL);
-  if (this->head_ == NULL)
+  gold_assert(t->list_next() == nullptr);
+  if (this->head_ == nullptr)
     {
       this->head_ = t;
       this->tail_ = t;
@@ -76,18 +76,18 @@ inline Task*
 Task_list::pop_front()
 {
   Task* ret = this->head_;
-  if (ret != NULL)
+  if (ret != nullptr)
     {
       if (ret == this->tail_)
 	{
-	  gold_assert(ret->list_next() == NULL);
-	  this->head_ = NULL;
-	  this->tail_ = NULL;
+	  gold_assert(ret->list_next() == nullptr);
+	  this->head_ = nullptr;
+	  this->tail_ = nullptr;
 	}
       else
 	{
 	  this->head_ = ret->list_next();
-	  gold_assert(this->head_ != NULL);
+	  gold_assert(this->head_ != nullptr);
 	  ret->clear_list_next();
 	}
     }
@@ -123,7 +123,7 @@ Workqueue::Workqueue(const General_options& options)
     running_(0),
     waiting_(0),
     condvar_(this->lock_),
-    threader_(NULL)
+    threader_(nullptr)
 {
   bool threads = options.threads();
 #ifndef ENABLE_THREADS
@@ -154,7 +154,7 @@ Workqueue::add_to_queue(Task_list* queue, Task* t, bool front)
   Hold_lock hl(this->lock_);
 
   Task_token* token = t->is_runnable();
-  if (token != NULL)
+  if (token != nullptr)
     {
       if (front)
 	token->add_waiting_front(t);
@@ -207,7 +207,7 @@ Workqueue::should_cancel_thread(int thread_number)
   return this->threader_->should_cancel_thread(thread_number);
 }
 
-// Find a runnable task in TASKS.  Return NULL if none could be found.
+// Find a runnable task in TASKS.  Return nullptr if none could be found.
 // If we find a Task waiting for a Token, add it to the list for that
 // Token.  The workqueue lock must be held when this is called.
 
@@ -215,11 +215,11 @@ Task*
 Workqueue::find_runnable_in_list(Task_list* tasks)
 {
   Task* t;
-  while ((t = tasks->pop_front()) != NULL)
+  while ((t = tasks->pop_front()) != nullptr)
     {
       Task_token* token = t->is_runnable();
 
-      if (token == NULL)
+      if (token == nullptr)
 	return t;
 
       token->add_waiting(t);
@@ -227,22 +227,22 @@ Workqueue::find_runnable_in_list(Task_list* tasks)
     }
 
   // We couldn't find any runnable task.
-  return NULL;
+  return nullptr;
 }
 
-// Find a runnable task.  Return NULL if none could be found.  The
+// Find a runnable task.  Return nullptr if none could be found.  The
 // workqueue lock must be held when this is called.
 
 Task*
 Workqueue::find_runnable()
 {
   Task* t = this->find_runnable_in_list(&this->first_tasks_);
-  if (t == NULL)
+  if (t == nullptr)
     t = this->find_runnable_in_list(&this->tasks_);
   return t;
 }
 
-// Find a runnable a task, and wait until we find one.  Return NULL if
+// Find a runnable a task, and wait until we find one.  Return nullptr if
 // we should exit.  The workqueue lock must be held when this is
 // called.
 
@@ -251,7 +251,7 @@ Workqueue::find_runnable_or_wait(int thread_number)
 {
   Task* t = this->find_runnable();
 
-  while (t == NULL)
+  while (t == nullptr)
     {
       if (this->running_ == 0
 	  && this->first_tasks_.empty()
@@ -261,11 +261,11 @@ Workqueue::find_runnable_or_wait(int thread_number)
 	  this->condvar_.broadcast();
 
 	  gold_assert(this->waiting_ == 0);
-	  return NULL;
+	  return nullptr;
 	}
 
       if (this->should_cancel_thread(thread_number))
-	return NULL;
+	return nullptr;
 
       gold_debug(DEBUG_TASK, "%3d sleeping", thread_number);
 
@@ -297,7 +297,7 @@ Workqueue::find_and_run_task(int thread_number)
     // Find a runnable task.
     t = this->find_runnable_or_wait(thread_number);
 
-    if (t == NULL)
+    if (t == nullptr)
       return false;
 
     // Get the locks for the task.  This must be called while we are
@@ -307,7 +307,7 @@ Workqueue::find_and_run_task(int thread_number)
     ++this->running_;
   }
 
-  while (t != NULL)
+  while (t != nullptr)
     {
       gold_debug(DEBUG_TASK, "%3d running   task %s", thread_number,
 		 t->name().c_str());
@@ -341,12 +341,12 @@ Workqueue::find_and_run_task(int thread_number)
 	// workqueue lock held.  Get the next Task to run if any.
 	next = this->release_locks(t, &tl);
 
-	if (next == NULL)
+	if (next == nullptr)
 	  next = this->find_runnable();
 
 	// If we have another Task to run, get the Locks.  This must
 	// be called while we are still holding the Workqueue lock.
-	if (next != NULL)
+	if (next != nullptr)
 	  {
 	    tl.clear();
 	    next->locks(&tl);
@@ -369,11 +369,11 @@ Workqueue::find_and_run_task(int thread_number)
 
 // 1) If T is not runnable, queue it on the appropriate token.
 
-// 2) Otherwise, T is runnable.  If *PRET is not NULL, then we have
+// 2) Otherwise, T is runnable.  If *PRET is not nullptr, then we have
 // already decided which Task to run next.  Add T to the list of
 // runnable tasks, and signal another thread.
 
-// 3) Otherwise, *PRET is NULL.  If IS_BLOCKER is false, then T was
+// 3) Otherwise, *PRET is nullptr.  If IS_BLOCKER is false, then T was
 // waiting on a write lock.  We can grab that lock now, so we run T
 // now.
 
@@ -398,7 +398,7 @@ Workqueue::return_or_queue(Task* t, bool is_blocker, Task** pret)
 {
   Task_token* token = t->is_runnable();
 
-  if (token != NULL)
+  if (token != nullptr)
     {
       token->add_waiting(t);
       ++this->waiting_;
@@ -408,7 +408,7 @@ Workqueue::return_or_queue(Task* t, bool is_blocker, Task** pret)
   bool should_queue = false;
   bool should_return = false;
 
-  if (*pret != NULL)
+  if (*pret != nullptr)
     should_queue = true;
   else if (!is_blocker)
     should_return = true;
@@ -421,7 +421,7 @@ Workqueue::return_or_queue(Task* t, bool is_blocker, Task** pret)
 
   if (should_return)
     {
-      gold_assert(*pret == NULL);
+      gold_assert(*pret == nullptr);
       *pret = t;
       return true;
     }
@@ -446,7 +446,7 @@ Workqueue::return_or_queue(Task* t, bool is_blocker, Task** pret)
 Task*
 Workqueue::release_locks(Task* t, Task_locker* tl)
 {
-  Task* ret = NULL;
+  Task* ret = nullptr;
   for (Task_locker::iterator p = tl->begin(); p != tl->end(); ++p)
     {
       Task_token* token = *p;
@@ -457,7 +457,7 @@ Workqueue::release_locks(Task* t, Task_locker* tl)
 	      // The token has been unblocked.  Every waiting Task may
 	      // now be runnable.
 	      Task* t;
-	      while ((t = token->remove_first_waiting()) != NULL)
+	      while ((t = token->remove_first_waiting()) != nullptr)
 		{
 		  --this->waiting_;
 		  this->return_or_queue(t, true, &ret);
@@ -474,7 +474,7 @@ Workqueue::release_locks(Task* t, Task_locker* tl)
 	  // potential deadlock if the locking status changes before
 	  // we run the next thread.
 	  Task* t;
-	  while ((t = token->remove_first_waiting()) != NULL)
+	  while ((t = token->remove_first_waiting()) != nullptr)
 	    {
 	      --this->waiting_;
 	      if (this->return_or_queue(t, false, &ret))

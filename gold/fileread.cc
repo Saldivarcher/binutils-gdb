@@ -117,7 +117,7 @@ get_mtime(const char* filename, Timespec* mtime)
 // Class File_read.
 
 // A lock for the File_read static variables.
-static Lock* file_counts_lock = NULL;
+static Lock* file_counts_lock = nullptr;
 static Initialize_lock file_counts_initialize_lock(&file_counts_lock);
 
 // The File_read static variables.
@@ -325,10 +325,10 @@ File_read::is_locked() const
 }
 
 // See if we have a view which covers the file starting at START for
-// SIZE bytes.  Return a pointer to the View if found, NULL if not.
+// SIZE bytes.  Return a pointer to the View if found, nullptr if not.
 // If BYTESHIFT is not -1U, the returned View must have the specified
 // byte shift; otherwise, it may have any byte shift.  If VSHIFTED is
-// not NULL, this sets *VSHIFTED to a view which would have worked if
+// not nullptr, this sets *VSHIFTED to a view which would have worked if
 // not for the requested BYTESHIFT.
 
 inline File_read::View*
@@ -339,8 +339,8 @@ File_read::find_view(off_t start, section_size_type size,
 	      && (static_cast<unsigned long long>(size)
 		  <= static_cast<unsigned long long>(this->size_ - start)));
 
-  if (vshifted != NULL)
-    *vshifted = NULL;
+  if (vshifted != nullptr)
+    *vshifted = nullptr;
 
   // If we have the whole file mmapped, and the alignment is right,
   // we can return it.
@@ -366,14 +366,14 @@ File_read::find_view(off_t start, section_size_type size,
 	      return p->second;
 	    }
 
-	  if (vshifted != NULL && *vshifted == NULL)
+	  if (vshifted != nullptr && *vshifted == nullptr)
 	    *vshifted = p->second;
 	}
 
       ++p;
     }
 
-  return NULL;
+  return nullptr;
 }
 
 // Read SIZE bytes from the file starting at offset START.  Read into
@@ -383,7 +383,7 @@ void
 File_read::do_read(off_t start, section_size_type size, void* p)
 {
   ssize_t bytes;
-  if (this->whole_file_view_ != NULL)
+  if (this->whole_file_view_ != nullptr)
     {
       // See PR 23765 for an example of a testcase that triggers this error.
       if (((ssize_t) start) < 0)
@@ -435,8 +435,8 @@ File_read::do_read(off_t start, section_size_type size, void* p)
 void
 File_read::read(off_t start, section_size_type size, void* p)
 {
-  const File_read::View* pv = this->find_view(start, size, -1U, NULL);
-  if (pv != NULL)
+  const File_read::View* pv = this->find_view(start, size, -1U, nullptr);
+  if (pv != nullptr)
     {
       memcpy(p, pv->data() + (start - pv->start() + pv->byteshift()), size);
       return;
@@ -501,7 +501,7 @@ File_read::make_view(off_t start, section_size_type size,
   if (byteshift != 0)
     {
       p = malloc(psize + byteshift);
-      if (p == NULL)
+      if (p == nullptr)
 	gold_nomem();
       memset(p, 0, byteshift);
       this->do_read(poff, psize, static_cast<unsigned char*>(p) + byteshift);
@@ -510,7 +510,7 @@ File_read::make_view(off_t start, section_size_type size,
   else
     {
       this->reopen_descriptor();
-      p = ::mmap(NULL, psize, PROT_READ, MAP_PRIVATE, this->descriptor_, poff);
+      p = ::mmap(nullptr, psize, PROT_READ, MAP_PRIVATE, this->descriptor_, poff);
       if (p != MAP_FAILED)
 	{
 	  ownership = View::DATA_MMAPPED;
@@ -519,7 +519,7 @@ File_read::make_view(off_t start, section_size_type size,
       else
 	{
 	  p = malloc(psize);
-	  if (p == NULL)
+	  if (p == nullptr)
 	    gold_nomem();
 	  this->do_read(poff, psize, p);
 	  ownership = View::DATA_ALLOCATED_ARRAY;
@@ -573,7 +573,7 @@ File_read::find_or_make_view(off_t offset, off_t start,
   // whole file view.  Options may not yet be ready, e.g.,
   // when reading a version script.  We then default to
   // --no-map-whole-files.
-  if (this->whole_file_view_ == NULL
+  if (this->whole_file_view_ == nullptr
       && parameters->options_valid()
       && parameters->options().map_whole_files())
     this->whole_file_view_ = this->make_view(0, this->size_, 0, cache);
@@ -583,23 +583,23 @@ File_read::find_or_make_view(off_t offset, off_t start,
   File_read::View* v = this->find_view(offset + start, size,
 				       aligned ? byteshift : -1U,
 				       &vshifted);
-  if (v != NULL)
+  if (v != nullptr)
     {
       if (cache)
 	v->set_cache();
       return v;
     }
 
-  // If VSHIFTED is not NULL, then it has the data we need, but with
+  // If VSHIFTED is not nullptr, then it has the data we need, but with
   // the wrong byteshift.
   v = vshifted;
-  if (v != NULL)
+  if (v != nullptr)
     {
       gold_assert(aligned);
 
       unsigned char* pbytes;
       pbytes = static_cast<unsigned char*>(malloc(v->size() + byteshift));
-      if (pbytes == NULL)
+      if (pbytes == nullptr)
 	gold_nomem();
       memset(pbytes, 0, byteshift);
       memcpy(pbytes + byteshift, v->data() + v->byteshift(), v->size());
@@ -745,8 +745,8 @@ File_read::read_multiple(off_t base, const Read_multiple& rm)
 	{
 	  File_read::View* view = this->find_view(base + i_off,
 						  end_off - i_off,
-						  -1U, NULL);
-	  if (view == NULL)
+						  -1U, nullptr);
+	  if (view == nullptr)
 	    this->do_readv(base, rm, i, j - i);
 	  else
 	    {
@@ -825,7 +825,7 @@ File_read::clear_views(Clear_views_mode mode)
       if (should_delete)
 	{
 	  if (p->second == this->whole_file_view_)
-	    this->whole_file_view_ = NULL;
+	    this->whole_file_view_ = nullptr;
 	  delete p->second;
 
 	  // map::erase invalidates only the iterator to the deleted
@@ -944,7 +944,7 @@ Input_file::will_search_for() const
   return (!IS_ABSOLUTE_PATH(this->input_argument_->name())
 	  && (this->input_argument_->is_lib()
 	      || this->input_argument_->is_searched_file()
-	      || this->input_argument_->extra_search_path() != NULL));
+	      || this->input_argument_->extra_search_path() != nullptr));
 }
 
 // Return the file last modification time.  Calls gold_fatal if the stat
@@ -974,7 +974,7 @@ Input_file::try_extra_search_path(int* pindex,
 				  std::string filename, std::string* found_name,
 				  std::string* namep)
 {
-  if (input_argument->extra_search_path() == NULL)
+  if (input_argument->extra_search_path() == nullptr)
     return false;
 
   std::string name = input_argument->extra_search_path();
@@ -1014,7 +1014,7 @@ Input_file::find_file(const Dirsearch& dirpath, int* pindex,
   if (IS_ABSOLUTE_PATH(input_argument->name())
       || (!input_argument->is_lib()
 	  && !input_argument->is_searched_file()
-	  && input_argument->extra_search_path() == NULL))
+	  && input_argument->extra_search_path() == nullptr))
     {
       name = input_argument->name();
       *found_name = name;
@@ -1065,7 +1065,7 @@ Input_file::find_file(const Dirsearch& dirpath, int* pindex,
   // Case 4: extra_search_path is not empty
   else
     {
-      gold_assert(input_argument->extra_search_path() != NULL);
+      gold_assert(input_argument->extra_search_path() != nullptr);
 
       if (try_extra_search_path(pindex, input_argument, input_argument->name(),
 				found_name, namep))

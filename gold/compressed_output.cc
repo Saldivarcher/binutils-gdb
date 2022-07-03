@@ -67,7 +67,7 @@ zlib_compress(int header_size,
   else
     {
       delete[] *compressed_data;
-      *compressed_data = NULL;
+      *compressed_data = nullptr;
       return false;
     }
 }
@@ -89,9 +89,9 @@ zlib_decompress(const unsigned char* compressed_data,
 
   /* It is possible the section consists of several compressed
      buffers concatenated together, so we uncompress in a loop.  */
-  strm.zalloc = NULL;
-  strm.zfree = NULL;
-  strm.opaque = NULL;
+  strm.zalloc = nullptr;
+  strm.zfree = nullptr;
+  strm.opaque = nullptr;
   strm.avail_in = compressed_size;
   strm.next_in = const_cast<Bytef*>(compressed_data);
   strm.avail_out = uncompressed_size;
@@ -318,7 +318,7 @@ Output_compressed_section::set_final_data_size()
   else
     {
       gold_warning(_("not compressing section data: zlib error"));
-      gold_assert(this->data_ == NULL);
+      gold_assert(this->data_ == nullptr);
       this->set_data_size(uncompressed_size);
     }
 }
@@ -332,7 +332,7 @@ Output_compressed_section::do_write(Output_file* of)
   off_t offset = this->offset();
   off_t data_size = this->data_size();
   unsigned char* view = of->get_output_view(offset, data_size);
-  if (this->data_ == NULL)
+  if (this->data_ == nullptr)
     memcpy(view, this->postprocessing_buffer(), data_size);
   else
     memcpy(view, this->data_, data_size);

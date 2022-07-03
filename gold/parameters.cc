@@ -64,7 +64,7 @@ Set_parameters_target_once set_parameters_target_once(&static_parameters);
 // Class Parameters.
 
 Parameters::Parameters()
-   : errors_(NULL), timer_(NULL), options_(NULL), target_(NULL),
+   : errors_(nullptr), timer_(nullptr), options_(nullptr), target_(nullptr),
      doing_static_link_valid_(false), doing_static_link_(false),
      debug_(0), incremental_mode_(General_options::INCREMENTAL_OFF),
      set_parameters_target_once_(&set_parameters_target_once)
@@ -74,14 +74,14 @@ Parameters::Parameters()
 void
 Parameters::set_errors(Errors* errors)
 {
-  gold_assert(this->errors_ == NULL);
+  gold_assert(this->errors_ == nullptr);
   this->errors_ = errors;
 }
 
 void
 Parameters::set_timer(Timer* timer)
 {
-  gold_assert(this->timer_ == NULL);
+  gold_assert(this->timer_ == nullptr);
   this->timer_ = timer;
 }
 
@@ -123,7 +123,7 @@ Parameters::set_target(Target* target)
 void
 Parameters::set_target_once(Target* target)
 {
-  gold_assert(this->target_ == NULL);
+  gold_assert(this->target_ == nullptr);
   this->target_ = target;
   target->select_as_default_target();
   if (this->options_valid())
@@ -138,7 +138,7 @@ Parameters::set_target_once(Target* target)
 void
 Parameters::clear_target()
 {
-  this->target_ = NULL;
+  this->target_ = nullptr;
   // We need a new Set_parameters_target_once so that we can set the
   // target again.
   this->set_parameters_target_once_ = new Set_parameters_target_once(this);
@@ -149,7 +149,7 @@ Parameters::clear_target()
 bool
 Parameters::is_compatible_target(const Target* target) const
 {
-  if (this->target_ == NULL)
+  if (this->target_ == nullptr)
     return true;
   return target == this->target_;
 }
@@ -237,7 +237,7 @@ const char*
 Parameters::entry() const
 {
   const char* ret = this->options().entry();
-  if (ret == NULL && parameters->target_valid())
+  if (ret == nullptr && parameters->target_valid())
     ret = parameters->target().entry_symbol_name();
   return ret;
 }
@@ -329,7 +329,7 @@ parameters_force_valid_target()
     {
       const char* bfd_name = parameters->options().oformat();
       Target* target = select_target_by_bfd_name(bfd_name);
-      if (target != NULL)
+      if (target != nullptr)
 	{
 	  set_parameters_target(target);
 	  return;
@@ -342,7 +342,7 @@ parameters_force_valid_target()
     {
       const char* emulation = parameters->options().m();
       Target* target = select_target_by_emulation(emulation);
-      if (target != NULL)
+      if (target != nullptr)
 	{
 	  set_parameters_target(target);
 	  return;
@@ -361,14 +361,14 @@ parameters_force_valid_target()
   else
     is_big_endian = GOLD_DEFAULT_BIG_ENDIAN;
 
-  Target* target = select_target(NULL, 0,
+  Target* target = select_target(nullptr, 0,
 				 elfcpp::GOLD_DEFAULT_MACHINE,
 				 GOLD_DEFAULT_SIZE,
 				 is_big_endian,
 				 elfcpp::GOLD_DEFAULT_OSABI,
 				 0);
 
-  if (target == NULL)
+  if (target == nullptr)
     {
       gold_assert(is_big_endian != GOLD_DEFAULT_BIG_ENDIAN);
       gold_fatal(_("no supported target for -EB/-EL option"));

@@ -59,8 +59,8 @@ class Stringpool_template;
 struct Read_symbols_data
 {
   Read_symbols_data()
-    : section_headers(NULL), section_names(NULL), symbols(NULL),
-      symbol_names(NULL), versym(NULL), verdef(NULL), verneed(NULL)
+    : section_headers(nullptr), section_names(nullptr), symbols(nullptr),
+      symbol_names(nullptr), versym(nullptr), verdef(nullptr), verneed(nullptr)
   { }
 
   ~Read_symbols_data();
@@ -113,7 +113,7 @@ struct Symbol_location_info
 struct Section_relocs
 {
   Section_relocs()
-    : contents(NULL)
+    : contents(nullptr)
   { }
 
   ~Section_relocs()
@@ -143,7 +143,7 @@ struct Section_relocs
 struct Read_relocs_data
 {
   Read_relocs_data()
-    : local_symbols(NULL)
+    : local_symbols(nullptr)
   { }
 
   ~Read_relocs_data()
@@ -214,21 +214,21 @@ class Got_offset_list
 {
  public:
   Got_offset_list()
-    : got_type_(-1U), got_offset_(0), addend_(0), got_next_(NULL)
+    : got_type_(-1U), got_offset_(0), addend_(0), got_next_(nullptr)
   { }
 
   Got_offset_list(unsigned int got_type, unsigned int got_offset,
 		  uint64_t addend)
     : got_type_(got_type), got_offset_(got_offset), addend_(addend),
-      got_next_(NULL)
+      got_next_(nullptr)
   { }
 
   ~Got_offset_list()
   {
-    if (this->got_next_ != NULL)
+    if (this->got_next_ != nullptr)
       {
         delete this->got_next_;
-        this->got_next_ = NULL;
+        this->got_next_ = nullptr;
       }
   }
 
@@ -239,7 +239,7 @@ class Got_offset_list
     this->got_type_ = -1U;
     this->got_offset_ = 0;
     this->addend_ = 0;
-    this->got_next_ = NULL;
+    this->got_next_ = nullptr;
   }
 
   // Set the offset for the GOT entry of type GOT_TYPE.
@@ -254,7 +254,7 @@ class Got_offset_list
       }
     else
       {
-        for (Got_offset_list* g = this; g != NULL; g = g->got_next_)
+        for (Got_offset_list* g = this; g != nullptr; g = g->got_next_)
           {
             if (g->got_type_ == got_type && g->addend_ == addend)
               {
@@ -272,7 +272,7 @@ class Got_offset_list
   unsigned int
   get_offset(unsigned int got_type, uint64_t addend) const
   {
-    for (const Got_offset_list* g = this; g != NULL; g = g->got_next_)
+    for (const Got_offset_list* g = this; g != nullptr; g = g->got_next_)
       {
         if (g->got_type_ == got_type && g->addend_ == addend)
           return g->got_offset_;
@@ -280,12 +280,12 @@ class Got_offset_list
     return -1U;
   }
 
-  // Return a pointer to the list, or NULL if the list is empty.
+  // Return a pointer to the list, or nullptr if the list is empty.
   const Got_offset_list*
   get_list() const
   {
     if (this->got_type_ == -1U)
-      return NULL;
+      return nullptr;
     return this;
   }
 
@@ -310,7 +310,7 @@ class Got_offset_list
   {
     if (this->got_type_ == -1U)
       return;
-    for (const Got_offset_list* g = this; g != NULL; g = g->got_next_)
+    for (const Got_offset_list* g = this; g != nullptr; g = g->got_next_)
       v->visit(g->got_type_, g->got_offset_, g->addend_);
   }
 
@@ -445,10 +445,10 @@ class Object
     : name_(name), input_file_(input_file), offset_(offset), shnum_(-1U),
       is_dynamic_(is_dynamic), is_needed_(false), uses_split_stack_(false),
       has_no_split_stack_(false), no_export_(false),
-      is_in_system_directory_(false), as_needed_(false), xindex_(NULL),
-      compressed_sections_(NULL)
+      is_in_system_directory_(false), as_needed_(false), xindex_(nullptr),
+      compressed_sections_(nullptr)
   {
-    if (input_file != NULL)
+    if (input_file != nullptr)
       {
 	input_file->file().add_object();
 	this->is_in_system_directory_ = input_file->is_in_system_directory();
@@ -458,7 +458,7 @@ class Object
 
   virtual ~Object()
   {
-    if (this->input_file_ != NULL)
+    if (this->input_file_ != nullptr)
       this->input_file_->file().remove_object();
   }
 
@@ -507,13 +507,13 @@ class Object
   has_no_split_stack() const
   { return this->has_no_split_stack_; }
 
-  // Returns NULL for Objects that are not dynamic objects.  This method
+  // Returns nullptr for Objects that are not dynamic objects.  This method
   // is overridden in the Dynobj class.
   Dynobj*
   dynobj()
   { return this->do_dynobj(); }
 
-  // Returns NULL for Objects that are not plugin objects.  This method
+  // Returns nullptr for Objects that are not plugin objects.  This method
   // is overridden in the Pluginobj class.
   Pluginobj*
   pluginobj()
@@ -523,14 +523,14 @@ class Object
   Input_file*
   input_file()
   {
-    gold_assert(this->input_file_ != NULL);
+    gold_assert(this->input_file_ != nullptr);
     return this->input_file_;
   }
 
   const Input_file*
   input_file() const
   {
-    gold_assert(this->input_file_ != NULL);
+    gold_assert(this->input_file_ != nullptr);
     return this->input_file_;
   }
 
@@ -538,7 +538,7 @@ class Object
   void
   lock(const Task* t)
   {
-    if (this->input_file_ != NULL)
+    if (this->input_file_ != nullptr)
       this->input_file_->file().lock(t);
   }
 
@@ -546,21 +546,21 @@ class Object
   void
   unlock(const Task* t)
   {
-    if (this->input_file_ != NULL)
+    if (this->input_file_ != nullptr)
       this->input_file()->file().unlock(t);
   }
 
   // Return whether the underlying file is locked.
   bool
   is_locked() const
-  { return this->input_file_ != NULL && this->input_file_->file().is_locked(); }
+  { return this->input_file_ != nullptr && this->input_file_->file().is_locked(); }
 
   // Return the token, so that the task can be queued.
   Task_token*
   token()
   {
-    if (this->input_file_ == NULL)
-      return NULL;
+    if (this->input_file_ == nullptr)
+      return nullptr;
     return this->input_file()->file().token();
   }
 
@@ -568,7 +568,7 @@ class Object
   void
   release()
   {
-    if (this->input_file_ != NULL)
+    if (this->input_file_ != nullptr)
       this->input_file()->file().release();
   }
 
@@ -610,7 +610,7 @@ class Object
       *is_ordinary = true;
     else if (shndx == elfcpp::SHN_XINDEX)
       {
-	if (this->xindex_ == NULL)
+	if (this->xindex_ == nullptr)
 	  this->xindex_ = this->do_initialize_xindex();
 	shndx = this->xindex_->sym_xindex_to_shndx(this, symndx);
 	*is_ordinary = true;
@@ -795,7 +795,7 @@ class Object
   void
   clear_view_cache_marks()
   {
-    if (this->input_file_ != NULL)
+    if (this->input_file_ != nullptr)
       this->input_file_->file().clear_view_cache_marks();
   }
 
@@ -853,17 +853,17 @@ class Object
   bool
   section_is_compressed(unsigned int shndx,
 			section_size_type* uncompressed_size,
-			elfcpp::Elf_Xword* palign = NULL) const
+			elfcpp::Elf_Xword* palign = nullptr) const
   {
-    if (this->compressed_sections_ == NULL)
+    if (this->compressed_sections_ == nullptr)
       return false;
     Compressed_section_map::const_iterator p =
         this->compressed_sections_->find(shndx);
     if (p != this->compressed_sections_->end())
       {
-	if (uncompressed_size != NULL)
+	if (uncompressed_size != nullptr)
 	  *uncompressed_size = p->second.size;
-	if (palign != NULL)
+	if (palign != nullptr)
 	  *palign = p->second.addralign;
 	return true;
       }
@@ -875,7 +875,7 @@ class Object
   // by the caller.
   const unsigned char*
   decompressed_section_contents(unsigned int shndx, section_size_type* plen,
-				bool* is_cached, uint64_t* palign = NULL);
+				bool* is_cached, uint64_t* palign = nullptr);
 
   // Discard any buffers of decompressed sections.  This is done
   // at the end of the Add_symbols task.
@@ -898,17 +898,17 @@ class Object
   { return this->do_get_output_view(shndx, plen); }
 
  protected:
-  // Returns NULL for Objects that are not dynamic objects.  This method
+  // Returns nullptr for Objects that are not dynamic objects.  This method
   // is overridden in the Dynobj class.
   virtual Dynobj*
   do_dynobj()
-  { return NULL; }
+  { return nullptr; }
 
-  // Returns NULL for Objects that are not plugin objects.  This method
+  // Returns nullptr for Objects that are not plugin objects.  This method
   // is overridden in the Pluginobj class.
   virtual Pluginobj*
   do_pluginobj()
-  { return NULL; }
+  { return nullptr; }
 
   // Return TRUE if this is an incremental (unchanged) input file.
   // We return FALSE by default; the incremental object classes
@@ -1033,7 +1033,7 @@ class Object
   read_section_data(elfcpp::Elf_file<size, big_endian, Object>*,
 		    Read_symbols_data*);
 
-  // Find the section header with the given NAME.  If HDR is non-NULL
+  // Find the section header with the given NAME.  If HDR is non-nullptr
   // then it is a section header returned from a previous call to this
   // function and the next section header with the same name will be
   // returned.
@@ -1047,7 +1047,7 @@ class Object
   void
   set_xindex(Xindex* xindex)
   {
-    gold_assert(this->xindex_ == NULL);
+    gold_assert(this->xindex_ == nullptr);
     this->xindex_ = xindex;
   }
 
@@ -1143,12 +1143,12 @@ class Relobj : public Object
   Relobj(const std::string& name, Input_file* input_file, off_t offset = 0)
     : Object(name, input_file, false, offset),
       output_sections_(),
-      map_to_relocatable_relocs_(NULL),
-      object_merge_map_(NULL),
+      map_to_relocatable_relocs_(nullptr),
+      object_merge_map_(nullptr),
       relocs_must_follow_section_writes_(false),
-      sd_(NULL),
-      reloc_counts_(NULL),
-      reloc_bases_(NULL),
+      sd_(nullptr),
+      reloc_counts_(nullptr),
+      reloc_bases_(nullptr),
       first_dyn_reloc_(0),
       dyn_reloc_count_(0)
   { }
@@ -1313,7 +1313,7 @@ class Relobj : public Object
   is_section_included(unsigned int shndx) const
   {
     gold_assert(shndx < this->output_sections_.size());
-    return this->output_sections_[shndx] != NULL;
+    return this->output_sections_[shndx] != nullptr;
   }
 
   // The output section of the input section with index SHNDX.
@@ -1406,7 +1406,7 @@ class Relobj : public Object
 
  protected:
   // The output section to be used for each input section, indexed by
-  // the input section number.  The output section is NULL if the
+  // the input section number.  The output section is nullptr if the
   // input section is to be discarded.
   typedef std::vector<Output_section*> Output_sections;
 
@@ -1496,7 +1496,7 @@ class Relobj : public Object
   do_layout_deferred_sections(Layout*) = 0;
 
   // Given a section index, return the corresponding Output_section.
-  // The return value will be NULL if the section is not included in
+  // The return value will be nullptr if the section is not included in
   // the link.
   Output_section*
   do_output_section(unsigned int shndx) const
@@ -1534,7 +1534,7 @@ class Relobj : public Object
   {
     unsigned int nsyms = this->do_get_global_symbols()->size();
     this->reloc_counts_ = new unsigned int[nsyms];
-    gold_assert(this->reloc_counts_ != NULL);
+    gold_assert(this->reloc_counts_ != nullptr);
     memset(this->reloc_counts_, 0, nsyms * sizeof(unsigned int));
   }
 
@@ -1545,7 +1545,7 @@ class Relobj : public Object
   {
     unsigned int nsyms = this->do_get_global_symbols()->size();
     gold_assert(symndx < nsyms);
-    gold_assert(this->reloc_counts_ != NULL);
+    gold_assert(this->reloc_counts_ != nullptr);
     ++this->reloc_counts_[symndx];
   }
 
@@ -1560,8 +1560,8 @@ class Relobj : public Object
   {
     unsigned int nsyms = this->do_get_global_symbols()->size();
 
-    gold_assert(this->reloc_counts_ != NULL);
-    gold_assert(this->reloc_bases_ != NULL);
+    gold_assert(this->reloc_counts_ != nullptr);
+    gold_assert(this->reloc_bases_ != nullptr);
     gold_assert(symndx < nsyms);
 
     unsigned int counter = this->reloc_counts_[symndx]++;
@@ -1998,7 +1998,7 @@ class Reloc_symbol_changes
 {
  public:
   Reloc_symbol_changes(size_t count)
-    : vec_(count, NULL)
+    : vec_(count, nullptr)
   { }
 
   void
@@ -2038,14 +2038,14 @@ class Sized_relobj : public Relobj
   { }
 
   // If this is a regular object, return a pointer to the Sized_relobj_file
-  // object.  Otherwise, return NULL.
+  // object.  Otherwise, return nullptr.
   virtual Sized_relobj_file<size, big_endian>*
   sized_relobj()
-  { return NULL; }
+  { return nullptr; }
 
   const virtual Sized_relobj_file<size, big_endian>*
   sized_relobj() const
-  { return NULL; }
+  { return nullptr; }
 
   // Checks if the offset of input section SHNDX within its output
   // section is invalid.
@@ -2241,7 +2241,7 @@ class Sized_relobj_file : public Sized_relobj<size, big_endian>
   { return this->local_symbol_count_ + this->symbols_.size(); }
 
   // If SYM is the index of a global symbol in the object file's
-  // symbol table, return the Symbol object.  Otherwise, return NULL.
+  // symbol table, return the Symbol object.  Otherwise, return nullptr.
   Symbol*
   global_symbol(unsigned int sym) const
   {
@@ -2250,7 +2250,7 @@ class Sized_relobj_file : public Sized_relobj<size, big_endian>
 	gold_assert(sym - this->local_symbol_count_ < this->symbols_.size());
 	return this->symbols_[sym - this->local_symbol_count_];
       }
-    return NULL;
+    return nullptr;
   }
 
   // Return the section index of symbol SYM.  Set *VALUE to its value
@@ -2921,7 +2921,7 @@ class Input_objects
 {
  public:
   Input_objects()
-    : relobj_list_(), dynobj_list_(), sonames_(), cref_(NULL)
+    : relobj_list_(), dynobj_list_(), sonames_(), cref_(nullptr)
   { }
 
   // The type of the list of input relocateable objects.
@@ -3075,9 +3075,9 @@ is_elf_object(Input_file* input_file, off_t offset,
 	      const unsigned char** start, int* read_size);
 
 // Return an Object appropriate for the input file.  P is BYTES long,
-// and holds the ELF header.  If PUNCONFIGURED is not NULL, then if
+// and holds the ELF header.  If PUNCONFIGURED is not nullptr, then if
 // this sees an object the linker is not configured to support, it
-// sets *PUNCONFIGURED to true and returns NULL without giving an
+// sets *PUNCONFIGURED to true and returns nullptr without giving an
 // error message.
 
 extern Object*

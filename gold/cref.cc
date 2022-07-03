@@ -221,12 +221,12 @@ Cref_inputs::Cref_table_compare::operator()(const Symbol* s1,
   if (i != 0)
     return i < 0;
 
-  if (s1->version() == NULL)
+  if (s1->version() == nullptr)
     {
-      if (s2->version() != NULL)
+      if (s2->version() != nullptr)
 	return true;
     }
-  else if (s2->version() == NULL)
+  else if (s2->version() == nullptr)
     return false;
   else
     {
@@ -256,16 +256,16 @@ Cref_inputs::gather_cref(const Objects* objects, Cref_table* table) const
        ++po)
     {
       const Object::Symbols* symbols = (*po)->get_global_symbols();
-      if (symbols == NULL)
+      if (symbols == nullptr)
 	continue;
       for (Object::Symbols::const_iterator ps = symbols->begin();
 	   ps != symbols->end();
 	   ++ps)
 	{
 	  const Symbol* sym = *ps;
-	  if (sym == NULL)
+	  if (sym == nullptr)
 	    continue;
-	  Objects* const onull = NULL;
+	  Objects* const onull = nullptr;
 	  std::pair<Cref_table::iterator, bool> ins =
 	    table->insert(std::make_pair(sym, onull));
 	  Cref_table::iterator pc = ins.first;
@@ -312,7 +312,7 @@ Cref_inputs::print_cref(const Symbol_table*, FILE* f) const
 	continue;
 
       std::string s = sym->demangled_name();
-      if (sym->version() != NULL)
+      if (sym->version() != nullptr)
 	{
 	  s += '@';
 	  if (sym->is_default())
@@ -340,7 +340,7 @@ Cref_inputs::print_cref(const Symbol_table*, FILE* f) const
 void
 Cref::need_inputs()
 {
-  if (this->inputs_ == NULL)
+  if (this->inputs_ == nullptr)
     this->inputs_ = new Cref_inputs();
 }
 
@@ -376,7 +376,7 @@ void
 Cref::print_symbol_counts(const Symbol_table* symtab) const
 {
   if (parameters->options().user_set_print_symbol_counts()
-      && this->inputs_ != NULL)
+      && this->inputs_ != nullptr)
     {
       FILE* f;
       if (strcmp(parameters->options().print_symbol_counts(), "-") == 0)
@@ -384,12 +384,12 @@ Cref::print_symbol_counts(const Symbol_table* symtab) const
       else
 	{
 	  f = fopen(parameters->options().print_symbol_counts(), "w");
-	  if (f == NULL)
+	  if (f == nullptr)
 	    gold_error(_("cannot open symbol count file %s: %s"),
 		       parameters->options().print_symbol_counts(),
 		       strerror(errno));
 	}
-      if (f != NULL)
+      if (f != nullptr)
 	this->inputs_->print_symbol_counts(symtab, f);
     }
 }
@@ -404,7 +404,7 @@ Cref::print_cref(const Symbol_table* symtab, FILE* f) const
   int len = filecol - strlen(msg);
   fprintf(f, "%s%*c%s\n", msg, len, ' ', _("File"));
 
-  if (parameters->options().cref() && this->inputs_ != NULL)
+  if (parameters->options().cref() && this->inputs_ != nullptr)
     this->inputs_->print_cref(symtab, f);
 }
 

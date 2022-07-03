@@ -147,17 +147,17 @@ Dwarf_abbrev_table::clear_abbrev_codes()
 {
   for (unsigned int code = 0; code < this->low_abbrev_code_max_; ++code)
     {
-      if (this->low_abbrev_codes_[code] != NULL)
+      if (this->low_abbrev_codes_[code] != nullptr)
 	{
 	  delete this->low_abbrev_codes_[code];
-	  this->low_abbrev_codes_[code] = NULL;
+	  this->low_abbrev_codes_[code] = nullptr;
 	}
     }
   for (Abbrev_code_table::iterator it = this->high_abbrev_codes_.begin();
        it != this->high_abbrev_codes_.end();
        ++it)
     {
-      if (it->second != NULL)
+      if (it->second != nullptr)
 	delete it->second;
     }
   this->high_abbrev_codes_.clear();
@@ -199,7 +199,7 @@ Dwarf_abbrev_table::do_read_abbrevs(
   // Get the section contents and decompress if necessary.
   if (abbrev_shndx != this->abbrev_shndx_)
     {
-      if (this->owns_buffer_ && this->buffer_ != NULL)
+      if (this->owns_buffer_ && this->buffer_ != nullptr)
         {
 	  delete[] this->buffer_;
 	  this->owns_buffer_ = false;
@@ -239,24 +239,24 @@ Dwarf_abbrev_table::do_get_abbrev(unsigned int code)
       // abbrev table.
       size_t len;
       if (this->buffer_pos_ >= this->buffer_end_)
-	return NULL;
+	return nullptr;
       uint64_t nextcode = read_unsigned_LEB_128(this->buffer_pos_, &len);
       if (nextcode == 0)
 	{
 	  this->buffer_pos_ = this->buffer_end_;
-	  return NULL;
+	  return nullptr;
 	}
       this->buffer_pos_ += len;
 
       // Read the tag.
       if (this->buffer_pos_ >= this->buffer_end_)
-	return NULL;
+	return nullptr;
       uint64_t tag = read_unsigned_LEB_128(this->buffer_pos_, &len);
       this->buffer_pos_ += len;
 
       // Read the has_children flag.
       if (this->buffer_pos_ >= this->buffer_end_)
-	return NULL;
+	return nullptr;
       bool has_children = *this->buffer_pos_ == elfcpp::DW_CHILDREN_yes;
       this->buffer_pos_ += 1;
 
@@ -266,13 +266,13 @@ Dwarf_abbrev_table::do_get_abbrev(unsigned int code)
 	{
 	  // Read the attribute.
 	  if (this->buffer_pos_ >= this->buffer_end_)
-	    return NULL;
+	    return nullptr;
 	  uint64_t attr = read_unsigned_LEB_128(this->buffer_pos_, &len);
 	  this->buffer_pos_ += len;
 
 	  // Read the form.
 	  if (this->buffer_pos_ >= this->buffer_end_)
-	    return NULL;
+	    return nullptr;
 	  uint64_t form = read_unsigned_LEB_128(this->buffer_pos_, &len);
 	  this->buffer_pos_ += len;
 
@@ -299,7 +299,7 @@ Dwarf_abbrev_table::do_get_abbrev(unsigned int code)
 	return entry;
     }
 
-  return NULL;
+  return nullptr;
 }
 
 // class Dwarf_ranges_table
@@ -349,7 +349,7 @@ Dwarf_ranges_table::read_ranges_table(
   // Get the section contents and decompress if necessary.
   if (ranges_shndx != this->ranges_shndx_)
     {
-      if (this->owns_ranges_buffer_ && this->ranges_buffer_ != NULL)
+      if (this->owns_ranges_buffer_ && this->ranges_buffer_ != nullptr)
         {
 	  delete[] this->ranges_buffer_;
 	  this->owns_ranges_buffer_ = false;
@@ -364,10 +364,10 @@ Dwarf_ranges_table::read_ranges_table(
       this->ranges_shndx_ = ranges_shndx;
     }
 
-  if (this->ranges_reloc_mapper_ != NULL)
+  if (this->ranges_reloc_mapper_ != nullptr)
     {
       delete this->ranges_reloc_mapper_;
-      this->ranges_reloc_mapper_ = NULL;
+      this->ranges_reloc_mapper_ = nullptr;
     }
 
   // For incremental objects, we have no relocations.
@@ -411,7 +411,7 @@ Dwarf_ranges_table::read_range_list(
   Dwarf_range_list* ranges;
 
   if (!this->read_ranges_table(object, symtab, symtab_size, ranges_shndx, 4))
-    return NULL;
+    return nullptr;
 
   // Correct the offset.  For incremental update links, we have a
   // relocated offset that is relative to the output section, but
@@ -447,7 +447,7 @@ Dwarf_ranges_table::read_range_list(
       // Check for relocations and adjust the values.
       unsigned int shndx1 = 0;
       unsigned int shndx2 = 0;
-      if (this->ranges_reloc_mapper_ != NULL)
+      if (this->ranges_reloc_mapper_ != nullptr)
         {
 	  shndx1 = this->lookup_reloc(offset, &start);
 	  shndx2 = this->lookup_reloc(offset + addr_size, &end);
@@ -490,7 +490,7 @@ Dwarf_ranges_table::read_range_list_v5(
   Dwarf_range_list* ranges;
 
   if (!this->read_ranges_table(object, symtab, symtab_size, ranges_shndx, 5))
-    return NULL;
+    return nullptr;
 
   ranges = new Dwarf_range_list();
   off_t base = 0;
@@ -525,7 +525,7 @@ Dwarf_ranges_table::read_range_list_v5(
 	      base = this->dwinfo_->read_from_pointer<32>(prle);
 	    else
 	      base = this->dwinfo_->read_from_pointer<64>(prle);
-	    if (this->ranges_reloc_mapper_ != NULL)
+	    if (this->ranges_reloc_mapper_ != nullptr)
 		shndx0 = this->lookup_reloc(offset, &base);
 	    prle += addr_size;
 	    offset += addr_size;
@@ -553,7 +553,7 @@ Dwarf_ranges_table::read_range_list_v5(
 		start = this->dwinfo_->read_from_pointer<64>(prle);
 		end = this->dwinfo_->read_from_pointer<64>(prle + 8);
 	      }
-	    if (this->ranges_reloc_mapper_ != NULL)
+	    if (this->ranges_reloc_mapper_ != nullptr)
 	      {
 		shndx1 = this->lookup_reloc(offset, &start);
 		shndx2 = this->lookup_reloc(offset + addr_size, &end);
@@ -573,7 +573,7 @@ Dwarf_ranges_table::read_range_list_v5(
 	      start = this->dwinfo_->read_from_pointer<32>(prle);
 	    else
 	      start = this->dwinfo_->read_from_pointer<64>(prle);
-	    if (this->ranges_reloc_mapper_ != NULL)
+	    if (this->ranges_reloc_mapper_ != nullptr)
 	      shndx1 = this->lookup_reloc(offset, &start);
 	    prle += addr_size;
 	    offset += addr_size;
@@ -656,7 +656,7 @@ Dwarf_pubnames_table::read_section(Relobj* object, const unsigned char* symtab,
   this->buffer_ = object->decompressed_section_contents(shndx,
 							&buffer_size,
 							&this->owns_buffer_);
-  if (this->buffer_ == NULL)
+  if (this->buffer_ == nullptr)
     return false;
   this->buffer_end_ = this->buffer_ + buffer_size;
 
@@ -692,7 +692,7 @@ bool
 Dwarf_pubnames_table::read_header(off_t offset)
 {
   // Make sure we have actually read the section.
-  gold_assert(this->buffer_ != NULL);
+  gold_assert(this->buffer_ != nullptr);
 
   if (offset < 0 || offset + 14 >= this->buffer_end_ - this->buffer_)
     return false;
@@ -751,7 +751,7 @@ Dwarf_pubnames_table::next_name(uint8_t* flag_byte)
   // Check for end of list.  The table should be terminated by an
   // entry containing nothing but a DIE offset of 0.
   if (pinfo + this->offset_size_ >= this->end_of_table_)
-    return NULL;
+    return nullptr;
 
   // Skip the offset within the CU.  If this is zero, but we're not
   // at the end of the table, then we have a real pubnames entry
@@ -784,19 +784,19 @@ Dwarf_die::Dwarf_die(
     off_t die_offset,
     Dwarf_die* parent)
   : dwinfo_(dwinfo), parent_(parent), die_offset_(die_offset),
-    child_offset_(0), sibling_offset_(0), abbrev_code_(NULL), attributes_(),
-    attributes_read_(false), name_(NULL), name_off_(-1), linkage_name_(NULL),
+    child_offset_(0), sibling_offset_(0), abbrev_code_(nullptr), attributes_(),
+    attributes_read_(false), name_(nullptr), name_off_(-1), linkage_name_(nullptr),
     linkage_name_off_(-1), string_shndx_(0), specification_(0),
     abstract_origin_(0)
 {
   size_t len;
   const unsigned char* pdie = dwinfo->buffer_at_offset(die_offset);
-  if (pdie == NULL)
+  if (pdie == nullptr)
     return;
   unsigned int code = read_unsigned_LEB_128(pdie, &len);
   if (code == 0)
     {
-      if (parent != NULL)
+      if (parent != nullptr)
 	parent->set_sibling_offset(die_offset + len);
       return;
     }
@@ -814,11 +814,11 @@ Dwarf_die::read_attributes()
   if (this->attributes_read_)
     return true;
 
-  gold_assert(this->abbrev_code_ != NULL);
+  gold_assert(this->abbrev_code_ != nullptr);
 
   const unsigned char* pdie =
       this->dwinfo_->buffer_at_offset(this->die_offset_);
-  if (pdie == NULL)
+  if (pdie == nullptr)
     return false;
   const unsigned char* pattr = pdie + this->attr_offset_;
 
@@ -1128,11 +1128,11 @@ Dwarf_die::read_attributes()
 off_t
 Dwarf_die::skip_attributes()
 {
-  gold_assert(this->abbrev_code_ != NULL);
+  gold_assert(this->abbrev_code_ != nullptr);
 
   const unsigned char* pdie =
       this->dwinfo_->buffer_at_offset(this->die_offset_);
-  if (pdie == NULL)
+  if (pdie == nullptr)
     return 0;
   const unsigned char* pattr = pdie + this->attr_offset_;
 
@@ -1252,7 +1252,7 @@ Dwarf_die::skip_attributes()
 void
 Dwarf_die::set_name()
 {
-  if (this->name_ != NULL || !this->read_attributes())
+  if (this->name_ != nullptr || !this->read_attributes())
     return;
   if (this->name_off_ != -1)
     this->name_ = this->dwinfo_->get_string(this->name_off_,
@@ -1264,7 +1264,7 @@ Dwarf_die::set_name()
 void
 Dwarf_die::set_linkage_name()
 {
-  if (this->linkage_name_ != NULL || !this->read_attributes())
+  if (this->linkage_name_ != nullptr || !this->read_attributes())
     return;
   if (this->linkage_name_off_ != -1)
     this->linkage_name_ = this->dwinfo_->get_string(this->linkage_name_off_,
@@ -1277,21 +1277,21 @@ const Dwarf_die::Attribute_value*
 Dwarf_die::attribute(unsigned int attr)
 {
   if (!this->read_attributes())
-    return NULL;
+    return nullptr;
   for (unsigned int i = 0; i < this->attributes_.size(); ++i)
     {
       if (this->attributes_[i].attr == attr)
         return &this->attributes_[i];
     }
-  return NULL;
+  return nullptr;
 }
 
 const char*
 Dwarf_die::string_attribute(unsigned int attr)
 {
   const Attribute_value* attr_val = this->attribute(attr);
-  if (attr_val == NULL)
-    return NULL;
+  if (attr_val == nullptr)
+    return nullptr;
   switch (attr_val->form)
     {
       case elfcpp::DW_FORM_string:
@@ -1300,7 +1300,7 @@ Dwarf_die::string_attribute(unsigned int attr)
 	return this->dwinfo_->get_string(attr_val->val.refval,
 					 attr_val->aux.shndx);
       default:
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -1308,7 +1308,7 @@ int64_t
 Dwarf_die::int_attribute(unsigned int attr)
 {
   const Attribute_value* attr_val = this->attribute(attr);
-  if (attr_val == NULL)
+  if (attr_val == nullptr)
     return 0;
   switch (attr_val->form)
     {
@@ -1329,7 +1329,7 @@ uint64_t
 Dwarf_die::uint_attribute(unsigned int attr)
 {
   const Attribute_value* attr_val = this->attribute(attr);
-  if (attr_val == NULL)
+  if (attr_val == nullptr)
     return 0;
   switch (attr_val->form)
     {
@@ -1350,7 +1350,7 @@ off_t
 Dwarf_die::ref_attribute(unsigned int attr, unsigned int* shndx)
 {
   const Attribute_value* attr_val = this->attribute(attr);
-  if (attr_val == NULL)
+  if (attr_val == nullptr)
     return -1;
   switch (attr_val->form)
     {
@@ -1380,7 +1380,7 @@ off_t
 Dwarf_die::address_attribute(unsigned int attr, unsigned int* shndx)
 {
   const Attribute_value* attr_val = this->attribute(attr);
-  if (attr_val == NULL || attr_val->form != elfcpp::DW_FORM_addr)
+  if (attr_val == nullptr || attr_val->form != elfcpp::DW_FORM_addr)
     return -1;
 
   *shndx = attr_val->aux.shndx;
@@ -1392,7 +1392,7 @@ Dwarf_die::address_attribute(unsigned int attr, unsigned int* shndx)
 off_t
 Dwarf_die::child_offset()
 {
-  gold_assert(this->abbrev_code_ != NULL);
+  gold_assert(this->abbrev_code_ != nullptr);
   if (!this->has_children())
     return 0;
   if (this->child_offset_ == 0)
@@ -1405,7 +1405,7 @@ Dwarf_die::child_offset()
 off_t
 Dwarf_die::sibling_offset()
 {
-  gold_assert(this->abbrev_code_ != NULL);
+  gold_assert(this->abbrev_code_ != nullptr);
 
   if (this->sibling_offset_ != 0)
     return this->sibling_offset_;
@@ -1478,7 +1478,7 @@ Dwarf_info_reader::do_parse()
   this->buffer_ = this->object_->decompressed_section_contents(this->shndx_,
 							       &buffer_size,
 							       &buffer_is_new);
-  if (this->buffer_ == NULL || buffer_size == 0)
+  if (this->buffer_ == nullptr || buffer_size == 0)
     return;
   this->buffer_end_ = this->buffer_ + buffer_size;
 
@@ -1589,7 +1589,7 @@ Dwarf_info_reader::do_parse()
       // Visit the root DIE.
       Dwarf_die root_die(this,
 			 pinfo - (this->buffer_ + this->cu_offset_),
-			 NULL);
+			 nullptr);
       if (root_die.tag() != 0)
 	{
 	  // Visit the CU or TU.
@@ -1609,7 +1609,7 @@ Dwarf_info_reader::do_parse()
   if (buffer_is_new)
     {
       delete[] this->buffer_;
-      this->buffer_ = NULL;
+      this->buffer_ = nullptr;
     }
 }
 
@@ -1639,7 +1639,7 @@ Dwarf_info_reader::do_read_string_table(unsigned int string_shndx)
 	return false;
     }
 
-  if (this->owns_string_buffer_ && this->string_buffer_ != NULL)
+  if (this->owns_string_buffer_ && this->string_buffer_ != nullptr)
     {
       delete[] this->string_buffer_;
       this->owns_string_buffer_ = false;
@@ -1721,7 +1721,7 @@ const char*
 Dwarf_info_reader::get_string(off_t str_off, unsigned int string_shndx)
 {
   if (!this->read_string_table(string_shndx))
-    return NULL;
+    return nullptr;
 
   // Correct the offset.  For incremental update links, we have a
   // relocated offset that is relative to the output section, but
@@ -1731,7 +1731,7 @@ Dwarf_info_reader::get_string(off_t str_off, unsigned int string_shndx)
   const char* p = this->string_buffer_ + str_off;
 
   if (p < this->string_buffer_ || p >= this->string_buffer_end_)
-    return NULL;
+    return nullptr;
 
   return p;
 }
@@ -1797,9 +1797,9 @@ template<int size, bool big_endian>
 Sized_dwarf_line_info<size, big_endian>::Sized_dwarf_line_info(
     Object* object,
     unsigned int read_shndx)
-  : data_valid_(false), buffer_(NULL), buffer_start_(NULL),
-    str_buffer_(NULL), str_buffer_start_(NULL),
-    reloc_mapper_(NULL), symtab_buffer_(NULL), directories_(), files_(),
+  : data_valid_(false), buffer_(nullptr), buffer_start_(nullptr),
+    str_buffer_(nullptr), str_buffer_start_(nullptr),
+    reloc_mapper_(nullptr), symtab_buffer_(nullptr), directories_(), files_(),
     current_header_index_(-1), reloc_map_(), line_number_map_()
 {
   unsigned int debug_line_shndx = 0;
@@ -1833,7 +1833,7 @@ Sized_dwarf_line_info<size, big_endian>::Sized_dwarf_line_info(
       if (debug_line_shndx > 0 && debug_line_str_shndx > 0)
         break;
     }
-  if (this->buffer_ == NULL)
+  if (this->buffer_ == nullptr)
     return;
 
   // Find the relocation section for ".debug_line".
@@ -1863,7 +1863,7 @@ Sized_dwarf_line_info<size, big_endian>::Sized_dwarf_line_info(
 		symtab_shndx, &this->symtab_buffer_size_, false);
             break;
           }
-      if (this->symtab_buffer_ == NULL)
+      if (this->symtab_buffer_ == nullptr)
         return;
     }
 
@@ -2146,7 +2146,7 @@ Sized_dwarf_line_info<size, big_endian>::read_header_tables_v5(
 
   for (unsigned int j = 0; j < entry_count; j++)
     {
-      const char* path = NULL;
+      const char* path = nullptr;
       int dirindex = 0;
 
       for (unsigned int i = 0; i < format_count; i++)
@@ -2449,7 +2449,7 @@ template<int size, bool big_endian>
 void
 Sized_dwarf_line_info<size, big_endian>::read_relocs()
 {
-  if (this->symtab_buffer_ == NULL)
+  if (this->symtab_buffer_ == nullptr)
     return;
 
   off_t value;
@@ -2513,7 +2513,7 @@ bool
 Sized_dwarf_line_info<size, big_endian>::input_is_relobj()
 {
   // Only .o files have relocs and the symtab buffer that goes with them.
-  return this->symtab_buffer_ != NULL;
+  return this->symtab_buffer_ != nullptr;
 }
 
 // Given an Offset_to_lineno_entry vector, and an offset, figure out
@@ -2637,7 +2637,7 @@ offset_to_iterator(const std::vector<Offset_to_lineno_entry>* offsets,
 }
 
 // Returns the canonical filename:lineno for the address passed in.
-// If other_lines is not NULL, appends the non-canonical lines
+// If other_lines is not nullptr, appends the non-canonical lines
 // assigned to the same address.
 
 template<int size, bool big_endian>
@@ -2672,7 +2672,7 @@ Sized_dwarf_line_info<size, big_endian>::do_addr2line(
   std::string result = this->format_file_lineno(*it);
   gold_debug(DEBUG_LOCATION, "do_addr2line: canonical result: %s",
 	     result.c_str());
-  if (other_lines != NULL)
+  if (other_lines != nullptr)
     {
       unsigned int last_file_num = it->file_num;
       int last_line_num = it->line_num;
@@ -2769,7 +2769,7 @@ Dwarf_line_info::one_addr2line(Object* object,
                                size_t cache_size,
                                std::vector<std::string>* other_lines)
 {
-  Dwarf_line_info* lineinfo = NULL;
+  Dwarf_line_info* lineinfo = nullptr;
   std::vector<Addr2line_cache_entry>::iterator it;
 
   // First, check the cache.  If we hit, update the counts.
@@ -2791,7 +2791,7 @@ Dwarf_line_info::one_addr2line(Object* object,
 
   // If we don't hit the cache, create a new object and insert into the
   // cache.
-  if (lineinfo == NULL)
+  if (lineinfo == nullptr)
   {
     switch (parameters->size_and_endianness())
       {

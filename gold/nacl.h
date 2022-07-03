@@ -113,7 +113,7 @@ class Target_selector_nacl : public base_selector
   do_recognize(Input_file* file, off_t offset,
                int machine, int osabi, int abiversion)
   {
-    this->is_nacl_ = file != NULL && this->recognize_nacl_file(file, offset);
+    this->is_nacl_ = file != nullptr && this->recognize_nacl_file(file, offset);
     if (this->is_nacl_)
       return this->instantiate_target();
     return this->base_selector::do_recognize(file, offset,
@@ -123,7 +123,7 @@ class Target_selector_nacl : public base_selector
   virtual Target*
   do_recognize_by_bfd_name(const char* name)
   {
-    gold_assert(this->bfd_name_ != NULL);
+    gold_assert(this->bfd_name_ != nullptr);
     this->is_nacl_ = strcmp(name, this->bfd_name_) == 0;
     if (this->is_nacl_)
       return this->instantiate_target();
@@ -133,7 +133,7 @@ class Target_selector_nacl : public base_selector
   virtual void
   do_supported_bfd_names(std::vector<const char*>* names)
   {
-    gold_assert(this->bfd_name_ != NULL);
+    gold_assert(this->bfd_name_ != nullptr);
     this->base_selector::do_supported_bfd_names(names);
     names->push_back(this->bfd_name_);
   }
@@ -141,7 +141,7 @@ class Target_selector_nacl : public base_selector
   virtual void
   do_supported_emulations(std::vector<const char*>* emulations)
   {
-    gold_assert(this->emulation_ != NULL);
+    gold_assert(this->emulation_ != nullptr);
     this->base_selector::do_supported_emulations(emulations);
     emulations->push_back(this->emulation_);
   }
@@ -150,7 +150,7 @@ class Target_selector_nacl : public base_selector
   do_target_bfd_name(const Target* target)
   {
     return (!this->is_our_target(target)
-            ? NULL
+            ? nullptr
             : (this->is_nacl_
                ? this->bfd_name_
                : base_selector::do_target_bfd_name(target)));

@@ -45,14 +45,14 @@ class Task
 {
  public:
   Task()
-    : list_next_(NULL), name_(), should_run_soon_(false)
+    : list_next_(nullptr), name_(), should_run_soon_(false)
   { }
   virtual ~Task()
   { }
 
   // Check whether the Task can be run now.  This method is only
   // called with the workqueue lock held.  If the Task can run, this
-  // returns NULL.  Otherwise it returns a pointer to a token which
+  // returns nullptr.  Otherwise it returns a pointer to a token which
   // must be released before the Task can run.
   virtual Task_token*
   is_runnable() = 0;
@@ -87,14 +87,14 @@ class Task
   void
   set_list_next(Task* t)
   {
-    gold_assert(this->list_next_ == NULL);
+    gold_assert(this->list_next_ == nullptr);
     this->list_next_ = t;
   }
 
   // Clear the next Task on the list of Tasks.  Called by Task_list.
   void
   clear_list_next()
-  { this->list_next_ = NULL; }
+  { this->list_next_ = nullptr; }
 
   // Return the name of the Task.  This is only used for debugging
   // purposes.
@@ -152,7 +152,7 @@ class Task_function : public Task
   Task_function(Task_function_runner* runner, Task_token* blocker,
 		const char* name)
     : runner_(runner), blocker_(blocker), name_(name)
-  { gold_assert(blocker != NULL); }
+  { gold_assert(blocker != nullptr); }
 
   ~Task_function()
   {
@@ -165,7 +165,7 @@ class Task_function : public Task
   // Wait until the task is unblocked.
   Task_token*
   is_runnable()
-  { return this->blocker_->is_blocked() ? this->blocker_ : NULL; }
+  { return this->blocker_->is_blocked() ? this->blocker_ : nullptr; }
 
   // This type of task does not normally hold any locks.
   virtual void

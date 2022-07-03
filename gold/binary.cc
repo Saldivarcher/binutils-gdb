@@ -55,13 +55,13 @@ namespace gold
 Binary_to_elf::Binary_to_elf(elfcpp::EM machine, int size, bool big_endian,
 			     const std::string& filename)
   : elf_machine_(machine), size_(size), big_endian_(big_endian),
-    filename_(filename), data_(NULL), filesize_(0)
+    filename_(filename), data_(nullptr), filesize_(0)
 {
 }
 
 Binary_to_elf::~Binary_to_elf()
 {
-  if (this->data_ != NULL)
+  if (this->data_ != nullptr)
     delete[] this->data_;
 }
 
@@ -140,7 +140,7 @@ Binary_to_elf::sized_convert(const Task* task)
   section_size_type filesize = convert_to_section_size_type(f.filesize());
   const unsigned char* fileview;
   if (filesize == 0)
-    fileview = NULL;
+    fileview = nullptr;
   else
     fileview = f.get_view(0, 0, filesize, false, false);
 
@@ -167,18 +167,18 @@ Binary_to_elf::sized_convert(const Task* task)
   std::string size_symbol_name = mangled_name + "_size";
 
   Stringpool strtab;
-  strtab.add(start_symbol_name.c_str(), false, NULL);
-  strtab.add(end_symbol_name.c_str(), false, NULL);
-  strtab.add(size_symbol_name.c_str(), false, NULL);
+  strtab.add(start_symbol_name.c_str(), false, nullptr);
+  strtab.add(end_symbol_name.c_str(), false, nullptr);
+  strtab.add(size_symbol_name.c_str(), false, nullptr);
   strtab.set_string_offsets();
 
   // Build the stringpool for the section name table.
 
   Stringpool shstrtab;
-  shstrtab.add(".data", false, NULL);
-  shstrtab.add(".symtab", false, NULL);
-  shstrtab.add(".strtab", false, NULL);
-  shstrtab.add(".shstrtab", false, NULL);
+  shstrtab.add(".data", false, nullptr);
+  shstrtab.add(".symtab", false, nullptr);
+  shstrtab.add(".strtab", false, nullptr);
+  shstrtab.add(".shstrtab", false, nullptr);
   shstrtab.set_string_offsets();
 
   // Work out the size of the generated file, and the offsets of the

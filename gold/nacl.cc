@@ -36,7 +36,7 @@ Sniff_file::error(const char* format, ...) const
 {
   va_list args;
   va_start(args, format);
-  char* buf = NULL;
+  char* buf = nullptr;
   if (vasprintf(&buf, format, args) < 0)
     gold_nomem();
   va_end(args);

@@ -52,13 +52,13 @@ class Gdb_hashtab
 {
  public:
   Gdb_hashtab()
-    : size_(0), capacity_(0), hashtab_(NULL)
+    : size_(0), capacity_(0), hashtab_(nullptr)
   { }
 
   ~Gdb_hashtab()
   {
     for (size_t i = 0; i < this->capacity_; ++i)
-      if (this->hashtab_[i] != NULL)
+      if (this->hashtab_[i] != nullptr)
 	delete this->hashtab_[i];
     delete[] this->hashtab_;
   }
@@ -72,7 +72,7 @@ class Gdb_hashtab
       this->expand();
 
     T** slot = this->find_slot(symbol);
-    if (*slot == NULL)
+    if (*slot == nullptr)
       {
 	++this->size_;
 	*slot = symbol;
@@ -107,7 +107,7 @@ class Gdb_hashtab
 
     for (;;)
       {
-	if (this->hashtab_[index] == NULL
+	if (this->hashtab_[index] == nullptr
 	    || this->hashtab_[index]->equal(symbol))
 	  return &this->hashtab_[index];
 	index = (index + step) & (this->capacity_ - 1);
@@ -135,7 +135,7 @@ class Gdb_hashtab
 	memset(this->hashtab_, 0, this->capacity_ * sizeof(T*));
 	for (size_t i = 0; i < old_cap; ++i)
 	  {
-	    if (old_hashtab[i] != NULL)
+	    if (old_hashtab[i] != nullptr)
 	      {
 		T** slot = this->find_slot(old_hashtab[i]);
 		*slot = old_hashtab[i];
@@ -384,7 +384,7 @@ Gdb_index_info_reader::visit_top_die(Dwarf_die* die)
 	      ++Gdb_index_info_reader::dwarf_cu_nopubnames_count;
 	    else
 	      ++Gdb_index_info_reader::dwarf_tu_nopubnames_count;
-	    this->visit_children(die, NULL);
+	    this->visit_children(die, nullptr);
 	  }
 	break;
       default:
@@ -398,7 +398,7 @@ Gdb_index_info_reader::visit_top_die(Dwarf_die* die)
 
 // Visit the children of PARENT, looking for symbols to add to the index.
 // CONTEXT points to the DIE to use for constructing the qualified name --
-// NULL if PARENT is the top-level DIE; otherwise it is the same as PARENT.
+// nullptr if PARENT is the top-level DIE; otherwise it is the same as PARENT.
 
 void
 Gdb_index_info_reader::visit_children(Dwarf_die* parent, Dwarf_die* context)
@@ -418,7 +418,7 @@ Gdb_index_info_reader::visit_children(Dwarf_die* parent, Dwarf_die* context)
 
 // Visit a child DIE, looking for symbols to add to the index.
 // CONTEXT is the parent DIE, used for constructing the qualified name;
-// it is NULL if the parent DIE is the top-level DIE.
+// it is nullptr if the parent DIE is the top-level DIE.
 
 void
 Gdb_index_info_reader::visit_die(Dwarf_die* die, Dwarf_die* context)
@@ -455,7 +455,7 @@ Gdb_index_info_reader::visit_die(Dwarf_die* die, Dwarf_die* context)
 	  // For classes at the top level, we need to look for a
 	  // member function with a linkage name in order to get
 	  // the properly-canonicalized name.
-	  if (context == NULL
+	  if (context == nullptr
 	      && (die->tag() == elfcpp::DW_TAG_class_type
 		  || die->tag() == elfcpp::DW_TAG_structure_type
 		  || die->tag() == elfcpp::DW_TAG_union_type))
@@ -565,8 +565,8 @@ class_name_from_linkage_name(const char* linkage_name)
   void* storage;
   struct demangle_component* tree =
       cplus_demangle_v3_components(linkage_name, DMGL_NO_OPTS, &storage);
-  if (tree == NULL)
-    return NULL;
+  if (tree == nullptr)
+    return nullptr;
 
   int done = 0;
 
@@ -602,7 +602,7 @@ class_name_from_linkage_name(const char* linkage_name)
   // Additional qualifiers could live in the left subtree or the right
   // subtree.  Find the last piece.
   done = 0;
-  struct demangle_component* prev_comp = NULL;
+  struct demangle_component* prev_comp = nullptr;
   struct demangle_component* cur_comp = tree;
   while (!done)
     switch (cur_comp->type)
@@ -622,12 +622,12 @@ class_name_from_linkage_name(const char* linkage_name)
 	  break;
 	default:
 	  done = 1;
-	  cur_comp = NULL;
+	  cur_comp = nullptr;
 	  break;
       }
 
-  char* ret = NULL;
-  if (cur_comp != NULL && prev_comp != NULL)
+  char* ret = nullptr;
+  if (cur_comp != nullptr && prev_comp != nullptr)
     {
       // We want to discard the rightmost child of PREV_COMP.
       *prev_comp = *d_left(prev_comp);
@@ -666,10 +666,10 @@ Gdb_index_info_reader::guess_full_class_name(Dwarf_die* die)
       if (child.tag() == elfcpp::DW_TAG_subprogram)
         {
           const char* linkage_name = child.linkage_name();
-	  if (linkage_name != NULL)
+	  if (linkage_name != nullptr)
 	    {
 	      char* guess = class_name_from_linkage_name(linkage_name);
-	      if (guess != NULL)
+	      if (guess != nullptr)
 	        {
 		  full_name.assign(guess);
 		  free(guess);
@@ -691,7 +691,7 @@ Gdb_index_info_reader::add_declaration(Dwarf_die* die, Dwarf_die* context)
 {
   const char* name = die->name();
 
-  off_t parent_offset = context != NULL ? context->offset() : 0;
+  off_t parent_offset = context != nullptr ? context->offset() : 0;
 
   // If this DIE has a DW_AT_specification or DW_AT_abstract_origin
   // attribute, use the parent and name from the earlier declaration.
@@ -708,7 +708,7 @@ Gdb_index_info_reader::add_declaration(Dwarf_die* die, Dwarf_die* context)
         }
     }
 
-  if (name == NULL)
+  if (name == nullptr)
     {
       if (die->tag() == elfcpp::DW_TAG_namespace)
         name = "(anonymous namespace)";
@@ -757,7 +757,7 @@ Gdb_index_info_reader::get_context(off_t die_offset)
 	  context = get_context(parent_offset);
 	  context.append("::");
 	}
-      if (it->second.name_ != NULL)
+      if (it->second.name_ != nullptr)
         context.append(it->second.name_);
     }
   return context;
@@ -771,7 +771,7 @@ Gdb_index_info_reader::get_qualified_name(Dwarf_die* die, Dwarf_die* context)
   std::string full_name;
   const char* name = die->name();
 
-  off_t parent_offset = context != NULL ? context->offset() : 0;
+  off_t parent_offset = context != nullptr ? context->offset() : 0;
 
   // If this DIE has a DW_AT_specification or DW_AT_abstract_origin
   // attribute, use the parent and name from the earlier declaration.
@@ -788,9 +788,9 @@ Gdb_index_info_reader::get_qualified_name(Dwarf_die* die, Dwarf_die* context)
         }
     }
 
-  if (name == NULL && die->tag() == elfcpp::DW_TAG_namespace)
+  if (name == nullptr && die->tag() == elfcpp::DW_TAG_namespace)
     name = "(anonymous namespace)";
-  else if (name == NULL)
+  else if (name == nullptr)
     return full_name;
 
   // If this is an enumerator constant, skip the immediate parent,
@@ -824,7 +824,7 @@ Gdb_index_info_reader::record_cu_ranges(Dwarf_die* die)
   if (ranges_offset != -1)
     {
       Dwarf_range_list* ranges = this->read_range_list(shndx, ranges_offset);
-      if (ranges != NULL)
+      if (ranges != nullptr)
 	this->gdb_index_->add_address_range_list(this->object(),
 						 this->cu_index_, ranges);
       return;
@@ -865,7 +865,7 @@ Gdb_index_info_reader::read_pubtable(Dwarf_pubnames_table* table, off_t offset)
 {
   // If we couldn't read the section when building the cu_pubname_map,
   // then we won't find any pubnames now.
-  if (table == NULL)
+  if (table == nullptr)
     return false;
 
   if (!table->read_header(offset))
@@ -874,7 +874,7 @@ Gdb_index_info_reader::read_pubtable(Dwarf_pubnames_table* table, off_t offset)
     {
       uint8_t flag_byte;
       const char* name = table->next_name(&flag_byte);
-      if (name == NULL)
+      if (name == nullptr)
         break;
 
       this->gdb_index_->add_symbol(this->cu_index_, name, flag_byte);
@@ -984,21 +984,21 @@ Gdb_index_info_reader::print_stats()
 
 Gdb_index::Gdb_index(Output_section* gdb_index_section)
   : Output_section_data(4),
-    pubnames_table_(NULL),
-    pubtypes_table_(NULL),
+    pubnames_table_(nullptr),
+    pubtypes_table_(nullptr),
     gdb_index_section_(gdb_index_section),
     comp_units_(),
     type_units_(),
     ranges_(),
     cu_vector_list_(),
-    cu_vector_offsets_(NULL),
+    cu_vector_offsets_(nullptr),
     stringpool_(),
     tu_offset_(0),
     addr_offset_(0),
     symtab_offset_(0),
     cu_pool_offset_(0),
     stringpool_offset_(0),
-    pubnames_object_(NULL),
+    pubnames_object_(nullptr),
     stmt_list_offset_(-1)
 {
   this->gdb_symtab_ = new Gdb_hashtab<Gdb_symbol>();
@@ -1043,7 +1043,7 @@ Gdb_index::map_pubtable_to_dies(unsigned int attr,
 
   map->clear();
   if (!table->read_section(object, symbols, symbols_size))
-    return NULL;
+    return nullptr;
 
   while (table->read_header(section_offset))
     {
@@ -1309,7 +1309,7 @@ Gdb_index::do_write(Output_file* of)
       const Gdb_symbol* sym = (*this->gdb_symtab_)[i];
       section_offset_type name_offset = 0;
       unsigned int cu_vector_offset = 0;
-      if (sym != NULL)
+      if (sym != nullptr)
 	{
 	  name_offset = (this->stringpool_.get_offset_from_key(sym->name_key)
 			 + this->stringpool_offset_ - this->cu_pool_offset_);

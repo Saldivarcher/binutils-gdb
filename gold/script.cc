@@ -73,13 +73,13 @@ class Token
 
   // We need an empty constructor so that we can put this STL objects.
   Token()
-    : classification_(TOKEN_INVALID), value_(NULL), value_length_(0),
+    : classification_(TOKEN_INVALID), value_(nullptr), value_length_(0),
       opcode_(0), lineno_(0), charpos_(0)
   { }
 
   // A general token with no value.
   Token(Classification classification, int lineno, int charpos)
-    : classification_(classification), value_(NULL), value_length_(0),
+    : classification_(classification), value_(nullptr), value_length_(0),
       opcode_(0), lineno_(lineno), charpos_(charpos)
   {
     gold_assert(classification == TOKEN_INVALID
@@ -98,7 +98,7 @@ class Token
 
   // A token representing an operator.
   Token(int opcode, int lineno, int charpos)
-    : classification_(TOKEN_OPERATOR), value_(NULL), value_length_(0),
+    : classification_(TOKEN_OPERATOR), value_(nullptr), value_length_(0),
       opcode_(opcode), lineno_(lineno), charpos_(charpos)
   { }
 
@@ -277,7 +277,7 @@ class Lex
 
   // If C can appear in a name which has already started, return a
   // pointer to a character later in the token or just past
-  // it. Otherwise, return NULL.
+  // it. Otherwise, return nullptr.
   inline const char*
   can_continue_name(const char* c);
 
@@ -287,7 +287,7 @@ class Lex
 
   // If C can appear in a hex number which has already started, return
   // a pointer to a character later in the token or just past
-  // it. Otherwise, return NULL.
+  // it. Otherwise, return nullptr.
   inline const char*
   can_continue_hex(const char* c);
 
@@ -297,10 +297,10 @@ class Lex
 
   // If C can appear in a decimal number which has already started,
   // return a pointer to a character later in the token or just past
-  // it. Otherwise, return NULL.
+  // it. Otherwise, return nullptr.
   inline const char*
   can_continue_number(const char* c)
-  { return Lex::can_start_number(*c) ? c + 1 : NULL; }
+  { return Lex::can_start_number(*c) ? c + 1 : nullptr; }
 
   // If C1 C2 C3 form a valid three character operator, return the
   // opcode.  Otherwise return 0.
@@ -463,19 +463,19 @@ Lex::can_continue_name(const char* c)
     case ',':
       if (this->mode_ == LINKER_SCRIPT)
         return c + 1;
-      return NULL;
+      return nullptr;
 
     case '[': case ']': case '*': case '?': case '-':
       if (this->mode_ == LINKER_SCRIPT || this->mode_ == VERSION_SCRIPT
           || this->mode_ == DYNAMIC_LIST)
         return c + 1;
-      return NULL;
+      return nullptr;
 
     // TODO(csilvers): why allow this?  ^ is meaningless in version scripts.
     case '^':
       if (this->mode_ == VERSION_SCRIPT || this->mode_ == DYNAMIC_LIST)
         return c + 1;
-      return NULL;
+      return nullptr;
 
     case ':':
       if (this->mode_ == LINKER_SCRIPT)
@@ -487,10 +487,10 @@ Lex::can_continue_name(const char* c)
           // separator. But a single colon is not part of a name.
           return c + 2;
         }
-      return NULL;
+      return nullptr;
 
     default:
-      return NULL;
+      return nullptr;
     }
 }
 
@@ -523,7 +523,7 @@ Lex::can_continue_hex(const char* c)
       return c + 1;
 
     default:
-      return NULL;
+      return nullptr;
     }
 }
 
@@ -723,8 +723,8 @@ Lex::gather_token(Token::Classification classification,
 		  const char* match,
 		  const char** pp)
 {
-  const char* new_match = NULL;
-  while ((new_match = (this->*can_continue_fn)(match)) != NULL)
+  const char* new_match = nullptr;
+  while ((new_match = (this->*can_continue_fn)(match)) != nullptr)
     match = new_match;
 
   // A special case: integers may be followed by a single M or K,
@@ -908,7 +908,7 @@ Symbol_assignment::add_to_table(Symbol_table* symtab)
 {
   elfcpp::STV vis = this->hidden_ ? elfcpp::STV_HIDDEN : elfcpp::STV_DEFAULT;
   this->sym_ = symtab->define_as_constant(this->name_.c_str(),
-					  NULL, // version
+					  nullptr, // version
 					  (this->is_defsym_
 					   ? Symbol_table::DEFSYM
 					   : Symbol_table::SCRIPT),
@@ -927,7 +927,7 @@ Symbol_assignment::add_to_table(Symbol_table* symtab)
 void
 Symbol_assignment::finalize(Symbol_table* symtab, const Layout* layout)
 {
-  this->finalize_maybe_dot(symtab, layout, false, 0, NULL);
+  this->finalize_maybe_dot(symtab, layout, false, 0, nullptr);
 }
 
 // Finalize a symbol value which can refer to the dot symbol.
@@ -951,8 +951,8 @@ Symbol_assignment::finalize_maybe_dot(Symbol_table* symtab,
 				      Output_section* dot_section)
 {
   // If we were only supposed to provide this symbol, the sym_ field
-  // will be NULL if the symbol was not referenced.
-  if (this->sym_ == NULL)
+  // will be nullptr if the symbol was not referenced.
+  if (this->sym_ == nullptr)
     {
       gold_assert(this->provide_);
       return;
@@ -993,14 +993,14 @@ Symbol_assignment::sized_finalize(Symbol_table* symtab, const Layout* layout,
   uint64_t final_val = this->val_->eval_maybe_dot(symtab, layout, true,
 						  is_dot_available,
 						  dot_value, dot_section,
-						  &section, NULL, &type,
-						  &vis, &nonvis, false, NULL);
+						  &section, nullptr, &type,
+						  &vis, &nonvis, false, nullptr);
   Sized_symbol<size>* ssym = symtab->get_sized_symbol<size>(this->sym_);
   ssym->set_value(final_val);
   ssym->set_type(type);
   ssym->set_visibility(vis);
   ssym->set_nonvis(nonvis);
-  if (section != NULL)
+  if (section != nullptr)
     ssym->set_output_section(section);
 }
 
@@ -1012,16 +1012,16 @@ Symbol_assignment::set_if_absolute(Symbol_table* symtab, const Layout* layout,
 				   bool is_dot_available, uint64_t dot_value,
 				   Output_section* dot_section)
 {
-  if (this->sym_ == NULL)
+  if (this->sym_ == nullptr)
     return;
 
   Output_section* val_section;
   bool is_valid;
   uint64_t val = this->val_->eval_maybe_dot(symtab, layout, false,
 					    is_dot_available, dot_value,
-					    dot_section, &val_section, NULL,
-					    NULL, NULL, NULL, false, &is_valid);
-  if (!is_valid || (val_section != NULL && val_section != dot_section))
+					    dot_section, &val_section, nullptr,
+					    nullptr, nullptr, nullptr, false, &is_valid);
+  if (!is_valid || (val_section != nullptr && val_section != dot_section))
     return;
 
   if (parameters->target().get_size() == 32)
@@ -1044,7 +1044,7 @@ Symbol_assignment::set_if_absolute(Symbol_table* symtab, const Layout* layout,
     }
   else
     gold_unreachable();
-  if (val_section != NULL)
+  if (val_section != nullptr)
     this->sym_->set_output_section(val_section);
 }
 
@@ -1258,7 +1258,7 @@ Script_options::set_section_addresses(Symbol_table* symtab, Layout* layout)
   for (Symbol_assignments::iterator p = this->symbol_assignments_.begin();
        p != this->symbol_assignments_.end();
        ++p)
-    (*p)->set_if_absolute(symtab, layout, false, 0, NULL);
+    (*p)->set_if_absolute(symtab, layout, false, 0, nullptr);
 
   return this->script_sections_.set_section_addresses(symtab, layout);
 }
@@ -1286,7 +1286,7 @@ class Parser_closure
       found_incompatible_target_(false),
       command_line_(command_line), script_options_(script_options),
       version_script_info_(script_options->version_script_info()),
-      lex_(lex), lineno_(0), charpos_(0), lex_mode_stack_(), inputs_(NULL),
+      lex_(lex), lineno_(0), charpos_(0), lex_mode_stack_(), inputs_(nullptr),
       script_info_(script_info)
   {
     // We start out processing C symbols in the default lex mode.
@@ -1346,7 +1346,7 @@ class Parser_closure
   { this->found_incompatible_target_ = true; }
 
   // Returns the Command_line structure passed in at constructor time.
-  // This value may be NULL.  The caller may modify this, which modifies
+  // This value may be nullptr.  The caller may modify this, which modifies
   // the passed-in Command_line object (not a copy).
   Command_line*
   command_line()
@@ -1409,7 +1409,7 @@ class Parser_closure
   Input_arguments*
   inputs()
   {
-    if (this->inputs_ == NULL)
+    if (this->inputs_ == nullptr)
       this->inputs_ = new Input_arguments();
     return this->inputs_;
   }
@@ -1417,7 +1417,7 @@ class Parser_closure
   // Return whether we saw any input files.
   bool
   saw_inputs() const
-  { return this->inputs_ != NULL && !this->inputs_->empty(); }
+  { return this->inputs_ != nullptr && !this->inputs_->empty(); }
 
   // Return the current language being processed in a version script
   // (eg, "C++").  The empty string represents unmangled C names.
@@ -1460,7 +1460,7 @@ class Parser_closure
   bool skip_on_incompatible_target_;
   // True if we found an OUTPUT_FORMAT with an incompatible target.
   bool found_incompatible_target_;
-  // May be NULL if the user chooses not to pass one in.
+  // May be nullptr if the user chooses not to pass one in.
   Command_line* command_line_;
   // Options which may be set from any linker script.
   Script_options* script_options_;
@@ -1502,8 +1502,8 @@ read_input_script(Workqueue* workqueue, Symbol_table* symtab, Layout* layout,
 
   Lex lex(input_string.c_str(), input_string.length(), PARSING_LINKER_SCRIPT);
 
-  Script_info* script_info = NULL;
-  if (layout->incremental_inputs() != NULL)
+  Script_info* script_info = nullptr;
+  if (layout->incremental_inputs() != nullptr)
     {
       const std::string& filename = input_file->filename();
       Timespec mtime = input_file->file().get_mtime();
@@ -1516,9 +1516,9 @@ read_input_script(Workqueue* workqueue, Symbol_table* symtab, Layout* layout,
   Parser_closure closure(input_file->filename().c_str(),
 			 input_argument->file().options(),
 			 false,
-			 input_group != NULL,
+			 input_group != nullptr,
 			 input_file->is_in_sysroot(),
-                         NULL,
+                         nullptr,
 			 layout->script_options(),
 			 &lex,
 			 input_file->will_search_for(),
@@ -1549,7 +1549,7 @@ read_input_script(Workqueue* workqueue, Symbol_table* symtab, Layout* layout,
   if (!closure.saw_inputs())
     return true;
 
-  Task_token* this_blocker = NULL;
+  Task_token* this_blocker = nullptr;
   for (Input_arguments::const_iterator p = closure.inputs()->begin();
        p != closure.inputs()->end();
        ++p)
@@ -1564,7 +1564,7 @@ read_input_script(Workqueue* workqueue, Symbol_table* symtab, Layout* layout,
 	}
       workqueue->queue_soon(new Read_symbols(input_objects, symtab,
 					     layout, dirsearch, 0, mapfile, &*p,
-					     input_group, NULL, this_blocker, nb));
+					     input_group, nullptr, this_blocker, nb));
       this_blocker = nb;
     }
 
@@ -1626,7 +1626,7 @@ read_script_file(const char* filename, Command_line* cmdline,
 			 script_options,
 			 &lex,
 			 false,
-			 NULL);
+			 nullptr);
   if (yyparse(&closure) != 0)
     {
       input_file.file().unlock(task);
@@ -1685,7 +1685,7 @@ Script_options::define_symbol(const char* definition)
   Position_dependent_options posdep_options;
 
   Parser_closure closure("command line", posdep_options, true,
-			 false, false, NULL, this, &lex, false, NULL);
+			 false, false, nullptr, this, &lex, false, nullptr);
 
   if (yyparse(&closure) != 0)
     return false;
@@ -1912,7 +1912,7 @@ Keyword_to_parsecode::keyword_to_parsecode(const char* keyword,
                        this->keyword_count_,
                        sizeof(this->keyword_parsecodes_[0]),
                        ktt_compare);
-  if (kttv == NULL)
+  if (kttv == nullptr)
     return 0;
   Keyword_parsecode* ktt = static_cast<Keyword_parsecode*>(kttv);
   return ktt->parsecode;
@@ -1961,7 +1961,7 @@ struct Version_dependency_list
 struct Version_tree
 {
   Version_tree()
-      : tag(), global(NULL), local(NULL), dependencies(NULL)
+      : tag(), global(nullptr), local(nullptr), dependencies(nullptr)
   { }
 
   std::string tag;
@@ -1977,7 +1977,7 @@ class Lazy_demangler
 {
  public:
   Lazy_demangler(const char* symbol, int options)
-    : symbol_(symbol), options_(options), demangled_(NULL), did_demangle_(false)
+    : symbol_(symbol), options_(options), demangled_(nullptr), did_demangle_(false)
   { }
 
   ~Lazy_demangler()
@@ -1993,7 +1993,7 @@ class Lazy_demangler
   const char* symbol_;
   // Option flags to pass to cplus_demagle.
   const int options_;
-  // The cached demangled value, or NULL if demangling didn't happen yet or
+  // The cached demangled value, or nullptr if demangling didn't happen yet or
   // failed.
   char* demangled_;
   // Whether we already called cplus_demangle
@@ -2001,7 +2001,7 @@ class Lazy_demangler
 };
 
 // Return the demangled name. The actual demangling happens on the first call,
-// and the result is later cached. Returns NULL if the symbol cannot be
+// and the result is later cached. Returns nullptr if the symbol cannot be
 // demangled.
 
 inline char*
@@ -2019,10 +2019,10 @@ Lazy_demangler::get()
 
 Version_script_info::Version_script_info()
   : dependency_lists_(), expression_lists_(), version_trees_(), globs_(),
-    default_version_(NULL), default_is_global_(false), is_finalized_(false)
+    default_version_(nullptr), default_is_global_(false), is_finalized_(false)
 {
   for (int i = 0; i < LANGUAGE_COUNT; ++i)
-    this->exact_[i] = NULL;
+    this->exact_[i] = nullptr;
 }
 
 Version_script_info::~Version_script_info()
@@ -2080,7 +2080,7 @@ Version_script_info::get_dependencies(const char* version) const
       {
         const struct Version_dependency_list* deps =
           this->version_trees_[j]->dependencies;
-        if (deps != NULL)
+        if (deps != nullptr)
           for (size_t k = 0; k < deps->dependencies.size(); ++k)
             ret.push_back(deps->dependencies[k]);
         return ret;
@@ -2242,7 +2242,7 @@ Version_script_info::add_exact_match(const std::string& match,
       // first version that we found in the script, but we
       // record the new version to issue a warning if we
       // wind up looking up this symbol.
-      if (vtm.ambiguous == NULL)
+      if (vtm.ambiguous == nullptr)
 	vtm.ambiguous = v;
     }
   else if (is_global != vtm.is_global)
@@ -2265,7 +2265,7 @@ Version_script_info::build_expression_list_lookup(
     const Version_tree* v,
     bool is_global)
 {
-  if (explist == NULL)
+  if (explist == nullptr)
     return;
   size_t size = explist->expressions.size();
   for (size_t i = 0; i < size; ++i)
@@ -2274,12 +2274,12 @@ Version_script_info::build_expression_list_lookup(
 
       if (exp.pattern.length() == 1 && exp.pattern[0] == '*')
 	{
-	  if (this->default_version_ != NULL
+	  if (this->default_version_ != nullptr
 	      && this->default_version_->tag != v->tag)
 	    gold_warning(_("wildcard match appears in both version '%s' "
 			   "and '%s' in script"),
 			 this->default_version_->tag.c_str(), v->tag.c_str());
-	  else if (this->default_version_ != NULL
+	  else if (this->default_version_ != nullptr
 		   && this->default_is_global_ != is_global)
 	    gold_error(_("wildcard match appears as both global and local "
 			 "in version '%s' in script"),
@@ -2299,7 +2299,7 @@ Version_script_info::build_expression_list_lookup(
 	    }
 	}
 
-      if (this->exact_[exp.language] == NULL)
+      if (this->exact_[exp.language] == nullptr)
 	this->exact_[exp.language] = new Exact();
       this->add_exact_match(pattern, v, is_global, &exp,
 			    this->exact_[exp.language]);
@@ -2330,8 +2330,8 @@ Version_script_info::get_name_to_match(const char* name,
 
 // Look up SYMBOL_NAME in the list of versions.  Return true if the
 // symbol is found, false if not.  If the symbol is found, then if
-// PVERSION is not NULL, set *PVERSION to the version tag, and if
-// P_IS_GLOBAL is not NULL, set *P_IS_GLOBAL according to whether the
+// PVERSION is not nullptr, set *PVERSION to the version tag, and if
+// P_IS_GLOBAL is not nullptr, set *P_IS_GLOBAL according to whether the
 // symbol is global or not.
 
 bool
@@ -2347,13 +2347,13 @@ Version_script_info::get_symbol_version(const char* symbol_name,
   for (int i = 0; i < LANGUAGE_COUNT; ++i)
     {
       Exact* exact = this->exact_[i];
-      if (exact == NULL)
+      if (exact == nullptr)
 	continue;
 
       const char* name_to_match = this->get_name_to_match(symbol_name, i,
 							  &cpp_demangled_name,
 							  &java_demangled_name);
-      if (name_to_match == NULL)
+      if (name_to_match == nullptr)
 	{
 	  // If the name can not be demangled, the GNU linker goes
 	  // ahead and tries to match it anyhow.  That does not
@@ -2365,15 +2365,15 @@ Version_script_info::get_symbol_version(const char* symbol_name,
       if (pe != exact->end())
 	{
 	  const Version_tree_match& vtm(pe->second);
-	  if (vtm.ambiguous != NULL)
+	  if (vtm.ambiguous != nullptr)
 	    gold_warning(_("using '%s' as version for '%s' which is also "
 			   "named in version '%s' in script"),
 			 vtm.real->tag.c_str(), name_to_match,
 			 vtm.ambiguous->tag.c_str());
 
-	  if (pversion != NULL)
+	  if (pversion != nullptr)
 	    *pversion = vtm.real->tag;
-	  if (p_is_global != NULL)
+	  if (p_is_global != nullptr)
 	    *p_is_global = vtm.is_global;
 
 	  // If we are using --no-undefined-version, and this is a
@@ -2382,7 +2382,7 @@ Version_script_info::get_symbol_version(const char* symbol_name,
 	  // this now, because otherwise we have no way to get from a
 	  // non-C language back to the demangled name that we
 	  // matched.
-	  if (p_is_global != NULL && vtm.is_global)
+	  if (p_is_global != nullptr && vtm.is_global)
 	    vtm.expression->was_matched_by_symbol = true;
 
 	  return true;
@@ -2400,26 +2400,26 @@ Version_script_info::get_symbol_version(const char* symbol_name,
 							  language,
 							  &cpp_demangled_name,
 							  &java_demangled_name);
-      if (name_to_match == NULL)
+      if (name_to_match == nullptr)
 	continue;
 
       if (fnmatch(p->expression->pattern.c_str(), name_to_match,
 		  FNM_NOESCAPE) == 0)
 	{
-	  if (pversion != NULL)
+	  if (pversion != nullptr)
 	    *pversion = p->version->tag;
-	  if (p_is_global != NULL)
+	  if (p_is_global != nullptr)
 	    *p_is_global = p->is_global;
 	  return true;
 	}
     }
 
   // Finally, there may be a wildcard.
-  if (this->default_version_ != NULL)
+  if (this->default_version_ != nullptr)
     {
-      if (pversion != NULL)
+      if (pversion != nullptr)
 	*pversion = this->default_version_->tag;
-      if (p_is_global != NULL)
+      if (p_is_global != nullptr)
 	*p_is_global = this->default_is_global_;
       return true;
     }
@@ -2436,7 +2436,7 @@ Version_script_info::check_unmatched_names(const Symbol_table* symtab) const
   for (size_t i = 0; i < this->version_trees_.size(); ++i)
     {
       const Version_tree* vt = this->version_trees_[i];
-      if (vt->global == NULL)
+      if (vt->global == nullptr)
 	continue;
       for (size_t j = 0; j < vt->global->expressions.size(); ++j)
 	{
@@ -2463,7 +2463,7 @@ Version_script_info::check_unmatched_names(const Symbol_table* symtab) const
 		continue;
 	    }
 
-	  if (symtab->lookup(pattern.c_str(), vt->tag.c_str()) == NULL)
+	  if (symtab->lookup(pattern.c_str(), vt->tag.c_str()) == nullptr)
 	    gold_error(_("version script assignment of %s to symbol %s "
 			 "failed: symbol not defined"),
 		       vt->tag.c_str(), pattern.c_str());
@@ -2511,20 +2511,20 @@ Version_script_info::print(FILE* f) const
       else
 	fprintf(f, "  %s {\n", vt->tag.c_str());
 
-      if (vt->global != NULL)
+      if (vt->global != nullptr)
 	{
 	  fprintf(f, "    global :\n");
 	  this->print_expression_list(f, vt->global);
 	}
 
-      if (vt->local != NULL)
+      if (vt->local != nullptr)
 	{
 	  fprintf(f, "    local :\n");
 	  this->print_expression_list(f, vt->local);
 	}
 
       fprintf(f, "  }");
-      if (vt->dependencies != NULL)
+      if (vt->dependencies != nullptr)
 	{
 	  const Version_dependency_list* deps = vt->dependencies;
 	  for (size_t j = 0; j < deps->dependencies.size(); ++j)
@@ -2701,7 +2701,7 @@ script_add_file(void* closurev, const char* name, size_t length)
       // In addition to checking the normal library search path, we
       // also want to check in the script-directory.
       const char* slash = strrchr(closure->filename(), '/');
-      if (slash != NULL)
+      if (slash != nullptr)
 	{
 	  script_directory.assign(closure->filename(),
 				  slash - closure->filename() + 1);
@@ -2849,7 +2849,7 @@ script_parse_option(void* closurev, const char* option, size_t length)
   Parser_closure* closure = static_cast<Parser_closure*>(closurev);
   // We treat the option as a single command-line option, even if
   // it has internal whitespace.
-  if (closure->command_line() == NULL)
+  if (closure->command_line() == nullptr)
     {
       // There are some options that we could handle here--e.g.,
       // -lLIBRARY.  Should we bother?
@@ -2861,7 +2861,7 @@ script_parse_option(void* closurev, const char* option, size_t length)
     {
       bool past_a_double_dash_option = false;
       const char* mutable_option = strndup(option, length);
-      gold_assert(mutable_option != NULL);
+      gold_assert(mutable_option != nullptr);
       closure->command_line()->process_one_option(1, &mutable_option, 0,
                                                   &past_a_double_dash_option);
       // The General_options class will quite possibly store a pointer
@@ -2886,7 +2886,7 @@ script_check_output_format(void* closurev,
   Parser_closure* closure = static_cast<Parser_closure*>(closurev);
   std::string name(default_name, default_length);
   Target* target = select_target_by_bfd_name(name.c_str());
-  if (target == NULL || !parameters->is_compatible_target(target))
+  if (target == nullptr || !parameters->is_compatible_target(target))
     {
       if (closure->skip_on_incompatible_target())
 	{
@@ -2917,7 +2917,7 @@ extern "C" void
 script_add_search_dir(void* closurev, const char* option, size_t length)
 {
   Parser_closure* closure = static_cast<Parser_closure*>(closurev);
-  if (closure->command_line() == NULL)
+  if (closure->command_line() == nullptr)
     gold_warning(_("%s:%d:%d: ignoring SEARCH_DIR; SEARCH_DIR is only valid"
 		   " for scripts specified via -T/--script"),
 		 closure->filename(), closure->lineno(), closure->charpos());
@@ -2977,9 +2977,9 @@ script_register_vers_node(void*,
 			  struct Version_tree* tree,
 			  struct Version_dependency_list* deps)
 {
-  gold_assert(tree != NULL);
+  gold_assert(tree != nullptr);
   tree->dependencies = deps;
-  if (tag != NULL)
+  if (tag != nullptr)
     tree->tag = std::string(tag, taglen);
 }
 
@@ -2992,7 +2992,7 @@ script_add_vers_depend(void* closurev,
 		       const char* depend_to_add, int deplen)
 {
   Parser_closure* closure = static_cast<Parser_closure*>(closurev);
-  if (all_deps == NULL)
+  if (all_deps == nullptr)
     all_deps = closure->version_script()->allocate_dependency_list();
   all_deps->dependencies.push_back(std::string(depend_to_add, deplen));
   return all_deps;
@@ -3006,7 +3006,7 @@ script_new_vers_pattern(void* closurev,
 			const char* pattern, int patlen, int exact_match)
 {
   Parser_closure* closure = static_cast<Parser_closure*>(closurev);
-  if (expressions == NULL)
+  if (expressions == nullptr)
     expressions = closure->version_script()->allocate_expression_list();
   expressions->expressions.push_back(
       Version_expression(std::string(pattern, patlen),
@@ -3217,7 +3217,7 @@ extern "C" String_sort_list_ptr
 script_string_sort_list_add(String_sort_list_ptr pv,
 			    const struct Wildcard_section* string_sort)
 {
-  if (pv == NULL)
+  if (pv == nullptr)
     return script_new_string_sort_list(string_sort);
   else
     {
@@ -3241,7 +3241,7 @@ script_new_string_list(const char* str, size_t len)
 extern "C" String_list_ptr
 script_string_list_push_back(String_list_ptr pv, const char* str, size_t len)
 {
-  if (pv == NULL)
+  if (pv == nullptr)
     return script_new_string_list(str, len);
   else
     {
@@ -3250,16 +3250,16 @@ script_string_list_push_back(String_list_ptr pv, const char* str, size_t len)
     }
 }
 
-// Concatenate two string lists.  Either or both may be NULL.  The way
+// Concatenate two string lists.  Either or both may be nullptr.  The way
 // the parser works permits us to modify the parameters, rather than
 // copy the vector.
 
 extern "C" String_list_ptr
 script_string_list_append(String_list_ptr pv1, String_list_ptr pv2)
 {
-  if (pv1 == NULL)
+  if (pv1 == nullptr)
     return pv2;
-  if (pv2 == NULL)
+  if (pv2 == nullptr)
     return pv1;
   pv1->insert(pv1->end(), pv2->begin(), pv2->end());
   return pv1;
@@ -3342,7 +3342,7 @@ script_set_section_region(void* closurev, const char* name, size_t namelen,
 
   Script_sections* ss = closure->script_options()->script_sections();
   Memory_region* mr = ss->find_memory_region(name, namelen);
-  if (mr == NULL)
+  if (mr == nullptr)
     {
       gold_error(_("%s:%d:%d: MEMORY region '%.*s' not declared"),
 		 closure->filename(), closure->lineno(), closure->charpos(),
@@ -3418,7 +3418,7 @@ script_exp_function_origin(void* closurev, const char* name, size_t namelen)
   Script_sections* ss = closure->script_options()->script_sections();
   Expression* origin = ss->find_memory_region_origin(name, namelen);
 
-  if (origin == NULL)
+  if (origin == nullptr)
     {
       gold_error(_("undefined memory region '%s' referenced "
 		   "in ORIGIN expression"),
@@ -3437,7 +3437,7 @@ script_exp_function_length(void* closurev, const char* name, size_t namelen)
   Script_sections* ss = closure->script_options()->script_sections();
   Expression* length = ss->find_memory_region_length(name, namelen);
 
-  if (length == NULL)
+  if (length == nullptr)
     {
       gold_error(_("undefined memory region '%s' referenced "
 		   "in LENGTH expression"),

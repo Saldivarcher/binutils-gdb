@@ -40,7 +40,7 @@ class Target_selector_freebsd : public Target_selector
 			  const char* bfd_name,
 			  const char* freebsd_bfd_name,
 			  const char* emulation)
-    : Target_selector(machine, size, is_big_endian, NULL, emulation),
+    : Target_selector(machine, size, is_big_endian, nullptr, emulation),
       bfd_name_(bfd_name), freebsd_bfd_name_(freebsd_bfd_name)
   { }
 
@@ -69,7 +69,7 @@ class Target_selector_freebsd : public Target_selector
 	return ret;
       }
     else
-      return NULL;
+      return nullptr;
   }
 
   // Print both names in --help output.
@@ -85,7 +85,7 @@ class Target_selector_freebsd : public Target_selector
   do_target_bfd_name(const Target* target)
   {
     if (!this->is_our_target(target))
-      return NULL;
+      return nullptr;
     return (target->osabi() == elfcpp::ELFOSABI_FREEBSD
 	    ? this->freebsd_bfd_name_
 	    : this->bfd_name_);

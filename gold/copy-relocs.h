@@ -54,8 +54,8 @@ class Copy_relocs
 
  public:
   Copy_relocs(unsigned int copy_reloc_type)
-    : entries_(), copy_reloc_type_(copy_reloc_type), dynbss_(NULL),
-      dynrelro_(NULL)
+    : entries_(), copy_reloc_type_(copy_reloc_type), dynbss_(nullptr),
+      dynrelro_(nullptr)
   { }
 
   // This is called while scanning relocs if we see a relocation

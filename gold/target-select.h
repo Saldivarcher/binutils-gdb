@@ -66,7 +66,7 @@ class Target_selector
   // or 64), and endianness.  The machine number can be EM_NONE to
   // test for any machine number.  BFD_NAME is the name of the target
   // used by the GNU linker, for backward compatibility; it may be
-  // NULL.  EMULATION is the name of the emulation used by the GNU
+  // nullptr.  EMULATION is the name of the emulation used by the GNU
   // linker; it is similar to BFD_NAME.
   Target_selector(int machine, int size, bool is_big_endian,
 		  const char* bfd_name, const char* emulation);
@@ -128,14 +128,14 @@ class Target_selector
   is_big_endian() const
   { return this->is_big_endian_; }
 
-  // Return the BFD name.  This may return NULL, in which case the
+  // Return the BFD name.  This may return nullptr, in which case the
   // do_recognize_by_bfd_name hook will be responsible for matching
   // the BFD name.
   const char*
   bfd_name() const
   { return this->bfd_name_; }
 
-  // Return the emulation.  This may return NULL, in which case the
+  // Return the emulation.  This may return nullptr, in which case the
   // do_recognize_by_emulation hook will be responsible for matching
   // the emulation.
   const char*
@@ -144,7 +144,7 @@ class Target_selector
 
   // The reverse mapping, for --print-output-format: if we
   // instantiated TARGET, return our BFD_NAME.  If we did not
-  // instantiate it, return NULL.
+  // instantiate it, return nullptr.
   const char*
   target_bfd_name(const Target* target)
   { return this->do_target_bfd_name(target); }
@@ -166,7 +166,7 @@ class Target_selector
   { return this->instantiate_target(); }
 
   // Recognize a target by name.  When this is called we already know
-  // that the name matches (or that the bfd_name_ field is NULL).  The
+  // that the name matches (or that the bfd_name_ field is nullptr).  The
   // child class may implement a different version of this to
   // recognize more than one name.
   virtual Target*
@@ -179,13 +179,13 @@ class Target_selector
   virtual void
   do_supported_bfd_names(std::vector<const char*>* names)
   {
-    gold_assert(this->bfd_name_ != NULL);
+    gold_assert(this->bfd_name_ != nullptr);
     names->push_back(this->bfd_name_);
   }
 
   // Recognize a target by emulation.  When this is called we already
   // know that the name matches (or that the emulation_ field is
-  // NULL).  The child class may implement a different version of this
+  // nullptr).  The child class may implement a different version of this
   // to recognize more than one emulation.
   virtual Target*
   do_recognize_by_emulation(const char*)
@@ -197,7 +197,7 @@ class Target_selector
   virtual void
   do_supported_emulations(std::vector<const char*>* emulations)
   {
-    gold_assert(this->emulation_ != NULL);
+    gold_assert(this->emulation_ != nullptr);
     emulations->push_back(this->emulation_);
   }
 

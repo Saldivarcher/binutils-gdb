@@ -57,7 +57,7 @@ Set_target_once::do_run_once(void*)
 Target_selector::Target_selector(int machine, int size, bool is_big_endian,
 				 const char* bfd_name, const char* emulation)
   : machine_(machine), size_(size), is_big_endian_(is_big_endian),
-    bfd_name_(bfd_name), emulation_(emulation), instantiated_target_(NULL),
+    bfd_name_(bfd_name), emulation_(emulation), instantiated_target_(nullptr),
     set_target_once_(this)
 {
   this->next_ = target_selectors;
@@ -70,7 +70,7 @@ Target_selector::Target_selector(int machine, int size, bool is_big_endian,
 Target*
 Target_selector::instantiate_target()
 {
-  this->set_target_once_.run_once(NULL);
+  this->set_target_once_.run_once(nullptr);
   return this->instantiated_target_;
 }
 
@@ -79,7 +79,7 @@ Target_selector::instantiate_target()
 void
 Target_selector::set_target()
 {
-  gold_assert(this->instantiated_target_ == NULL);
+  gold_assert(this->instantiated_target_ == nullptr);
   this->instantiated_target_ = this->do_instantiate_target();
 }
 
@@ -89,9 +89,9 @@ const char*
 Target_selector::do_target_bfd_name(const Target* target)
 {
   if (!this->is_our_target(target))
-    return NULL;
+    return nullptr;
   const char* my_bfd_name = this->bfd_name();
-  gold_assert(my_bfd_name != NULL);
+  gold_assert(my_bfd_name != nullptr);
   return my_bfd_name;
 }
 
@@ -102,7 +102,7 @@ select_target(Input_file* input_file, off_t offset,
 	      int machine, int size, bool is_big_endian,
 	      int osabi, int abiversion)
 {
-  for (Target_selector* p = target_selectors; p != NULL; p = p->next())
+  for (Target_selector* p = target_selectors; p != nullptr; p = p->next())
     {
       int pmach = p->machine();
       if ((pmach == machine || pmach == elfcpp::EM_NONE)
@@ -111,11 +111,11 @@ select_target(Input_file* input_file, off_t offset,
 	{
 	  Target* ret = p->recognize(input_file, offset,
 				     machine, osabi, abiversion);
-	  if (ret != NULL)
+	  if (ret != nullptr)
 	    return ret;
 	}
     }
-  return NULL;
+  return nullptr;
 }
 
 // Find a target using a BFD name.  This is used to support the
@@ -124,17 +124,17 @@ select_target(Input_file* input_file, off_t offset,
 Target*
 select_target_by_bfd_name(const char* name)
 {
-  for (Target_selector* p = target_selectors; p != NULL; p = p->next())
+  for (Target_selector* p = target_selectors; p != nullptr; p = p->next())
     {
       const char* pname = p->bfd_name();
-      if (pname == NULL || strcmp(pname, name) == 0)
+      if (pname == nullptr || strcmp(pname, name) == 0)
 	{
 	  Target* ret = p->recognize_by_bfd_name(name);
-	  if (ret != NULL)
+	  if (ret != nullptr)
 	    return ret;
 	}
     }
-  return NULL;
+  return nullptr;
 }
 
 // Find a target using a GNU linker emulation.  This is used to
@@ -143,17 +143,17 @@ select_target_by_bfd_name(const char* name)
 Target*
 select_target_by_emulation(const char* name)
 {
-  for (Target_selector* p = target_selectors; p != NULL; p = p->next())
+  for (Target_selector* p = target_selectors; p != nullptr; p = p->next())
     {
       const char* pname = p->emulation();
-      if (pname == NULL || strcmp(pname, name) == 0)
+      if (pname == nullptr || strcmp(pname, name) == 0)
 	{
 	  Target* ret = p->recognize_by_emulation(name);
-	  if (ret != NULL)
+	  if (ret != nullptr)
 	    return ret;
 	}
     }
-  return NULL;
+  return nullptr;
 }
 
 // Push all the supported BFD names onto a vector.
@@ -161,7 +161,7 @@ select_target_by_emulation(const char* name)
 void
 supported_target_names(std::vector<const char*>* names)
 {
-  for (Target_selector* p = target_selectors; p != NULL; p = p->next())
+  for (Target_selector* p = target_selectors; p != nullptr; p = p->next())
     p->supported_bfd_names(names);
 }
 
@@ -170,7 +170,7 @@ supported_target_names(std::vector<const char*>* names)
 void
 supported_emulation_names(std::vector<const char*>* names)
 {
-  for (Target_selector* p = target_selectors; p != NULL; p = p->next())
+  for (Target_selector* p = target_selectors; p != nullptr; p = p->next())
     p->supported_emulations(names);
 }
 
@@ -192,7 +192,7 @@ print_output_format()
 	{
 	  const char* bfd_name = parameters->options().oformat();
 	  Target* target = select_target_by_bfd_name(bfd_name);
-	  if (target != NULL)
+	  if (target != nullptr)
 	    printf("%s\n", bfd_name);
 	  else
 	    gold_error(_("unrecognized output format %s"), bfd_name);
@@ -203,10 +203,10 @@ print_output_format()
     }
 
   const Target* target = &parameters->target();
-  for (Target_selector* p = target_selectors; p != NULL; p = p->next())
+  for (Target_selector* p = target_selectors; p != nullptr; p = p->next())
     {
       const char* bfd_name = p->target_bfd_name(target);
-      if (bfd_name != NULL)
+      if (bfd_name != nullptr)
 	{
 	  printf("%s\n", bfd_name);
 	  return;

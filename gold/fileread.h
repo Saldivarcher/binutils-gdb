@@ -72,7 +72,7 @@ class File_read
   File_read()
     : name_(), descriptor_(-1), is_descriptor_opened_(false), object_count_(0),
       size_(0), token_(false), views_(), saved_views_(), mapped_bytes_(0),
-      released_(true), whole_file_view_(NULL)
+      released_(true), whole_file_view_(nullptr)
   { }
 
   ~File_read();
@@ -448,8 +448,8 @@ class File_read
   size_t mapped_bytes_;
   // Whether the file was released.
   bool released_;
-  // A view containing the whole file.  May be NULL if we mmap only
-  // the relevant parts of the file.  Not NULL if:
+  // A view containing the whole file.  May be nullptr if we mmap only
+  // the relevant parts of the file.  Not nullptr if:
   // - Flag --mmap_whole_files is set (default on 64-bit hosts).
   // - The contents was specified in the constructor.  Used only for
   //   testing purposes).
