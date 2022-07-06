@@ -2998,6 +2998,16 @@ class Input_objects
   number_of_input_objects() const
   { return this->relobj_list_.size() + this->dynobj_list_.size(); }
 
+  // Return reference to all regular objects
+  const Relobj_list &
+  get_relobj_list() const
+  { return this->relobj_list_; }
+
+  // Return reference to all dynamic objects
+  const Dynobj_list &
+  get_dynobj_list() const
+  { return this->dynobj_list_; }
+
  private:
   Input_objects(const Input_objects&);
   Input_objects& operator=(const Input_objects&);

@@ -3177,14 +3177,12 @@ Object::discard_decompressed_sections()
   if (this->compressed_sections_ == nullptr)
     return;
 
-  for (Compressed_section_map::iterator p = this->compressed_sections_->begin();
-       p != this->compressed_sections_->end();
-       ++p)
+  for (auto &p : *this->compressed_sections_)
     {
-      if (p->second.contents != nullptr)
+      if (p.second.contents != nullptr)
 	{
-	  delete[] p->second.contents;
-	  p->second.contents = nullptr;
+	  delete[] p.second.contents;
+	  p.second.contents = nullptr;
 	}
     }
 }

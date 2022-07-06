@@ -362,12 +362,9 @@ gc_process_relocs(
               Garbage_collection::Sections_reachable&
                 v(symtab->gc()->section_reloc_map()[src_id]);
               Garbage_collection::Sections_reachable& cident_secn(ele->second);
-              for (Garbage_collection::Sections_reachable::iterator it_v
-                     = cident_secn.begin();
-                   it_v != cident_secn.end();
-                   ++it_v)
+              for (const auto &it_v : cident_secn)
                 {
-                  v.insert(*it_v);
+                  v.insert(it_v);
                 }
             }
         }

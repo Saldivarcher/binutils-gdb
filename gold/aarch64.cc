@@ -1737,10 +1737,9 @@ Stub_table<size, big_endian>::do_write(Output_file* of)
   // Write erratum stubs.
   unsigned int erratum_stub_start_offset =
     align_address(this->reloc_stubs_size_, The_erratum_stub::STUB_ADDR_ALIGN);
-  for (typename Erratum_stub_set::iterator p = this->erratum_stubs_.begin();
-       p != this->erratum_stubs_.end(); ++p)
+  for (auto *p : this->erratum_stubs_)
     {
-      The_erratum_stub* stub(*p);
+      The_erratum_stub* stub(p);
       stub->write(oview + erratum_stub_start_offset + stub->offset(),
 		  stub->stub_size());
     }

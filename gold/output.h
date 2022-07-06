@@ -3073,7 +3073,7 @@ class Output_section_lookup_maps
 		    Output_merge_base* pomb)
   {
     std::pair<Merge_section_properties, Output_merge_base*> value(msp, pomb);
-    std::pair<Merge_sections_by_properties::iterator, bool> result =
+    auto result =
       this->merge_sections_by_properties_.insert(value);
     gold_assert(result.second);
   }

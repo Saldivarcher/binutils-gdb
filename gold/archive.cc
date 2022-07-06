@@ -267,11 +267,9 @@ Archive::setup()
 void
 Archive::unlock_nested_archives()
 {
-  for (Nested_archive_table::iterator p = this->nested_archives_.begin();
-       p != this->nested_archives_.end();
-       ++p)
+  for (auto &p : this->nested_archives_)
     {
-      p->second->unlock(this->task_);
+      p.second->unlock(this->task_);
     }
 }
 

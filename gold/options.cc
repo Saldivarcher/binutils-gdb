@@ -1060,10 +1060,8 @@ General_options::add_sysroot()
 
   char* canonical_sysroot = lrealpath(this->sysroot());
 
-  for (Dir_list::iterator p = this->library_path_.value.begin();
-       p != this->library_path_.value.end();
-       ++p)
-    p->add_sysroot(this->sysroot(), canonical_sysroot);
+  for (auto &p : this->library_path_.value)
+    p.add_sysroot(this->sysroot(), canonical_sysroot);
 
   free(canonical_sysroot);
 }

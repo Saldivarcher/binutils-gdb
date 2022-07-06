@@ -2240,10 +2240,8 @@ Output_section_definition::create_sections(Layout* layout)
 void
 Output_section_definition::add_symbols_to_table(Symbol_table* symtab)
 {
-  for (Output_section_elements::iterator p = this->elements_.begin();
-       p != this->elements_.end();
-       ++p)
-    (*p)->add_symbols_to_table(symtab);
+  for (auto *p : this->elements_)
+    p->add_symbols_to_table(symtab);
 }
 
 // Finalize symbols and check assertions.
@@ -2275,10 +2273,8 @@ Output_section_definition::finalize_symbols(Symbol_table* symtab,
     }
 
   Output_section* dot_section = this->output_section_;
-  for (Output_section_elements::iterator p = this->elements_.begin();
-       p != this->elements_.end();
-       ++p)
-    (*p)->finalize_symbols(symtab, layout, dot_value, &dot_section);
+  for (auto *p : this->elements_)
+    p->finalize_symbols(symtab, layout, dot_value, &dot_section);
 }
 
 // Return the output section name to use for an input section name.
@@ -2653,12 +2649,10 @@ Output_section_definition::set_section_addresses(Symbol_table* symtab,
     }
 
   Output_section* dot_section = this->output_section_;
-  for (Output_section_elements::iterator p = this->elements_.begin();
-       p != this->elements_.end();
-       ++p)
-    (*p)->set_section_addresses(symtab, layout, this->output_section_,
-				subalign, dot_value, dot_alignment,
-				&dot_section, &fill, &input_sections);
+  for (auto *p : this->elements_)
+    p->set_section_addresses(symtab, layout, this->output_section_,
+			     subalign, dot_value, dot_alignment,
+			     &dot_section, &fill, &input_sections);
 
   gold_assert(input_sections.empty());
 
@@ -3077,16 +3071,14 @@ Orphan_output_section::set_section_addresses(Symbol_table*, Layout*,
   Input_section_list input_sections;
   address += this->os_->get_input_sections(address, "", &input_sections);
 
-  for (Input_section_list::iterator p = input_sections.begin();
-       p != input_sections.end();
-       ++p)
+  for (auto &p : input_sections)
     {
-      uint64_t addralign = p->addralign();
-      if (!p->is_input_section())
-	p->output_section_data()->finalize_data_size();
-      uint64_t size = p->data_size();
+      uint64_t addralign = p.addralign();
+      if (!p.is_input_section())
+	p.output_section_data()->finalize_data_size();
+      uint64_t size = p.data_size();
       address = align_address(address, addralign);
-      this->os_->add_script_input_section(*p);
+      this->os_->add_script_input_section(p);
       address += size;
     }
 
@@ -3527,10 +3519,8 @@ Script_sections::create_sections(Layout* layout)
 {
   if (!this->saw_sections_clause_)
     return;
-  for (Sections_elements::iterator p = this->sections_elements_->begin();
-       p != this->sections_elements_->end();
-       ++p)
-    (*p)->create_sections(layout);
+  for (auto *p : *this->sections_elements_)
+    p->create_sections(layout);
 }
 
 // Add any symbols we are defining to the symbol table.
@@ -3540,10 +3530,9 @@ Script_sections::add_symbols_to_table(Symbol_table* symtab)
 {
   if (!this->saw_sections_clause_)
     return;
-  for (Sections_elements::iterator p = this->sections_elements_->begin();
-       p != this->sections_elements_->end();
-       ++p)
-    (*p)->add_symbols_to_table(symtab);
+
+  for (auto *p : *this->sections_elements_)
+    p->add_symbols_to_table(symtab);
 }
 
 // Finalize symbols and check assertions.
@@ -3554,10 +3543,8 @@ Script_sections::finalize_symbols(Symbol_table* symtab, const Layout* layout)
   if (!this->saw_sections_clause_)
     return;
   uint64_t dot_value = 0;
-  for (Sections_elements::iterator p = this->sections_elements_->begin();
-       p != this->sections_elements_->end();
-       ++p)
-    (*p)->finalize_symbols(symtab, layout, &dot_value);
+  for (auto *p : *this->sections_elements_)
+    p->finalize_symbols(symtab, layout, &dot_value);
 }
 
 // Return the name of the output section to use for an input file name
@@ -3572,11 +3559,9 @@ Script_sections::output_section_name(
     bool* keep,
     bool is_input_section)
 {
-  for (Sections_elements::const_iterator p = this->sections_elements_->begin();
-       p != this->sections_elements_->end();
-       ++p)
+  for (auto *p : *this->sections_elements_)
     {
-      const char* ret = (*p)->output_section_name(file_name, section_name,
+      const char* ret = p->output_section_name(file_name, section_name,
 						  output_section_slot,
 						  psection_type, keep,
 						  is_input_section);
@@ -3640,10 +3625,12 @@ Script_sections::place_orphan(Output_section* os)
     {
       // Initialize the Orphan_section_placement structure.
       osp = new Orphan_section_placement();
+
       for (Sections_elements::iterator p = this->sections_elements_->begin();
 	   p != this->sections_elements_->end();
 	   ++p)
 	(*p)->orphan_section_init(osp, p);
+
       gold_assert(!this->sections_elements_->empty());
       Sections_elements::iterator last = this->sections_elements_->end();
       --last;
@@ -3698,27 +3685,27 @@ Script_sections::set_section_addresses(Symbol_table* symtab, Layout* layout)
 
   // Implement ONLY_IF_RO/ONLY_IF_RW constraints.  These are a pain
   // for our representation.
-  for (Sections_elements::iterator p = this->sections_elements_->begin();
-       p != this->sections_elements_->end();
-       ++p)
+  for (auto *p : *this->sections_elements_)
     {
       Output_section_definition* posd;
-      Section_constraint failed_constraint = (*p)->check_constraint(&posd);
+      Section_constraint failed_constraint = p->check_constraint(&posd);
       if (failed_constraint != CONSTRAINT_NONE)
 	{
-	  Sections_elements::iterator q;
-	  for (q = this->sections_elements_->begin();
-	       q != this->sections_elements_->end();
-	       ++q)
+
+	  bool found = false;
+	  for (auto *q : *this->sections_elements_)
 	    {
 	      if (q != p)
 		{
-		  if ((*q)->alternate_constraint(posd, failed_constraint))
+		  if (q->alternate_constraint(posd, failed_constraint))
+		  {
+		    found = true;
 		    break;
+		  }
 		}
 	    }
 
-	  if (q == this->sections_elements_->end())
+	  if (!found)
 	    gold_error(_("no matching section constraint"));
 	}
     }
@@ -3757,11 +3744,9 @@ Script_sections::set_section_addresses(Symbol_table* symtab, Layout* layout)
 	 || parameters->options().user_set_Tdata()
 	 || parameters->options().user_set_Tbss()));
 
-  for (Sections_elements::iterator p = this->sections_elements_->begin();
-       p != this->sections_elements_->end();
-       ++p)
+  for (auto *p : *this->sections_elements_)
     {
-      Output_section* os = (*p)->get_output_section();
+      Output_section* os = p->get_output_section();
 
       // Handle -Ttext, -Tdata and -Tbss options.  We do this by looking for
       // the special sections by names and doing dot assignments.
@@ -3791,16 +3776,14 @@ Script_sections::set_section_addresses(Symbol_table* symtab, Layout* layout)
 	    }
 	}
 
-      (*p)->set_section_addresses(symtab, layout, &dot_value, &dot_alignment,
-				  &load_address);
+      p->set_section_addresses(symtab, layout, &dot_value, &dot_alignment,
+			       &load_address);
     }
 
   if (this->phdrs_elements_ != nullptr)
     {
-      for (Phdrs_elements::iterator p = this->phdrs_elements_->begin();
-	   p != this->phdrs_elements_->end();
-	   ++p)
-	(*p)->eval_load_address(symtab, layout);
+      for (auto *p : *this->phdrs_elements_)
+	p->eval_load_address(symtab, layout);
     }
 
   return this->create_segments(layout, dot_alignment);
@@ -3994,15 +3977,13 @@ Script_sections::create_segments(Layout* layout, uint64_t dot_alignment)
   uint64_t last_lma = 0;
   uint64_t last_size = 0;
   bool in_bss = false;
-  for (Layout::Section_list::iterator p = sections.begin();
-       p != sections.end();
-       ++p)
+  for (auto *p : sections)
     {
-      const uint64_t vma = (*p)->address();
-      const uint64_t lma = ((*p)->has_load_address()
-			    ? (*p)->load_address()
+      const uint64_t vma = p->address();
+      const uint64_t lma = (p->has_load_address()
+			    ? p->load_address()
 			    : vma);
-      const uint64_t size = (*p)->current_data_size();
+      const uint64_t size = p->current_data_size();
 
       bool need_new_segment;
       if (current_seg == nullptr)
@@ -4020,14 +4001,14 @@ Script_sections::create_segments(Layout* layout, uint64_t dot_alignment)
 	  // skipping a page.
 	  need_new_segment = true;
 	}
-      else if (in_bss && !is_bss_section(*p))
+      else if (in_bss && !is_bss_section(p))
 	{
 	  // A non-BSS section can not follow a BSS section in the
 	  // same segment.
 	  need_new_segment = true;
 	}
       else if (is_current_seg_readonly
-	       && ((*p)->flags() & elfcpp::SHF_WRITE) != 0
+	       && (p->flags() & elfcpp::SHF_WRITE) != 0
 	       && !parameters->options().omagic())
 	{
 	  // Don't put a writable section in the same segment as a
@@ -4041,7 +4022,7 @@ Script_sections::create_segments(Layout* layout, uint64_t dot_alignment)
 	}
 
       elfcpp::Elf_Word seg_flags =
-	Layout::section_flags_to_segment((*p)->flags());
+	Layout::section_flags_to_segment(p->flags());
 
       if (need_new_segment)
 	{
@@ -4055,12 +4036,12 @@ Script_sections::create_segments(Layout* layout, uint64_t dot_alignment)
 	  in_bss = false;
 	}
 
-      current_seg->add_output_section_to_load(layout, *p, seg_flags);
+      current_seg->add_output_section_to_load(layout, p, seg_flags);
 
-      if (((*p)->flags() & elfcpp::SHF_WRITE) != 0)
+      if ((p->flags() & elfcpp::SHF_WRITE) != 0)
 	is_current_seg_readonly = false;
 
-      if (is_bss_section(*p) && size > 0)
+      if (is_bss_section(p) && size > 0)
         in_bss = true;
 
       last_vma = vma;
@@ -4502,16 +4483,14 @@ Script_sections::put_headers_in_phdrs(Output_data* file_header,
 				      Output_data* segment_headers)
 {
   gold_assert(this->saw_phdrs_clause());
-  for (Phdrs_elements::iterator p = this->phdrs_elements_->begin();
-       p != this->phdrs_elements_->end();
-       ++p)
+  for (auto *p : *this->phdrs_elements_)
     {
-      if ((*p)->type() != elfcpp::PT_LOAD)
+      if (p->type() != elfcpp::PT_LOAD)
 	{
-	  if ((*p)->includes_phdrs())
-	    (*p)->segment()->add_initial_output_data(segment_headers);
-	  if ((*p)->includes_filehdr())
-	    (*p)->segment()->add_initial_output_data(file_header);
+	  if (p->includes_phdrs())
+	    p->segment()->add_initial_output_data(segment_headers);
+	  if (p->includes_filehdr())
+	    p->segment()->add_initial_output_data(file_header);
 	}
     }
 }

@@ -153,12 +153,10 @@ Dwarf_abbrev_table::clear_abbrev_codes()
 	  this->low_abbrev_codes_[code] = nullptr;
 	}
     }
-  for (Abbrev_code_table::iterator it = this->high_abbrev_codes_.begin();
-       it != this->high_abbrev_codes_.end();
-       ++it)
+  for (auto &it : this->high_abbrev_codes_)
     {
-      if (it->second != nullptr)
-	delete it->second;
+      if (it.second != nullptr)
+	delete it.second;
     }
   this->high_abbrev_codes_.clear();
 }
@@ -2495,11 +2493,9 @@ Sized_dwarf_line_info<size, big_endian>::read_line_mappings(unsigned int shndx)
     }
 
   // Sort the lines numbers, so addr2line can use binary search.
-  for (typename Lineno_map::iterator it = line_number_map_.begin();
-       it != line_number_map_.end();
-       ++it)
+  for (auto &it : line_number_map_)
     // Each vector needs to be sorted by offset.
-    std::sort(it->second.begin(), it->second.end());
+    std::sort(it.second.begin(), it.second.end());
 }
 
 // Some processing depends on whether the input is a .o file or not.
@@ -2851,10 +2847,8 @@ Dwarf_line_info::one_addr2line(Object* object,
 void
 Dwarf_line_info::clear_addr2line_cache()
 {
-  for (std::vector<Addr2line_cache_entry>::iterator it = addr2line_cache.begin();
-       it != addr2line_cache.end();
-       ++it)
-    delete it->dwarf_line_info;
+  for (auto &it : addr2line_cache)
+    delete it.dwarf_line_info;
   addr2line_cache.clear();
 }
 

@@ -235,11 +235,9 @@ void
 Copy_relocs<sh_type, size, big_endian>::emit(
     Output_data_reloc<sh_type, true, size, big_endian>* reloc_section)
 {
-  for (typename Copy_reloc_entries::iterator p = this->entries_.begin();
-       p != this->entries_.end();
-       ++p)
+  for (auto &p : this->entries_)
     {
-      Copy_reloc_entry& entry = *p;
+      Copy_reloc_entry& entry = p;
 
       // If the symbol is no longer defined in a dynamic object, then we
       // emitted a COPY relocation, and we do not want to emit this

@@ -227,18 +227,16 @@ Symbol_table::do_allocate_commons_list(
   // forwarder.  First remove all non-common symbols.
   bool any = false;
   uint64_t addralign = 0;
-  for (Commons_type::iterator p = commons->begin();
-       p != commons->end();
-       ++p)
+  for (auto *p : *commons)
     {
-      Symbol* sym = *p;
+      Symbol* sym = p;
       if (sym->is_forwarder())
 	{
 	  sym = this->resolve_forwards(sym);
-	  *p = sym;
+	  p = sym;
 	}
       if (!sym->is_common())
-	*p = nullptr;
+	p = nullptr;
       else
 	{
 	  any = true;
@@ -311,11 +309,9 @@ Symbol_table::do_allocate_commons_list(
   // Allocate them all.
 
   off_t off = 0;
-  for (Commons_type::iterator p = commons->begin();
-       p != commons->end();
-       ++p)
+  for (auto *p : *commons)
     {
-      Symbol* sym = *p;
+      Symbol* sym = p;
       if (sym == nullptr)
 	break;
 

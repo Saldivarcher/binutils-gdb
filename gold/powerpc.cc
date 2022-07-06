@@ -3381,14 +3381,12 @@ Target_powerpc<size, big_endian>::group_sections(Layout* layout,
   Layout::Section_list section_list;
   layout->get_executable_sections(&section_list);
   std::stable_sort(section_list.begin(), section_list.end(), Sort_sections());
-  for (Layout::Section_list::iterator o = section_list.begin();
-       o != section_list.end();
-       ++o)
+  for (auto *o : section_list)
     {
       typedef Output_section::Input_section_list Input_section_list;
       for (Input_section_list::const_iterator i
-	     = (*o)->input_sections().begin();
-	   i != (*o)->input_sections().end();
+	     = o->input_sections().begin();
+	   i != o->input_sections().end();
 	   ++i)
 	{
 	  if (i->is_input_section()
@@ -3397,11 +3395,11 @@ Target_powerpc<size, big_endian>::group_sections(Layout* layout,
 	      Powerpc_relobj<size, big_endian>* ppcobj = static_cast
 		<Powerpc_relobj<size, big_endian>*>(i->relobj());
 	      bool has14 = ppcobj->has_14bit_branch(i->shndx());
-	      if (!stub_control.can_add_to_stub_group(*o, &*i, has14))
+	      if (!stub_control.can_add_to_stub_group(o, &*i, has14))
 		{
 		  table_owner->output_section = stub_control.output_section();
 		  table_owner->owner = stub_control.owner();
-		  stub_control.set_output_and_owner(*o, &*i);
+		  stub_control.set_output_and_owner(o, &*i);
 		  table_owner = nullptr;
 		}
 	      if (table_owner == nullptr)
@@ -3416,26 +3414,24 @@ Target_powerpc<size, big_endian>::group_sections(Layout* layout,
   if (table_owner != nullptr)
     {
       table_owner->output_section = stub_control.output_section();
-      table_owner->owner = stub_control.owner();;
+      table_owner->owner = stub_control.owner();
     }
-  for (typename std::vector<Stub_table_owner*>::iterator t = tables.begin();
-       t != tables.end();
-       ++t)
+  for (auto *t : tables)
     {
       Stub_table<size, big_endian>* stub_table;
 
-      if ((*t)->owner->is_input_section())
+      if (t->owner->is_input_section())
 	stub_table = new Stub_table<size, big_endian>(this,
-						      (*t)->output_section,
-						      (*t)->owner,
+						      t->output_section,
+						      t->owner,
 						      this->stub_tables_.size());
-      else if ((*t)->owner->is_relaxed_input_section())
+      else if (t->owner->is_relaxed_input_section())
 	stub_table = static_cast<Stub_table<size, big_endian>*>(
-			(*t)->owner->relaxed_input_section());
+			t->owner->relaxed_input_section());
       else
 	gold_unreachable();
       this->stub_tables_.push_back(stub_table);
-      delete *t;
+      delete t;
     }
 }
 
@@ -3747,11 +3743,9 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
   else if (this->relax_failed_ && this->relax_fail_count_ < 3)
     {
       this->branch_lookup_table_.clear();
-      for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-	   p != this->stub_tables_.end();
-	   ++p)
+      for (auto *p : this->stub_tables_)
 	{
-	  (*p)->clear_stubs(true);
+	  p->clear_stubs(true);
 	}
       this->stub_tables_.clear();
       this->stub_group_size_ = this->stub_group_size_ / 4 * 3;
@@ -3761,16 +3755,14 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
     }
 
   // We need address of stub tables valid for make_stub.
-  for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-       p != this->stub_tables_.end();
-       ++p)
+  for (auto *p : this->stub_tables_)
     {
       const Powerpc_relobj<size, big_endian>* object
-	= static_cast<const Powerpc_relobj<size, big_endian>*>((*p)->relobj());
-      Address off = object->get_output_section_offset((*p)->shndx());
+	= static_cast<const Powerpc_relobj<size, big_endian>*>(p->relobj());
+      Address off = object->get_output_section_offset(p->shndx());
       gold_assert(off != invalid_address);
-      Output_section* os = (*p)->output_section();
-      (*p)->set_address_and_size(os, off);
+      Output_section* os = p->output_section();
+      p->set_address_and_size(os, off);
     }
 
   if (pass != 1)
@@ -3778,11 +3770,9 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
       // Clear plt call stubs, long branch stubs and branch lookup table.
       prev_brlt_size = this->branch_lookup_table_.size();
       this->branch_lookup_table_.clear();
-      for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-	   p != this->stub_tables_.end();
-	   ++p)
+      for (auto* p : this->stub_tables_)
 	{
-	  (*p)->clear_stubs(false);
+	  p->clear_stubs(false);
 	}
     }
 
@@ -3806,10 +3796,8 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
 	}
     }
   bool do_resize = false;
-  for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-       p != this->stub_tables_.end();
-       ++p)
-    if ((*p)->need_resize())
+  for (auto *p : this->stub_tables_)
+    if (p->need_resize())
       {
 	do_resize = true;
 	break;
@@ -3817,15 +3805,13 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
   if (do_resize)
     {
       this->branch_lookup_table_.clear();
-      for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-	   p != this->stub_tables_.end();
-	   ++p)
-	(*p)->set_resizing(true);
-      for (typename Branches::const_iterator b = this->branch_info_.begin();
-	   b != this->branch_info_.end();
-	   b++)
+
+      for (auto *p : this->stub_tables_)
+	p->set_resizing(true);
+
+      for (const auto &b : this->branch_info_)
 	{
-	  if (!b->make_stub(one_stub_table, ifunc_stub_table, symtab)
+	  if (!b.make_stub(one_stub_table, ifunc_stub_table, symtab)
 	      && !this->relax_failed_)
 	    {
 	      this->relax_failed_ = true;
@@ -3834,10 +3820,9 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
 		return true;
 	    }
 	}
-      for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-	   p != this->stub_tables_.end();
-	   ++p)
-	(*p)->set_resizing(false);
+
+      for (auto *p : this->stub_tables_)
+	p->set_resizing(false);
     }
 
   // Did anything change size?
@@ -3853,32 +3838,26 @@ Target_powerpc<size, big_endian>::do_relax(int pass,
        ++p)
     (*p)->remove_eh_frame(layout);
 
-  for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-       p != this->stub_tables_.end();
-       ++p)
-    (*p)->add_eh_frame(layout);
+  for (auto *p : this->stub_tables_)
+    p->add_eh_frame(layout);
 
   typedef Unordered_set<Output_section*> Output_sections;
   Output_sections os_need_update;
-  for (typename Stub_tables::iterator p = this->stub_tables_.begin();
-       p != this->stub_tables_.end();
-       ++p)
+  for (auto *p : this->stub_tables_)
     {
-      if ((*p)->size_update())
+      if (p->size_update())
 	{
 	  again = true;
-	  os_need_update.insert((*p)->output_section());
+	  os_need_update.insert(p->output_section());
 	}
     }
 
   // Set output section offsets for all input sections in an output
   // section that just changed size.  Anything past the stubs will
   // need updating.
-  for (typename Output_sections::iterator p = os_need_update.begin();
-       p != os_need_update.end();
-       p++)
+  for (auto *p : os_need_update)
     {
-      Output_section* os = *p;
+      Output_section* os = p;
       Address off = 0;
       typedef Output_section::Input_section_list Input_section_list;
       for (Input_section_list::const_iterator i = os->input_sections().begin();

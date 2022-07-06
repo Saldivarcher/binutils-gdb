@@ -49,10 +49,9 @@ template<typename Stringpool_char>
 void
 Stringpool_template<Stringpool_char>::clear()
 {
-  for (typename std::list<Stringdata*>::iterator p = this->strings_.begin();
-       p != this->strings_.end();
-       ++p)
-    delete[] reinterpret_cast<char*>(*p);
+  for (auto *p : this->strings_)
+    delete[] reinterpret_cast<char*>(p);
+
   this->strings_.clear();
   this->key_to_offset_.clear();
   this->string_set_.clear();

@@ -586,13 +586,11 @@ queue_middle_tasks(const General_options& options,
 	{
 	  // Update the value of output_section stored in rd.
 	  Read_relocs_data* rd = (*p)->get_relocs_data();
-	  for (Read_relocs_data::Relocs_list::iterator q = rd->relocs.begin();
-	       q != rd->relocs.end();
-	       ++q)
+	  for (auto &q : rd->relocs)
 	    {
-	      q->output_section = (*p)->output_section(q->data_shndx);
-	      q->needs_special_offset_handling =
-		      (*p)->is_output_section_offset_invalid(q->data_shndx);
+	      q.output_section = (*p)->output_section(q.data_shndx);
+	      q.needs_special_offset_handling =
+		      (*p)->is_output_section_offset_invalid(q.data_shndx);
 	    }
 	}
     }

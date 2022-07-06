@@ -1104,10 +1104,8 @@ Script_options::Script_options()
 bool
 Script_options::is_pending_assignment(const char* name)
 {
-  for (Symbol_assignments::iterator p = this->symbol_assignments_.begin();
-       p != this->symbol_assignments_.end();
-       ++p)
-    if ((*p)->name() == name)
+  for (auto *p : this->symbol_assignments_)
+    if (p->name() == name)
       return true;
   return false;
 }
@@ -1116,22 +1114,18 @@ Script_options::is_pending_assignment(const char* name)
 
 void Script_options::find_defsym_defs(Unordered_set<std::string>& defsym_set)
 {
-  for (Symbol_assignments::const_iterator p = this->symbol_assignments_.begin();
-       p != this->symbol_assignments_.end();
-       ++p)
+  for (const auto *p : this->symbol_assignments_)
     {
-      defsym_set.insert((*p)->name());
+      defsym_set.insert(p->name());
     }
 }
 
 void
 Script_options::set_defsym_uses_in_real_elf(Symbol_table* symtab) const
 {
-  for (Symbol_assignments::const_iterator p = this->symbol_assignments_.begin();
-       p != this->symbol_assignments_.end();
-       ++p)
+  for (auto *p : this->symbol_assignments_)
     {
-      (*p)->value()->set_expr_sym_in_real_elf(symtab);
+      p->value()->set_expr_sym_in_real_elf(symtab);
     }
 }
 
@@ -1236,15 +1230,11 @@ Script_options::finalize_symbols(Symbol_table* symtab, const Layout* layout)
   // will get the right value.
   this->script_sections_.finalize_symbols(symtab, layout);
 
-  for (Symbol_assignments::iterator p = this->symbol_assignments_.begin();
-       p != this->symbol_assignments_.end();
-       ++p)
-    (*p)->finalize(symtab, layout);
+  for (auto *p : this->symbol_assignments_)
+    p->finalize(symtab, layout);
 
-  for (Assertions::iterator p = this->assertions_.begin();
-       p != this->assertions_.end();
-       ++p)
-    (*p)->check(symtab, layout);
+  for (auto *p : this->assertions_)
+    p->check(symtab, layout);
 }
 
 // Set section addresses.  We set all the symbols which have absolute
@@ -1255,10 +1245,8 @@ Script_options::finalize_symbols(Symbol_table* symtab, const Layout* layout)
 Output_segment*
 Script_options::set_section_addresses(Symbol_table* symtab, Layout* layout)
 {
-  for (Symbol_assignments::iterator p = this->symbol_assignments_.begin();
-       p != this->symbol_assignments_.end();
-       ++p)
-    (*p)->set_if_absolute(symtab, layout, false, 0, nullptr);
+  for (auto *p : this->symbol_assignments_)
+    p->set_if_absolute(symtab, layout, false, 0, nullptr);
 
   return this->script_sections_.set_section_addresses(symtab, layout);
 }
@@ -2227,8 +2215,8 @@ Version_script_info::add_exact_match(const std::string& match,
 				     const Version_expression* ve,
 				     Exact* pe)
 {
-  std::pair<Exact::iterator, bool> ins =
-    pe->insert(std::make_pair(match, Version_tree_match(v, is_global, ve)));
+  auto ins =
+    pe->insert({match, Version_tree_match(v, is_global, ve)});
   if (ins.second)
     {
       // This is the first time we have seen this match.

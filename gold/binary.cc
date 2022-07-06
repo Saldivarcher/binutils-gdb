@@ -156,11 +156,10 @@ Binary_to_elf::sized_convert(const Task* task)
   // Build the stringpool for the symbol table.
 
   std::string mangled_name = this->filename_;
-  for (std::string::iterator p = mangled_name.begin();
-       p != mangled_name.end();
-       ++p)
-    if (!ISALNUM(*p))
-      *p = '_';
+  for (auto &p : mangled_name)
+    if (!ISALNUM(p))
+      p = '_';
+
   mangled_name = "_binary_" + mangled_name;
   std::string start_symbol_name = mangled_name + "_start";
   std::string end_symbol_name = mangled_name + "_end";

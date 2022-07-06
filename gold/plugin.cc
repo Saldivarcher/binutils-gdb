@@ -700,16 +700,14 @@ Plugin_recorder::record_symbols(const Object* obj, int nsyms,
 
 Plugin_manager::~Plugin_manager()
 {
-  for (Plugin_list::iterator p = this->plugins_.begin();
-       p != this->plugins_.end();
-       ++p)
-    delete *p;
+  for (auto *p : this->plugins_)
+    delete p;
   this->plugins_.clear();
-  for (Object_list::iterator obj = this->objects_.begin();
-       obj != this->objects_.end();
-       ++obj)
-    delete *obj;
+
+  for (auto *obj : this->objects_)
+    delete obj;
   this->objects_.clear();
+
   delete this->lock_;
   delete this->recorder_;
 }
@@ -755,15 +753,13 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
     this->objects_.push_back(elf_object);
   this->in_claim_file_handler_ = true;
 
-  for (Plugin_list::iterator p = this->plugins_.begin();
-       p != this->plugins_.end();
-       ++p)
+  for (auto *p : this->plugins_)
     {
       // If we aren't yet in replacement phase, allow plugins to claim input
       // files, otherwise notify the plugin of the new input file, if needed.
       if (!this->in_replacement_phase_)
 	{
-	  if ((*p)->claim_file(&this->plugin_input_file_))
+	  if (p->claim_file(&this->plugin_input_file_))
 	    {
 	      this->any_claimed_ = true;
               this->in_claim_file_handler_ = false;
@@ -775,7 +771,7 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
 						: elf_object->name());
 		  this->recorder_->claimed_file(objname,
 						offset, filesize,
-						(*p)->filename());
+						p->filename());
 		}
 
               if (this->objects_.size() > handle
@@ -790,7 +786,7 @@ Plugin_manager::claim_file(Input_file* input_file, off_t offset,
         }
       else
         {
-	  (*p)->new_input(&this->plugin_input_file_);
+	  p->new_input(&this->plugin_input_file_);
         }
     }
 
@@ -850,10 +846,8 @@ Plugin_manager::all_symbols_read(Workqueue* workqueue, Task* task,
   layout->script_options()->set_defsym_uses_in_real_elf(symtab);
   layout->script_options()->find_defsym_defs(this->defsym_defines_set_);
 
-  for (Plugin_list::iterator p = this->plugins_.begin();
-       p != this->plugins_.end();
-       ++p)
-    (*p)->all_symbols_read();
+  for (auto *p : this->plugins_)
+    p->all_symbols_read();
 
   if (this->any_added_)
     {
@@ -1000,18 +994,14 @@ Plugin_manager::rescannable_defines(size_t i, Symbol* sym)
 void
 Plugin_manager::layout_deferred_objects()
 {
-  Deferred_layout_list::iterator obj;
-
-  for (obj = this->deferred_layout_objects_.begin();
-       obj != this->deferred_layout_objects_.end();
-       ++obj)
+  for (auto *obj : this->deferred_layout_objects_)
     {
       // Lock the object so we can read from it.  This is only called
       // single-threaded from queue_middle_tasks, so it is OK to lock.
       // Unfortunately we have no way to pass in a Task token.
       const Task* dummy_task = reinterpret_cast<const Task*>(-1);
-      Task_lock_obj<Object> tl(dummy_task, *obj);
-      (*obj)->layout_deferred_sections(this->layout_);
+      Task_lock_obj<Object> tl(dummy_task, obj);
+      obj->layout_deferred_sections(this->layout_);
     }
 }
 
@@ -1028,10 +1018,8 @@ Plugin_manager::cleanup()
       close_all_descriptors();
     }
 
-  for (Plugin_list::iterator p = this->plugins_.begin();
-       p != this->plugins_.end();
-       ++p)
-    (*p)->cleanup();
+  for (auto *p : this->plugins_)
+    p->cleanup();
 }
 
 // Make a new Pluginobj object.  This is called when the plugin calls

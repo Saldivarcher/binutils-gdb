@@ -396,21 +396,19 @@ Sized_relobj_file<size, big_endian>::do_gc_process_relocs(Symbol_table* symtab,
   else
     local_symbols = rd->local_symbols->data();
 
-  for (Read_relocs_data::Relocs_list::iterator p = rd->relocs.begin();
-       p != rd->relocs.end();
-       ++p)
+  for (auto &p : rd->relocs)
     {
       if (!parameters->options().relocatable())
 	  {
 	    // As noted above, when not generating an object file, we
 	    // only scan allocated sections.  We may see a non-allocated
 	    // section here if we are emitting relocs.
-	    if (p->is_data_section_allocated)
+	    if (p.is_data_section_allocated)
               target->gc_process_relocs(symtab, layout, this, 
-                                        p->data_shndx, p->sh_type, 
-                                        p->contents->data(), p->reloc_count, 
-                                        p->output_section,
-                                        p->needs_special_offset_handling,
+                                        p.data_shndx, p.sh_type, 
+                                        p.contents->data(), p.reloc_count, 
+                                        p.output_section,
+                                        p.needs_special_offset_handling,
                                         this->local_symbol_count_, 
                                         local_symbols);
         }

@@ -960,22 +960,20 @@ Icf::find_identical_sections(const Input_objects* input_objects,
 
   // Decide which sections are possible candidates first.
 
-  for (Input_objects::Relobj_iterator p = input_objects->relobj_begin();
-       p != input_objects->relobj_end();
-       ++p)
+  for (auto *p : input_objects->get_relobj_list())
     {
       // Lock the object so we can read from it.  This is only called
       // single-threaded from queue_middle_tasks, so it is OK to lock.
       // Unfortunately we have no way to pass in a Task token.
       const Task* dummy_task = reinterpret_cast<const Task*>(-1);
-      Task_lock_obj<Object> tl(dummy_task, *p);
+      Task_lock_obj<Object> tl(dummy_task, p);
       std::vector<unsigned int> eh_frame_ind;
 
-      for (unsigned int i = 0; i < (*p)->shnum(); ++i)
+      for (unsigned int i = 0; i < p->shnum(); ++i)
         {
-          if ((*p)->section_size(i) == 0)
+          if (p->section_size(i) == 0)
             continue;
-	  const std::string section_name = (*p)->section_name(i);
+	  const std::string section_name = p->section_name(i);
           if (!is_section_foldable_candidate(section_name))
 	    {
 	      if (is_prefix_of(".eh_frame", section_name.c_str()))
@@ -983,10 +981,10 @@ Icf::find_identical_sections(const Input_objects* input_objects,
 	      continue;
 	    }
 
-          if (!(*p)->is_section_included(i))
+          if (!p->is_section_included(i))
             continue;
           if (parameters->options().gc_sections()
-              && symtab->gc()->is_section_garbage(*p, i))
+              && symtab->gc()->is_section_garbage(p, i))
               continue;
 	  // With --icf=safe, check if the mangled function name is a ctor
 	  // or a dtor.  The mangled function name can be obtained from the
@@ -994,22 +992,21 @@ Icf::find_identical_sections(const Input_objects* input_objects,
 	  if (parameters->options().icf_safe_folding()
               && !is_function_ctor_or_dtor(section_name)
 	      && (!target.can_check_for_function_pointers()
-                  || section_has_function_pointers(*p, i)))
+                  || section_has_function_pointers(p, i)))
             {
 	      continue;
             }
-          this->id_section_.push_back(Section_id(*p, i));
-          this->section_id_[Section_id(*p, i)] = section_num;
+          this->id_section_.push_back(Section_id(p, i));
+          this->section_id_[Section_id(p, i)] = section_num;
           this->kept_section_id_.push_back(section_num);
           num_tracked_relocs.push_back(0);
-	  section_addraligns.push_back((*p)->section_addralign(i));
+	  section_addraligns.push_back(p->section_addralign(i));
           is_secn_or_group_unique.push_back(false);
           section_contents.push_back("");
           section_num++;
         }
 
-      for (std::vector<unsigned int>::iterator it_eh_ind = eh_frame_ind.begin();
-	   it_eh_ind != eh_frame_ind.end(); ++it_eh_ind)
+      for (const auto it_eh_ind : eh_frame_ind)
 	{
 	  // gc_process_relocs() recorded relocations for this
 	  // section even though we can't fold it. We need to
@@ -1018,17 +1015,17 @@ Icf::find_identical_sections(const Input_objects* input_objects,
 	  // to them, so we can avoid merging sections that
 	  // don't have identical exception-handling behavior.
 
-	  Section_id sect(*p, *it_eh_ind);
+	  Section_id sect(p, it_eh_ind);
 	  Reloc_info_list::iterator it_rel = this->reloc_info_list().find(sect);
 	  if (it_rel != this->reloc_info_list().end())
 	    {
-	      if (!add_ehframe_links(*p, *it_eh_ind, it_rel->second))
+	      if (!add_ehframe_links(p, it_eh_ind, it_rel->second))
 		{
 		  gold_warning(_("could not parse eh_frame section %s(%s); ICF "
 				 "might not preserve exception handling "
 				 "behavior"),
-			       (*p)->name().c_str(),
-			       (*p)->section_name(*it_eh_ind).c_str());
+			       p->name().c_str(),
+			       p->section_name(it_eh_ind).c_str());
 		}
 	    }
 	}

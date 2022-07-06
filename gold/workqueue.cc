@@ -447,9 +447,9 @@ Task*
 Workqueue::release_locks(Task* t, Task_locker* tl)
 {
   Task* ret = nullptr;
-  for (Task_locker::iterator p = tl->begin(); p != tl->end(); ++p)
+  for (auto *p : *tl)
     {
-      Task_token* token = *p;
+      Task_token* token = p;
       if (token->is_blocker())
 	{
 	  if (token->remove_blocker())

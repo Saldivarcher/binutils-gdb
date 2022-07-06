@@ -970,18 +970,16 @@ Symbol_table::add_from_object(Object* object,
     }
 
   Symbol* const snull = nullptr;
-  std::pair<typename Symbol_table_type::iterator, bool> ins =
-    this->table_.insert(std::make_pair(std::make_pair(name_key, version_key),
-				       snull));
+  auto ins =
+    this->table_.insert({{name_key, version_key}, snull});
 
-  std::pair<typename Symbol_table_type::iterator, bool> insdefault =
+  auto insdefault =
     std::make_pair(this->table_.end(), false);
+
   if (is_default_version)
     {
       const Stringpool::Key vnull_key = 0;
-      insdefault = this->table_.insert(std::make_pair(std::make_pair(name_key,
-								     vnull_key),
-						      snull));
+      insdefault = this->table_.insert({{name_key, vnull_key}, snull});
     }
 
   // ins.first: an iterator, which is a pointer to a pair.
@@ -1859,13 +1857,11 @@ Symbol_table::define_special_symbol(const char** pname, const char** pversion,
 	*pversion = this->namepool_.add(*pversion, true, &version_key);
 
       Symbol* const snull = nullptr;
-      std::pair<typename Symbol_table_type::iterator, bool> ins =
-	this->table_.insert(std::make_pair(std::make_pair(name_key,
-							  version_key),
-					   snull));
+      auto ins = this->table_.insert({{name_key, version_key},snull});
 
-      std::pair<typename Symbol_table_type::iterator, bool> insdefault =
+      auto insdefault =
 	std::make_pair(this->table_.end(), false);
+
       if (is_default_version)
 	{
 	  const Stringpool::Key vnull = 0;
@@ -2543,11 +2539,9 @@ Symbol_table::set_dynsym_indexes(unsigned int index,
   // First process all the symbols which have been forced to be local,
   // as they must appear before all global symbols.
   unsigned int forced_local_count = 0;
-  for (Forced_locals::iterator p = this->forced_locals_.begin();
-       p != this->forced_locals_.end();
-       ++p)
+  for (auto *p : this->forced_locals_)
     {
-      Symbol* sym = *p;
+      Symbol* sym = p;
       gold_assert(sym->is_forced_local());
       if (sym->has_dynsym_index())
         continue;
@@ -2569,11 +2563,9 @@ Symbol_table::set_dynsym_indexes(unsigned int index,
   if (parameters->target().has_custom_set_dynsym_indexes())
     {
       std::vector<Symbol*> dyn_symbols;
-      for (Symbol_table_type::iterator p = this->table_.begin();
-           p != this->table_.end();
-           ++p)
+      for (const auto &p : this->table_)
         {
-          Symbol* sym = p->second;
+          Symbol* sym = p.second;
           if (sym->is_forced_local())
 	    continue;
           if (!sym->should_add_dynsym_entry(this))
@@ -2592,11 +2584,9 @@ Symbol_table::set_dynsym_indexes(unsigned int index,
                                                      dynpool, versions, this);
     }
 
-  for (Symbol_table_type::iterator p = this->table_.begin();
-       p != this->table_.end();
-       ++p)
+  for (const auto &p : this->table_)
     {
-      Symbol* sym = p->second;
+      Symbol* sym = p.second;
 
       if (sym->is_forced_local())
         continue;
@@ -2646,14 +2636,12 @@ Symbol_table::set_dynsym_indexes(unsigned int index,
   index = versions->finalize(this, index, syms);
 
   // Process target-specific symbols.
-  for (std::vector<Symbol*>::iterator p = this->target_symbols_.begin();
-       p != this->target_symbols_.end();
-       ++p)
+  for (auto *p : this->target_symbols_)
     {
-      (*p)->set_dynsym_index(index);
+      p->set_dynsym_index(index);
       ++index;
-      syms->push_back(*p);
-      dynpool->add((*p)->name(), false, nullptr);
+      syms->push_back(p);
+      dynpool->add(p->name(), false, nullptr);
     }
 
   return index;
@@ -2750,11 +2738,9 @@ Symbol_table::sized_finalize(off_t off, Stringpool* pool,
 
   // First do all the symbols which have been forced to be local, as
   // they must appear before all global symbols.
-  for (Forced_locals::iterator p = this->forced_locals_.begin();
-       p != this->forced_locals_.end();
-       ++p)
+  for (auto *p : this->forced_locals_)
     {
-      Symbol* sym = *p;
+      Symbol* sym = p;
       gold_assert(sym->is_forced_local());
       if (this->sized_finalize_symbol<size>(sym))
 	{
@@ -2766,11 +2752,9 @@ Symbol_table::sized_finalize(off_t off, Stringpool* pool,
     }
 
   // Now do all the remaining symbols.
-  for (Symbol_table_type::iterator p = this->table_.begin();
-       p != this->table_.end();
-       ++p)
+  for (const auto &p : this->table_)
     {
-      Symbol* sym = p->second;
+      Symbol* sym = p.second;
       if (this->sized_finalize_symbol<size>(sym))
 	{
 	  this->add_to_final_symtab<size>(sym, pool, &index, &off);
@@ -2782,11 +2766,9 @@ Symbol_table::sized_finalize(off_t off, Stringpool* pool,
     }
 
   // Now do target-specific symbols.
-  for (std::vector<Symbol*>::iterator p = this->target_symbols_.begin();
-       p != this->target_symbols_.end();
-       ++p)
+  for (auto *p : this->target_symbols_)
     {
-      this->add_to_final_symtab<size>(*p, pool, &index, &off);
+      this->add_to_final_symtab<size>(p, pool, &index, &off);
     }
 
   this->output_count_ = index - orig_index;
@@ -3676,14 +3658,12 @@ Warnings::add_warning(Symbol_table* symtab, const char* name, Object* obj,
 void
 Warnings::note_warnings(Symbol_table* symtab)
 {
-  for (Warning_table::iterator p = this->warnings_.begin();
-       p != this->warnings_.end();
-       ++p)
+  for (const auto &p : this->warnings_)
     {
-      Symbol* sym = symtab->lookup(p->first, nullptr);
+      Symbol* sym = symtab->lookup(p.first, nullptr);
       if (sym != nullptr
 	  && sym->source() == Symbol::FROM_OBJECT
-	  && sym->object() == p->second.object)
+	  && sym->object() == p.second.object)
 	sym->set_has_warning();
     }
 }

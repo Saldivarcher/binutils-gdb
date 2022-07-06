@@ -1360,10 +1360,8 @@ Verdef::write(const Stringpool* dynpool, bool is_last, unsigned char* pb) const
 
 Verneed::~Verneed()
 {
-  for (Need_versions::iterator p = this->need_versions_.begin();
-       p != this->need_versions_.end();
-       ++p)
-    delete *p;
+  for (auto *p : this->need_versions_)
+    delete p;
 }
 
 // Add a new version to this file reference.
@@ -1381,11 +1379,9 @@ Verneed::add_name(const char* name)
 unsigned int
 Verneed::finalize(unsigned int index)
 {
-  for (Need_versions::iterator p = this->need_versions_.begin();
-       p != this->need_versions_.end();
-       ++p)
+  for (auto *p : this->need_versions_)
     {
-      (*p)->set_index(index);
+      p->set_index(index);
       ++index;
     }
   return index;
@@ -1468,15 +1464,11 @@ Versions::Versions(const Version_script_info& version_script,
 
 Versions::~Versions()
 {
-  for (Defs::iterator p = this->defs_.begin();
-       p != this->defs_.end();
-       ++p)
-    delete *p;
+  for (auto *p : this->defs_)
+    delete p;
 
-  for (Needs::iterator p = this->needs_.begin();
-       p != this->needs_.end();
-       ++p)
-    delete *p;
+  for (auto *p : this->needs_)
+    delete p;
 }
 
 // Define the base version of a shared library.  The base version definition
@@ -1554,8 +1546,7 @@ Versions::add_def(Stringpool* dynpool, const Symbol* sym, const char* version,
 {
   Key k(version_key, 0);
   Version_base* const vbnull = nullptr;
-  std::pair<Version_table::iterator, bool> ins =
-    this->version_table_.insert(std::make_pair(k, vbnull));
+  auto ins = this->version_table_.insert({k, vbnull});
 
   if (!ins.second)
     {
@@ -1598,8 +1589,7 @@ Versions::add_need(Stringpool* dynpool, const char* filename, const char* name,
 
   Key k(name_key, filename_key);
   Version_base* const vbnull = nullptr;
-  std::pair<Version_table::iterator, bool> ins =
-    this->version_table_.insert(std::make_pair(k, vbnull));
+  auto ins = this->version_table_.insert({k, vbnull});
 
   if (!ins.second)
     {
@@ -1611,13 +1601,11 @@ Versions::add_need(Stringpool* dynpool, const char* filename, const char* name,
   // version references, so we just do a linear search.  This could be
   // replaced by a hash table.
   Verneed* vn = nullptr;
-  for (Needs::iterator p = this->needs_.begin();
-       p != this->needs_.end();
-       ++p)
+  for (auto *p : this->needs_)
     {
-      if ((*p)->filename() == filename)
+      if (p->filename() == filename)
 	{
-	  vn = *p;
+	  vn = p;
 	  break;
 	}
     }
@@ -1647,18 +1635,16 @@ Versions::finalize(Symbol_table* symtab, unsigned int dynsym_index,
 
   unsigned int vi = 1;
 
-  for (Defs::iterator p = this->defs_.begin();
-       p != this->defs_.end();
-       ++p)
+  for (auto *p : this->defs_)
     {
-      (*p)->set_index(vi);
+      p->set_index(vi);
       ++vi;
 
       // Create a version symbol if necessary.
-      if (!(*p)->is_symbol_created())
+      if (!p->is_symbol_created())
 	{
-	  Symbol* vsym = symtab->define_as_constant((*p)->name(),
-						    (*p)->name(),
+	  Symbol* vsym = symtab->define_as_constant(p->name(),
+						    p->name(),
 						    Symbol_table::PREDEFINED,
 						    0, 0,
 						    elfcpp::STT_OBJECT,
@@ -1681,10 +1667,8 @@ Versions::finalize(Symbol_table* symtab, unsigned int dynsym_index,
       vi = 2;
     }
 
-  for (Needs::iterator p = this->needs_.begin();
-       p != this->needs_.end();
-       ++p)
-    vi = (*p)->finalize(vi);
+  for (auto p : this->needs_)
+    vi = p->finalize(vi);
 
   this->is_finalized_ = true;
 

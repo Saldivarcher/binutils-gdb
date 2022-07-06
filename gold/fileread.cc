@@ -452,10 +452,9 @@ File_read::read(off_t start, section_size_type size, void* p)
 void
 File_read::add_view(File_read::View* v)
 {
-  std::pair<Views::iterator, bool> ins =
-    this->views_.insert(std::make_pair(std::make_pair(v->start(),
-						      v->byteshift()),
-				       v));
+  auto ins =
+    this->views_.insert({{v->start(), v->byteshift()}, v});
+
   if (ins.second)
     return;
 
@@ -783,14 +782,11 @@ File_read::clear_view_cache_marks()
   if (this->object_count_ > 1)
     return;
 
-  for (Views::iterator p = this->views_.begin();
-       p != this->views_.end();
-       ++p)
-    p->second->clear_cache();
-  for (Saved_views::iterator p = this->saved_views_.begin();
-       p != this->saved_views_.end();
-       ++p)
-    (*p)->clear_cache();
+  for (auto &p : this->views_)
+    p.second->clear_cache();
+
+  for (auto *p : this->saved_views_)
+    p->clear_cache();
 }
 
 // Remove all the file views.  For a file which has multiple

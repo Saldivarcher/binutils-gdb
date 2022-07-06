@@ -195,14 +195,12 @@ Eh_frame_hdr::do_sized_write(Output_file* of)
       output_address = this->address();
 
       unsigned char* pfde = oview + 12;
-      for (typename Fde_addresses<size>::iterator p = fde_addresses.begin();
-	   p != fde_addresses.end();
-	   ++p)
+      for (const auto &p : fde_addresses)
 	{
 	  elfcpp::Swap<32, big_endian>::writeval(pfde,
-						 p->first - output_address);
+						 p.first - output_address);
 	  elfcpp::Swap<32, big_endian>::writeval(pfde + 4,
-						 p->second - output_address);
+						 p.second - output_address);
 	  pfde += 8;
 	}
 
@@ -401,10 +399,8 @@ Fde::write(unsigned char* oview, section_offset_type output_offset,
 
 Cie::~Cie()
 {
-  for (std::vector<Fde*>::iterator p = this->fdes_.begin();
-       p != this->fdes_.end();
-       ++p)
-    delete *p;
+  for (auto *p : this->fdes_)
+    delete p;
 }
 
 // Set the output offset of a CIE.  Return the new output offset.
@@ -604,10 +600,8 @@ Eh_frame::add_ehframe_input_section(
       if (this->eh_frame_hdr_ != nullptr)
 	this->eh_frame_hdr_->found_unrecognized_eh_frame_section();
 
-      for (New_cies::iterator p = new_cies.begin();
-	   p != new_cies.end();
-	   ++p)
-	delete p->first;
+      for (auto &p : new_cies)
+	delete p.first;
 
       return EH_UNRECOGNIZED_SECTION;
     }
@@ -1207,20 +1201,15 @@ Eh_frame::set_final_data_size()
     output_start = this->offset() - this->output_section()->offset();
   section_offset_type output_offset = output_start;
 
-  for (Unmergeable_cie_offsets::iterator p =
-	 this->unmergeable_cie_offsets_.begin();
-       p != this->unmergeable_cie_offsets_.end();
-       ++p)
-    output_offset = (*p)->set_output_offset(output_offset,
-					    this->addralign(),
-					    this);
+  for (auto *p : this->unmergeable_cie_offsets_)
+    output_offset = p->set_output_offset(output_offset,
+					 this->addralign(),
+					 this);
 
-  for (Cie_offsets::iterator p = this->cie_offsets_.begin();
-       p != this->cie_offsets_.end();
-       ++p)
-    output_offset = (*p)->set_output_offset(output_offset,
-					    this->addralign(),
-					    this);
+  for (auto *p : this->cie_offsets_)
+    output_offset = p->set_output_offset(output_offset,
+					 this->addralign(),
+					 this);
 
   this->mappings_are_done_ = true;
   this->final_data_size_ = output_offset - output_start;
@@ -1288,26 +1277,21 @@ Eh_frame::do_sized_write(unsigned char* oview)
   section_offset_type o = 0;
   const off_t output_offset = this->offset() - this->output_section()->offset();
   Post_fdes post_fdes;
-  for (Unmergeable_cie_offsets::iterator p =
-	 this->unmergeable_cie_offsets_.begin();
-       p != this->unmergeable_cie_offsets_.end();
-       ++p)
-    o = (*p)->write<size, big_endian>(oview, output_offset, o, address,
-				      addralign, this->eh_frame_hdr_,
-				      &post_fdes);
-  for (Cie_offsets::iterator p = this->cie_offsets_.begin();
-       p != this->cie_offsets_.end();
-       ++p)
-    o = (*p)->write<size, big_endian>(oview, output_offset, o, address,
-				      addralign, this->eh_frame_hdr_,
-				      &post_fdes);
-  for (Post_fdes::iterator p = post_fdes.begin();
-       p != post_fdes.end();
-       ++p)
-    o = (*p).fde->write<size, big_endian>(oview, output_offset, o, address,
-					  addralign, (*p).cie_offset,
-					  (*p).fde_encoding,
-					  this->eh_frame_hdr_);
+  for (auto *p : this->unmergeable_cie_offsets_)
+    o = p->write<size, big_endian>(oview, output_offset, o, address,
+				   addralign, this->eh_frame_hdr_,
+				   &post_fdes);
+
+  for (auto *p : this->cie_offsets_)
+    o = p->write<size, big_endian>(oview, output_offset, o, address,
+				   addralign, this->eh_frame_hdr_,
+				   &post_fdes);
+
+  for (auto &p : post_fdes)
+    o = p.fde->write<size, big_endian>(oview, output_offset, o, address,
+				       addralign, p.cie_offset,
+				       p.fde_encoding,
+				       this->eh_frame_hdr_);
 }
 
 #ifdef HAVE_TARGET_32_LITTLE

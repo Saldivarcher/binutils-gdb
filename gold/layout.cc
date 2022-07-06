@@ -1937,10 +1937,8 @@ Layout::default_section_order(Output_section* os, bool is_relro_local)
 void
 Layout::attach_sections_to_segments(const Target* target)
 {
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
-    this->attach_section_to_segment(target, *p);
+  for (auto *p : this->section_list_)
+    this->attach_section_to_segment(target, p);
 
   this->sections_are_attached_ = true;
 }
@@ -2526,26 +2524,24 @@ Layout::define_section_symbols(Symbol_table* symtab)
 void
 Layout::define_group_signatures(Symbol_table* symtab)
 {
-  for (Group_signatures::iterator p = this->group_signatures_.begin();
-       p != this->group_signatures_.end();
-       ++p)
+  for (auto &p : this->group_signatures_)
     {
-      Symbol* sym = symtab->lookup(p->signature, nullptr);
+      Symbol* sym = symtab->lookup(p.signature, nullptr);
       if (sym != nullptr)
-	p->section->set_info_symndx(sym);
+	p.section->set_info_symndx(sym);
       else
 	{
 	  // Force the name of the group section to the group
 	  // signature, and use the group's section symbol as the
 	  // signature symbol.
-	  if (strcmp(p->section->name(), p->signature) != 0)
+	  if (strcmp(p.section->name(), p.signature) != 0)
 	    {
-	      const char* name = this->namepool_.add(p->signature,
+	      const char* name = this->namepool_.add(p.signature,
 						     true, nullptr);
-	      p->section->set_name(name);
+	      p.section->set_name(name);
 	    }
-	  p->section->set_needs_symtab_index();
-	  p->section->set_info_section_symndx(p->section);
+	  p.section->set_needs_symtab_index();
+	  p.section->set_info_section_symndx(p.section);
 	}
     }
 
@@ -2652,34 +2648,28 @@ Layout::clean_up_after_relaxation()
   this->restore_segments(this->segment_states_);
 
   // Reset section addresses and file offsets
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
+  for (auto *p : this->section_list_)
     {
-      (*p)->restore_states();
+      p->restore_states();
 
       // If an input section changes size because of relaxation,
       // we need to adjust the section offsets of all input sections.
       // after such a section.
-      if ((*p)->section_offsets_need_adjustment())
-	(*p)->adjust_section_offsets();
+      if (p->section_offsets_need_adjustment())
+	p->adjust_section_offsets();
 
-      (*p)->reset_address_and_file_offset();
+      p->reset_address_and_file_offset();
     }
 
   // Reset special output object address and file offsets.
-  for (Data_list::iterator p = this->special_output_list_.begin();
-       p != this->special_output_list_.end();
-       ++p)
-    (*p)->reset_address_and_file_offset();
+  for (auto *p : this->special_output_list_)
+    p->reset_address_and_file_offset();
 
   // A linker script may have created some output section data objects.
   // They are useless now.
-  for (Output_section_data_list::const_iterator p =
-	 this->script_output_section_data_list_.begin();
-       p != this->script_output_section_data_list_.end();
-       ++p)
-    delete *p;
+  for (auto *p : this->script_output_section_data_list_)
+    delete p;
+
   this->script_output_section_data_list_.clear();
 
   // Special-case fill output objects are recreated each time through
@@ -2896,14 +2886,11 @@ Layout::find_section_order_index(const std::string& section_name)
     return map_it->second;
 
   // Absolute match failed.  Linear search the glob patterns.
-  std::vector<std::string>::iterator it;
-  for (it = this->input_section_glob_.begin();
-       it != this->input_section_glob_.end();
-       ++it)
+  for (const auto &it : this->input_section_glob_)
     {
-       if (fnmatch((*it).c_str(), section_name.c_str(), FNM_NOESCAPE) == 0)
+       if (fnmatch(it.c_str(), section_name.c_str(), FNM_NOESCAPE) == 0)
 	 {
-	   map_it = this->input_section_position_.find(*it);
+	   map_it = this->input_section_position_.find(it);
 	   gold_assert(map_it != this->input_section_position_.end());
 	   return map_it->second;
 	 }
@@ -3545,14 +3532,12 @@ Layout::link_stabs_sections()
   if (!this->have_stabstr_section_)
     return;
 
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
+  for (auto *p : this->section_list_)
     {
-      if ((*p)->type() != elfcpp::SHT_STRTAB)
+      if (p->type() != elfcpp::SHT_STRTAB)
 	continue;
 
-      const char* name = (*p)->name();
+      const char* name = p->name();
       if (strncmp(name, ".stab", 5) != 0)
 	continue;
 
@@ -3564,7 +3549,7 @@ Layout::link_stabs_sections()
       Output_section* stab_sec;
       stab_sec = this->find_output_section(stab_name.c_str());
       if (stab_sec != nullptr)
-	stab_sec->set_link_section(*p);
+	stab_sec->set_link_section(p);
     }
 }
 
@@ -3849,13 +3834,11 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
   // the file.  Set their offsets now.
   if (load_seg == nullptr)
     {
-      for (Data_list::iterator p = this->special_output_list_.begin();
-	   p != this->special_output_list_.end();
-	   ++p)
+      for (auto *p : this->special_output_list_)
 	{
-	  off = align_address(off, (*p)->addralign());
-	  (*p)->set_address_and_file_offset(0, off);
-	  off += (*p)->data_size();
+	  off = align_address(off, p->addralign());
+	  p->set_address_and_file_offset(0, off);
+	  off += p->data_size();
 	}
     }
 
@@ -3869,11 +3852,9 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
   unsigned int shndx_begin = *pshndx;
   unsigned int shndx_load_seg = *pshndx;
 
-  for (Segment_list::iterator p = this->segment_list_.begin();
-       p != this->segment_list_.end();
-       ++p)
+  for (auto *p : this->segment_list_)
     {
-      if ((*p)->type() == elfcpp::PT_LOAD)
+      if (p->type() == elfcpp::PT_LOAD)
 	{
 	  if (target->isolate_execinstr())
 	    {
@@ -3881,7 +3862,7 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 	      // file headers, reset the file offset so we place
 	      // it and subsequent segments appropriately.
 	      // We'll fix up the preceding segments below.
-	      if (load_seg == *p)
+	      if (load_seg == p)
 		{
 		  if (off == 0)
 		    load_seg = nullptr;
@@ -3895,41 +3876,41 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 	  else
 	    {
 	      // Verify that the file headers fall into the first segment.
-	      if (load_seg != nullptr && load_seg != *p)
+	      if (load_seg != nullptr && load_seg != p)
 		gold_unreachable();
 	      load_seg = nullptr;
 	    }
 
-	  bool are_addresses_set = (*p)->are_addresses_set();
+	  bool are_addresses_set = p->are_addresses_set();
 	  if (are_addresses_set)
 	    {
 	      // When it comes to setting file offsets, we care about
 	      // the physical address.
-	      addr = (*p)->paddr();
+	      addr = p->paddr();
 	    }
 	  else if (parameters->options().user_set_Ttext()
 		   && (parameters->options().omagic()
-		       || is_text_segment(target, *p)))
+		       || is_text_segment(target, p)))
 	    {
 	      are_addresses_set = true;
 	    }
 	  else if (parameters->options().user_set_Trodata_segment()
-		   && ((*p)->flags() & (elfcpp::PF_W | elfcpp::PF_X)) == 0)
+		   && (p->flags() & (elfcpp::PF_W | elfcpp::PF_X)) == 0)
 	    {
 	      addr = parameters->options().Trodata_segment();
 	      are_addresses_set = true;
 	    }
 	  else if (parameters->options().user_set_Tdata()
-		   && ((*p)->flags() & elfcpp::PF_W) != 0
+		   && (p->flags() & elfcpp::PF_W) != 0
 		   && (!parameters->options().user_set_Tbss()
-		       || (*p)->has_any_data_sections()))
+		       || p->has_any_data_sections()))
 	    {
 	      addr = parameters->options().Tdata();
 	      are_addresses_set = true;
 	    }
 	  else if (parameters->options().user_set_Tbss()
-		   && ((*p)->flags() & elfcpp::PF_W) != 0
-		   && !(*p)->has_any_data_sections())
+		   && (p->flags() & elfcpp::PF_W) != 0
+		   && !p->has_any_data_sections())
 	    {
 	      addr = parameters->options().Tbss();
 	      are_addresses_set = true;
@@ -3944,7 +3925,7 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 
 	  if (!parameters->options().nmagic()
 	      && !parameters->options().omagic())
-	    (*p)->set_minimum_p_align(abi_pagesize);
+	    p->set_minimum_p_align(abi_pagesize);
 
 	  if (!are_addresses_set)
 	    {
@@ -3954,12 +3935,12 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 	      // put them on different pages in memory. We will revisit this
 	      // decision once we know the size of the segment.
 
-	      uint64_t max_align = (*p)->maximum_alignment();
+	      uint64_t max_align = p->maximum_alignment();
 	      if (max_align > abi_pagesize)
 		addr = align_address(addr, max_align);
 	      aligned_addr = addr;
 
-	      if (load_seg == *p)
+	      if (load_seg == p)
 		{
 		  // This is the segment that will contain the file
 		  // headers, so its offset will have to be exactly zero.
@@ -3996,7 +3977,7 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 	      // the maximum segment alignment is larger than the page size.
 	      off = align_file_offset(off, addr,
 				      std::max(abi_pagesize,
-					       (*p)->maximum_alignment()));
+					       p->maximum_alignment()));
 	    }
 	  else
 	    {
@@ -4009,16 +3990,16 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 	      // linker script may not match the alignment of the
 	      // sections in the set_section_addresses call below,
 	      // causing an error about dot moving backward.
-	      off = align_address(off, (*p)->maximum_alignment());
+	      off = align_address(off, p->maximum_alignment());
 	    }
 
 	  unsigned int shndx_hold = *pshndx;
 	  bool has_relro = false;
-	  uint64_t new_addr = (*p)->set_section_addresses(target, this,
-							  false, addr,
-							  &increase_relro,
-							  &has_relro,
-							  &off, pshndx);
+	  uint64_t new_addr = p->set_section_addresses(target, this,
+						       false, addr,
+						       &increase_relro,
+						       &has_relro,
+						       &off, pshndx);
 
 	  // Now that we know the size of this segment, we may be able
 	  // to save a page in memory, at the cost of wasting some
@@ -4045,7 +4026,7 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 		{
 		  *pshndx = shndx_hold;
 		  addr = align_address(aligned_addr, common_pagesize);
-		  addr = align_address(addr, (*p)->maximum_alignment());
+		  addr = align_address(addr, p->maximum_alignment());
 		  if ((addr & (abi_pagesize - 1)) != 0)
 		    addr = addr + abi_pagesize;
 		  off = orig_off + ((addr - orig_addr) & (abi_pagesize - 1));
@@ -4056,11 +4037,11 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 		    increase_relro = 0;
 		  has_relro = false;
 
-		  new_addr = (*p)->set_section_addresses(target, this,
-							 true, addr,
-							 &increase_relro,
-							 &has_relro,
-							 &off, pshndx);
+		  new_addr = p->set_section_addresses(target, this,
+						      true, addr,
+						      &increase_relro,
+						      &has_relro,
+						      &off, pshndx);
 		}
 	    }
 
@@ -4070,20 +4051,20 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 	  // are sorted by LMA.
 	  if (check_sections && last_load_segment != nullptr)
 	    {
-	      gold_assert(last_load_segment->paddr() <= (*p)->paddr());
+	      gold_assert(last_load_segment->paddr() <= p->paddr());
 	      if (last_load_segment->paddr() + last_load_segment->memsz()
-		  > (*p)->paddr())
+		  > p->paddr())
 		{
 		  unsigned long long lb1 = last_load_segment->paddr();
 		  unsigned long long le1 = lb1 + last_load_segment->memsz();
-		  unsigned long long lb2 = (*p)->paddr();
-		  unsigned long long le2 = lb2 + (*p)->memsz();
+		  unsigned long long lb2 = p->paddr();
+		  unsigned long long le2 = lb2 + p->memsz();
 		  gold_error(_("load segment overlap [0x%llx -> 0x%llx] and "
 			       "[0x%llx -> 0x%llx]"),
 			     lb1, le1, lb2, le2);
 		}
 	    }
-	  last_load_segment = *p;
+	  last_load_segment = p;
 	}
     }
 
@@ -4095,25 +4076,23 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 
       this->reset_relax_output();
 
-      for (Segment_list::iterator p = this->segment_list_.begin();
-	   *p != load_seg;
-	   ++p)
+      for (auto *p : this->segment_list_)
 	{
-	  if ((*p)->type() == elfcpp::PT_LOAD)
+	  if (p->type() == elfcpp::PT_LOAD)
 	    {
 	      // We repeat the whole job of assigning addresses and
 	      // offsets, but we really only want to change the offsets and
 	      // must ensure that the addresses all come out the same as
 	      // they did the first time through.
 	      bool has_relro = false;
-	      const uint64_t old_addr = (*p)->vaddr();
-	      const uint64_t old_end = old_addr + (*p)->memsz();
-	      uint64_t new_addr = (*p)->set_section_addresses(target, this,
-							      true, old_addr,
-							      &increase_relro,
-							      &has_relro,
-							      &off,
-							      &shndx_begin);
+	      const uint64_t old_addr = p->vaddr();
+	      const uint64_t old_end = old_addr + p->memsz();
+	      uint64_t new_addr = p->set_section_addresses(target, this,
+							   true, old_addr,
+							   &increase_relro,
+							   &has_relro,
+							   &off,
+							   &shndx_begin);
 	      gold_assert(new_addr == old_end);
 	    }
 	}
@@ -4123,16 +4102,14 @@ Layout::set_segment_offsets(const Target* target, Output_segment* load_seg,
 
   // Handle the non-PT_LOAD segments, setting their offsets from their
   // section's offsets.
-  for (Segment_list::iterator p = this->segment_list_.begin();
-       p != this->segment_list_.end();
-       ++p)
+  for (auto *p : this->segment_list_)
     {
       // PT_GNU_STACK was set up correctly when it was created.
-      if ((*p)->type() != elfcpp::PT_LOAD
-	  && (*p)->type() != elfcpp::PT_GNU_STACK)
-	(*p)->set_offset((*p)->type() == elfcpp::PT_GNU_RELRO
-			 ? increase_relro
-			 : 0);
+      if (p->type() != elfcpp::PT_LOAD
+	  && p->type() != elfcpp::PT_GNU_STACK)
+	p->set_offset(p->type() == elfcpp::PT_GNU_RELRO
+		      ? increase_relro
+		      : 0);
     }
 
   // Set the TLS offsets for each section in the PT_TLS segment.
@@ -4155,27 +4132,25 @@ Layout::set_relocatable_section_offsets(Output_data* file_header,
   file_header->set_address_and_file_offset(0, 0);
   off += file_header->data_size();
 
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
+  for (auto *p : this->section_list_)
     {
       // We skip unallocated sections here, except that group sections
       // have to come first.
-      if (((*p)->flags() & elfcpp::SHF_ALLOC) == 0
-	  && (*p)->type() != elfcpp::SHT_GROUP)
+      if ((p->flags() & elfcpp::SHF_ALLOC) == 0
+	  && p->type() != elfcpp::SHT_GROUP)
 	continue;
 
-      off = align_address(off, (*p)->addralign());
+      off = align_address(off, p->addralign());
 
       // The linker script might have set the address.
-      if (!(*p)->is_address_valid())
-	(*p)->set_address(0);
-      (*p)->set_file_offset(off);
-      (*p)->finalize_data_size();
-      if ((*p)->type() != elfcpp::SHT_NOBITS)
-	off += (*p)->data_size();
+      if (!p->is_address_valid())
+	p->set_address(0);
+      p->set_file_offset(off);
+      p->finalize_data_size();
+      if (p->type() != elfcpp::SHT_NOBITS)
+	off += p->data_size();
 
-      (*p)->set_out_shndx(*pshndx);
+      p->set_out_shndx(*pshndx);
       ++*pshndx;
     }
 
@@ -4191,82 +4166,80 @@ Layout::set_section_offsets(off_t off, Layout::Section_offset_pass pass)
   off_t startoff = off;
   off_t maxoff = off;
 
-  for (Section_list::iterator p = this->unattached_section_list_.begin();
-       p != this->unattached_section_list_.end();
-       ++p)
+  for (auto *p : this->unattached_section_list_)
     {
       // The symtab section is handled in create_symtab_sections.
-      if (*p == this->symtab_section_)
+      if (p == this->symtab_section_)
 	continue;
 
       // If we've already set the data size, don't set it again.
-      if ((*p)->is_offset_valid() && (*p)->is_data_size_valid())
+      if (p->is_offset_valid() && p->is_data_size_valid())
 	continue;
 
       if (pass == BEFORE_INPUT_SECTIONS_PASS
-	  && (*p)->requires_postprocessing())
+	  && p->requires_postprocessing())
 	{
-	  (*p)->create_postprocessing_buffer();
+	  p->create_postprocessing_buffer();
 	  this->any_postprocessing_sections_ = true;
 	}
 
       if (pass == BEFORE_INPUT_SECTIONS_PASS
-	  && (*p)->after_input_sections())
+	  && p->after_input_sections())
 	continue;
       else if (pass == POSTPROCESSING_SECTIONS_PASS
-	       && (!(*p)->after_input_sections()
-		   || (*p)->type() == elfcpp::SHT_STRTAB))
+	       && (!p->after_input_sections()
+		   || p->type() == elfcpp::SHT_STRTAB))
 	continue;
       else if (pass == STRTAB_AFTER_POSTPROCESSING_SECTIONS_PASS
-	       && (!(*p)->after_input_sections()
-		   || (*p)->type() != elfcpp::SHT_STRTAB))
+	       && (!p->after_input_sections()
+		   || p->type() != elfcpp::SHT_STRTAB))
 	continue;
 
       if (!parameters->incremental_update())
 	{
-	  off = align_address(off, (*p)->addralign());
-	  (*p)->set_file_offset(off);
-	  (*p)->finalize_data_size();
+	  off = align_address(off, p->addralign());
+	  p->set_file_offset(off);
+	  p->finalize_data_size();
 	}
       else
 	{
 	  // Incremental update: allocate file space from free list.
-	  (*p)->pre_finalize_data_size();
-	  off_t current_size = (*p)->current_data_size();
-	  off = this->allocate(current_size, (*p)->addralign(), startoff);
+	  p->pre_finalize_data_size();
+	  off_t current_size = p->current_data_size();
+	  off = this->allocate(current_size, p->addralign(), startoff);
 	  if (off == -1)
 	    {
 	      if (is_debugging_enabled(DEBUG_INCREMENTAL))
 		this->free_list_.dump();
-	      gold_assert((*p)->output_section() != nullptr);
+	      gold_assert(p->output_section() != nullptr);
 	      gold_fallback(_("out of patch space for section %s; "
 			      "relink with --incremental-full"),
-			    (*p)->output_section()->name());
+			    p->output_section()->name());
 	    }
-	  (*p)->set_file_offset(off);
-	  (*p)->finalize_data_size();
-	  if ((*p)->data_size() > current_size)
+	  p->set_file_offset(off);
+	  p->finalize_data_size();
+	  if (p->data_size() > current_size)
 	    {
-	      gold_assert((*p)->output_section() != nullptr);
+	      gold_assert(p->output_section() != nullptr);
 	      gold_fallback(_("%s: section changed size; "
 			      "relink with --incremental-full"),
-			    (*p)->output_section()->name());
+			    p->output_section()->name());
 	    }
 	  gold_debug(DEBUG_INCREMENTAL,
 		     "set_section_offsets: %08lx %08lx %s",
 		     static_cast<long>(off),
-		     static_cast<long>((*p)->data_size()),
-		     ((*p)->output_section() != nullptr
-		      ? (*p)->output_section()->name() : "(special)"));
+		     static_cast<long>(p->data_size()),
+		     (p->output_section() != nullptr
+		      ? p->output_section()->name() : "(special)"));
 	}
 
-      off += (*p)->data_size();
+      off += p->data_size();
       if (off > maxoff)
 	maxoff = off;
 
       // At this point the name must be set.
       if (pass != STRTAB_AFTER_POSTPROCESSING_SECTIONS_PASS)
-	this->namepool_.add((*p)->name(), false, nullptr);
+	this->namepool_.add(p->name(), false, nullptr);
     }
   return maxoff;
 }
@@ -4277,13 +4250,11 @@ Layout::set_section_offsets(off_t off, Layout::Section_offset_pass pass)
 unsigned int
 Layout::set_section_indexes(unsigned int shndx)
 {
-  for (Section_list::iterator p = this->unattached_section_list_.begin();
-       p != this->unattached_section_list_.end();
-       ++p)
+  for (auto *p : this->unattached_section_list_)
     {
-      if (!(*p)->has_out_shndx())
+      if (!p->has_out_shndx())
 	{
-	  (*p)->set_out_shndx(shndx);
+	  p->set_out_shndx(shndx);
 	  ++shndx;
 	}
     }
@@ -4313,12 +4284,10 @@ Layout::place_orphan_sections_in_script()
   gold_assert(ss->saw_sections_clause());
 
   // Place each orphaned output section in the script.
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
+  for (auto *p : this->section_list_)
     {
-      if (!(*p)->found_in_sections_clause())
-	ss->place_orphan(*p);
+      if (!p->found_in_sections_clause())
+	ss->place_orphan(p);
     }
 }
 
@@ -4392,26 +4361,22 @@ Layout::create_symtab_sections(const Input_objects* input_objects,
   unsigned int local_symbol_index = 1;
 
   // Add STT_SECTION symbols for each Output section which needs one.
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
+  for (auto *p : this->section_list_)
     {
-      if (!(*p)->needs_symtab_index())
-	(*p)->set_symtab_index(-1U);
+      if (!p->needs_symtab_index())
+	p->set_symtab_index(-1U);
       else
 	{
-	  (*p)->set_symtab_index(local_symbol_index);
+	  p->set_symtab_index(local_symbol_index);
 	  ++local_symbol_index;
 	  off += symsize;
 	}
     }
 
-  for (Input_objects::Relobj_iterator p = input_objects->relobj_begin();
-       p != input_objects->relobj_end();
-       ++p)
+  for (auto *p : input_objects->get_relobj_list())
     {
-      unsigned int index = (*p)->finalize_local_symbols(local_symbol_index,
-							off, symtab);
+      unsigned int index = p->finalize_local_symbols(local_symbol_index,
+						     off, symtab);
       off += (index - local_symbol_index) * symsize;
       local_symbol_index = index;
     }
@@ -4624,15 +4589,13 @@ Layout::create_dynamic_symtab(const Input_objects* input_objects,
   unsigned int index = 1;
 
   // Add STT_SECTION symbols for each Output section which needs one.
-  for (Section_list::iterator p = this->section_list_.begin();
-       p != this->section_list_.end();
-       ++p)
+  for (auto *p : this->section_list_)
     {
-      if (!(*p)->needs_dynsym_index())
-	(*p)->set_dynsym_index(-1U);
+      if (!p->needs_dynsym_index())
+	p->set_dynsym_index(-1U);
       else
 	{
-	  (*p)->set_dynsym_index(index);
+	  p->set_dynsym_index(index);
 	  ++index;
 	}
     }

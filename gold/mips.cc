@@ -3043,11 +3043,9 @@ reorder_dyn_symbols(std::vector<Symbol*>* dyn_symbols,
                     std::vector<Symbol*>* non_got_symbols,
                     std::vector<Symbol*>* got_symbols)
 {
-  for (std::vector<Symbol*>::iterator p = dyn_symbols->begin();
-       p != dyn_symbols->end();
-       ++p)
+  for (auto *p : *dyn_symbols)
     {
-      Mips_symbol<size>* mips_sym = Mips_symbol<size>::as_mips_sym(*p);
+      Mips_symbol<size>* mips_sym = Mips_symbol<size>::as_mips_sym(p);
       if (mips_sym->global_got_area() == GGA_NORMAL
           || mips_sym->global_got_area() == GGA_RELOC_ONLY)
         got_symbols->push_back(mips_sym);
@@ -5862,12 +5860,9 @@ Mips_got_info<size, big_endian>::add_local_entries(
   got->add_constant(0);
   got->add_constant(target->mips_elf_gnu_got1_mask());
 
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (entry->is_for_local_symbol() && !entry->is_tls_entry())
         {
           got->add_local(entry->object(), entry->symndx(),
@@ -5891,12 +5886,9 @@ Mips_got_info<size, big_endian>::add_local_entries(
   this->add_page_entries(target, layout);
 
   // Add global entries that should be in the local area.
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (!entry->is_for_global_symbol())
         continue;
 
@@ -5963,12 +5955,9 @@ Mips_got_info<size, big_endian>::add_global_entries(
   Mips_output_data_got<size, big_endian>* got = target->got_section();
   // Add GGA_NORMAL entries.
   unsigned int count = 0;
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (!entry->is_for_global_symbol())
         continue;
 
@@ -6032,12 +6021,9 @@ void
 Mips_got_info<size, big_endian>::add_reloc_only_entries(
     Mips_output_data_got<size, big_endian>* got)
 {
-  for (typename Global_got_entry_set::iterator
-       p = this->global_got_symbols_.begin();
-       p != this->global_got_symbols_.end();
-       ++p)
+  for (auto *p : this->global_got_symbols_)
     {
-      Mips_symbol<size>* mips_sym = *p;
+      Mips_symbol<size>* mips_sym = p;
       if (mips_sym->global_got_area() == GGA_RELOC_ONLY)
         {
           unsigned int got_type;
@@ -6060,12 +6046,9 @@ Mips_got_info<size, big_endian>::add_tls_entries(
 {
   Mips_output_data_got<size, big_endian>* got = target->got_section();
   // Add local tls entries.
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (!entry->is_tls_entry() || !entry->is_for_local_symbol())
         continue;
 
@@ -6146,12 +6129,9 @@ Mips_got_info<size, big_endian>::add_tls_entries(
     }
 
   // Add global tls entries.
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (!entry->is_tls_entry() || !entry->is_for_global_symbol())
         continue;
 
@@ -6216,12 +6196,9 @@ template<int size, bool big_endian>
 void
 Mips_got_info<size, big_endian>::count_got_symbols(Symbol_table* symtab)
 {
-  for (typename Global_got_entry_set::iterator
-       p = this->global_got_symbols_.begin();
-       p != this->global_got_symbols_.end();
-       ++p)
+  for (auto *p : this->global_got_symbols_)
     {
-      Mips_symbol<size>* sym = *p;
+      Mips_symbol<size>* sym = p;
       // Make a final decision about whether the symbol belongs in the
       // local or global GOT.  Symbols that bind locally can (and in the
       // case of forced-local symbols, must) live in the local GOT.
@@ -6274,12 +6251,9 @@ void
 Mips_got_info<size, big_endian>::remove_lazy_stubs(
     Target_mips<size, big_endian>* target)
 {
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (entry->is_for_global_symbol())
         target->remove_lazy_stub_entry(entry->sym());
     }
@@ -6291,12 +6265,9 @@ template<int size, bool big_endian>
 void
 Mips_got_info<size, big_endian>::count_got_entries()
 {
-  for (typename Got_entry_set::iterator
-       p = this->got_entries_.begin();
-       p != this->got_entries_.end();
-       ++p)
+  for (auto *p : this->got_entries_)
     {
-      this->count_got_entry(*p);
+      this->count_got_entry(p);
     }
 }
 
@@ -6323,12 +6294,9 @@ void
 Mips_got_info<size, big_endian>::add_got_entries(
     Mips_got_info<size, big_endian>* from)
 {
-  for (typename Got_entry_set::iterator
-       p = from->got_entries_.begin();
-       p != from->got_entries_.end();
-       ++p)
+  for (auto *p : from->got_entries_)
     {
-      Mips_got_entry<size, big_endian>* entry = *p;
+      Mips_got_entry<size, big_endian>* entry = p;
       if (this->got_entries_.find(entry) == this->got_entries_.end())
         {
           Mips_got_entry<size, big_endian>* entry2 =
@@ -6561,9 +6529,6 @@ template<int size, bool big_endian>
 void
 Mips_output_data_got<size, big_endian>::do_write(Output_file* of)
 {
-  typedef Unordered_set<Mips_symbol<size>*, Mips_symbol_hash<size> >
-      Mips_stubs_entry_set;
-
   // Call parent to write out GOT.
   Output_data_got<size, big_endian>::do_write(of);
 
@@ -6576,12 +6541,9 @@ Mips_output_data_got<size, big_endian>::do_write(Output_file* of)
   this->got_view_ = oview;
 
   // Write lazy stub addresses.
-  for (typename Mips_stubs_entry_set::iterator
-       p = this->master_got_info_->global_got_symbols().begin();
-       p != this->master_got_info_->global_got_symbols().end();
-       ++p)
+  for (auto *p : this->master_got_info_->global_got_symbols())
     {
-      Mips_symbol<size>* mips_sym = *p;
+      Mips_symbol<size>* mips_sym = p;
       if (mips_sym->has_lazy_stub())
         {
           Valtype* wv = reinterpret_cast<Valtype*>(
@@ -6593,12 +6555,9 @@ Mips_output_data_got<size, big_endian>::do_write(Output_file* of)
     }
 
   // Add +1 to GGA_NONE nonzero MIPS16 and microMIPS entries.
-  for (typename Mips_stubs_entry_set::iterator
-       p = this->master_got_info_->global_got_symbols().begin();
-       p != this->master_got_info_->global_got_symbols().end();
-       ++p)
+  for (auto *p : this->master_got_info_->global_got_symbols())
     {
-      Mips_symbol<size>* mips_sym = *p;
+      Mips_symbol<size>* mips_sym = p;
       if (!this->multi_got()
           && (mips_sym->is_mips16() || mips_sym->is_micromips())
           && mips_sym->global_got_area() == GGA_NONE
@@ -7215,12 +7174,9 @@ Mips_output_data_la25_stub<size, big_endian>::do_write(Output_file* of)
     convert_to_section_size_type(this->data_size());
   unsigned char* const oview = of->get_output_view(offset, oview_size);
 
-  for (typename std::vector<Mips_symbol<size>*>::iterator
-       p = this->symbols_.begin();
-       p != this->symbols_.end();
-       ++p)
+  for (auto *p : this->symbols_)
     {
-      Mips_symbol<size>* sym = *p;
+      Mips_symbol<size>* sym = p;
       unsigned char* pov = oview + sym->la25_stub_offset();
 
       Mips_address target = sym->value();

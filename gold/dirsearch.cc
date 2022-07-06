@@ -124,10 +124,8 @@ class Dir_caches
 
 Dir_caches::~Dir_caches()
 {
-  for (Cache_hash::iterator p = this->caches_.begin();
-       p != this->caches_.end();
-       ++p)
-    delete p->second;
+  for (auto &p : this->caches_)
+    delete p.second;
 }
 
 void

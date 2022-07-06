@@ -37,10 +37,8 @@ namespace gold
 
 Object_merge_map::~Object_merge_map()
 {
-  for (Section_merge_maps::iterator p = this->section_merge_maps_.begin();
-       p != this->section_merge_maps_.end();
-       ++p)
-    delete p->second;
+  for (auto &p : this->section_merge_maps_)
+    delete p.second;
 }
 
 // Get the Input_merge_map to use for an input section, or nullptr.

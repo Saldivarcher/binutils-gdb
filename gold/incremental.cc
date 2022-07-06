@@ -720,13 +720,11 @@ Sized_incremental_binary<size, big_endian>::do_emit_copy_relocs(
   Sized_target<size, big_endian>* target =
       parameters->sized_target<size, big_endian>();
 
-  for (typename Copy_relocs::iterator p = this->copy_relocs_.begin();
-       p != this->copy_relocs_.end();
-       ++p)
+  for (const auto &p : this->copy_relocs_)
     {
-      if (!(*p).symbol->is_copied_from_dynobj())
-	target->emit_copy_reloc(symtab, (*p).symbol, (*p).output_section,
-				(*p).offset);
+      if (!p.symbol->is_copied_from_dynobj())
+	target->emit_copy_reloc(symtab, p.symbol, p.output_section,
+				p.offset);
     }
 }
 

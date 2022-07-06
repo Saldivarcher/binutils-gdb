@@ -3104,12 +3104,10 @@ Output_section::update_data_size()
     this->sort_attached_input_sections();
 
   off_t off = this->first_input_offset_;
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
+  for (const auto &p : this->input_sections_)
     {
-      off = align_address(off, p->addralign());
-      off += p->current_data_size();
+      off = align_address(off, p.addralign());
+      off += p.current_data_size();
     }
 
   this->set_current_data_size_for_child(off);
@@ -3134,14 +3132,12 @@ Output_section::set_final_data_size()
       uint64_t address = this->address();
       off_t startoff = this->offset();
       off_t off = this->first_input_offset_;
-      for (Input_section_list::iterator p = this->input_sections_.begin();
-	   p != this->input_sections_.end();
-	   ++p)
+      for (auto &p : this->input_sections_)
 	{
-	  off = align_address(off, p->addralign());
-	  p->set_address_and_file_offset(address + off, startoff + off,
-					 startoff);
-	  off += p->data_size();
+	  off = align_address(off, p.addralign());
+	  p.set_address_and_file_offset(address + off, startoff + off,
+					startoff);
+	  off += p.data_size();
 	}
       data_size = off;
     }
@@ -3180,10 +3176,8 @@ Output_section::do_reset_address_and_file_offset()
   if (((this->flags_ & elfcpp::SHF_ALLOC) == 0) && !this->is_noload_)
      this->set_address(0);
 
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
-    p->reset_address_and_file_offset();
+  for (auto &p : this->input_sections_)
+    p.reset_address_and_file_offset();
 
   // Remove any patch space that was added in set_final_data_size.
   if (this->patch_space_ > 0)
@@ -3546,17 +3540,15 @@ void
 Output_section::update_section_layout(
   const Section_layout_order* order_map)
 {
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
+  for (auto &p : this->input_sections_)
     {
-      if (p->is_input_section()
-	  || p->is_relaxed_input_section())
+      if (p.is_input_section()
+	  || p.is_relaxed_input_section())
 	{
-	  Relobj* obj = (p->is_input_section()
-			 ? p->relobj()
-			 : p->relaxed_input_section()->relobj());
-	  unsigned int shndx = p->shndx();
+	  Relobj* obj = (p.is_input_section()
+			 ? p.relobj()
+			 : p.relaxed_input_section()->relobj());
+	  unsigned int shndx = p.shndx();
 	  Section_layout_order::const_iterator it
 	    = order_map->find(Section_id(obj, shndx));
 	  if (it == order_map->end())
@@ -3564,7 +3556,7 @@ Output_section::update_section_layout(
 	  unsigned int section_order_index = it->second;
 	  if (section_order_index != 0)
 	    {
-	      p->set_section_order_index(section_order_index);
+	      p.set_section_order_index(section_order_index);
 	      this->set_input_section_order_specified();
 	    }
 	}
@@ -3593,12 +3585,13 @@ Output_section::sort_attached_input_sections()
   std::vector<Input_section_sort_entry> sort_list;
 
   unsigned int i = 0;
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p, ++i)
-      sort_list.push_back(Input_section_sort_entry(*p, i,
+  for (auto &p : this->input_sections_)
+    {
+      sort_list.push_back(Input_section_sort_entry(p, i,
 			    this->must_sort_attached_input_sections(),
 			    this->name()));
+      i++;
+    }
 
   // Sort the input sections.
   if (this->must_sort_attached_input_sections())
@@ -3627,10 +3620,8 @@ Output_section::sort_attached_input_sections()
 
   // Copy the sorted input sections back to our list.
   this->input_sections_.clear();
-  for (std::vector<Input_section_sort_entry>::iterator p = sort_list.begin();
-       p != sort_list.end();
-       ++p)
-    this->input_sections_.push_back(p->input_section());
+  for (const auto &p : sort_list)
+    this->input_sections_.push_back(p.input_section());
   sort_list.clear();
 
   // Remember that we sorted the input sections, since we might get
@@ -3697,21 +3688,17 @@ Output_section::do_write(Output_file* of)
   gold_assert(!this->generate_code_fills_at_write_ || this->fills_.empty());
 
   off_t output_section_file_offset = this->offset();
-  for (Fill_list::iterator p = this->fills_.begin();
-       p != this->fills_.end();
-       ++p)
+  for (const auto &p : this->fills_)
     {
-      std::string fill_data(parameters->target().code_fill(p->length()));
-      of->write(output_section_file_offset + p->section_offset(),
+      std::string fill_data(parameters->target().code_fill(p.length()));
+      of->write(output_section_file_offset + p.section_offset(),
 		fill_data.data(), fill_data.size());
     }
 
   off_t off = this->offset() + this->first_input_offset_;
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
+  for (auto &p : this->input_sections_)
     {
-      off_t aligned_off = align_address(off, p->addralign());
+      off_t aligned_off = align_address(off, p.addralign());
       if (this->generate_code_fills_at_write_ && (off != aligned_off))
 	{
 	  size_t fill_len = aligned_off - off;
@@ -3719,20 +3706,18 @@ Output_section::do_write(Output_file* of)
 	  of->write(off, fill_data.data(), fill_data.size());
 	}
 
-      p->write(of);
-      off = aligned_off + p->data_size();
+      p.write(of);
+      off = aligned_off + p.data_size();
     }
 
   // For incremental links, fill in unused chunks in debug sections
   // with dummy compilation unit headers.
   if (this->free_space_fill_ != nullptr)
     {
-      for (Free_list::Const_iterator p = this->free_list_.begin();
-	   p != this->free_list_.end();
-	   ++p)
+      for (const auto &p : this->free_list_)
 	{
-	  off_t off = p->start_;
-	  size_t len = p->end_ - off;
+	  off_t off = p.start_;
+	  size_t len = p.end_ - off;
 	  this->free_space_fill_->write(of, this->offset() + off, len);
 	}
       if (this->patch_space_ > 0)
@@ -3757,13 +3742,11 @@ Output_section::create_postprocessing_buffer()
   if (!this->input_sections_.empty())
     {
       off_t off = this->first_input_offset_;
-      for (Input_section_list::iterator p = this->input_sections_.begin();
-	   p != this->input_sections_.end();
-	   ++p)
+      for (auto &p : this->input_sections_)
 	{
-	  off = align_address(off, p->addralign());
-	  p->finalize_data_size();
-	  off += p->data_size();
+	  off = align_address(off, p.addralign());
+	  p.finalize_data_size();
+	  off += p.data_size();
 	}
       this->set_current_data_size_for_child(off);
     }
@@ -3786,21 +3769,17 @@ Output_section::write_to_postprocessing_buffer()
   gold_assert(!this->generate_code_fills_at_write_ || this->fills_.empty());
 
   unsigned char* buffer = this->postprocessing_buffer();
-  for (Fill_list::iterator p = this->fills_.begin();
-       p != this->fills_.end();
-       ++p)
+  for (const auto &p : this->fills_)
     {
-      std::string fill_data(parameters->target().code_fill(p->length()));
-      memcpy(buffer + p->section_offset(), fill_data.data(),
+      std::string fill_data(parameters->target().code_fill(p.length()));
+      memcpy(buffer + p.section_offset(), fill_data.data(),
 	     fill_data.size());
     }
 
   off_t off = this->first_input_offset_;
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
+  for (auto &p : this->input_sections_)
     {
-      off_t aligned_off = align_address(off, p->addralign());
+      off_t aligned_off = align_address(off, p.addralign());
       if (this->generate_code_fills_at_write_ && (off != aligned_off))
 	{
 	  size_t fill_len = aligned_off - off;
@@ -3808,8 +3787,8 @@ Output_section::write_to_postprocessing_buffer()
 	  memcpy(buffer + off, fill_data.data(), fill_data.size());
 	}
 
-      p->write_to_buffer(buffer + aligned_off);
-      off = aligned_off + p->data_size();
+      p.write_to_buffer(buffer + aligned_off);
+      off = aligned_off + p.data_size();
     }
 }
 
@@ -3841,17 +3820,15 @@ Output_section::get_input_sections(
   address = align_address(address, this->addralign());
 
   Input_section_list remaining;
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
+  for (auto &p : this->input_sections_)
     {
-      if (p->is_input_section()
-	  || p->is_relaxed_input_section()
-	  || p->is_merge_section())
-	input_sections->push_back(*p);
+      if (p.is_input_section()
+	  || p.is_relaxed_input_section()
+	  || p.is_merge_section())
+	input_sections->push_back(p);
       else
 	{
-	  uint64_t aligned_address = align_address(address, p->addralign());
+	  uint64_t aligned_address = align_address(address, p.addralign());
 	  if (aligned_address != address && !fill.empty())
 	    {
 	      section_size_type length =
@@ -3868,10 +3845,10 @@ Output_section::get_input_sections(
 	    }
 	  address = aligned_address;
 
-	  remaining.push_back(*p);
+	  remaining.push_back(p);
 
-	  p->finalize_data_size();
-	  address += p->data_size();
+	  p.finalize_data_size();
+	  address += p.data_size();
 	}
     }
 
@@ -3989,14 +3966,12 @@ Output_section::adjust_section_offsets()
     return;
 
   off_t off = 0;
-  for (Input_section_list::iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
+  for (auto &p : this->input_sections_)
     {
-      off = align_address(off, p->addralign());
-      if (p->is_input_section())
-	p->relobj()->set_section_offset(p->shndx(), off);
-      off += p->data_size();
+      off = align_address(off, p.addralign());
+      if (p.is_input_section())
+	p.relobj()->set_section_offset(p.shndx(), off);
+      off += p.data_size();
     }
 
   this->section_offsets_need_adjustment_ = false;
@@ -4009,10 +3984,8 @@ Output_section::do_print_to_mapfile(Mapfile* mapfile) const
 {
   mapfile->print_output_section(this);
 
-  for (Input_section_list::const_iterator p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
-    p->print_to_mapfile(mapfile);
+  for (auto &p : this->input_sections_)
+    p.print_to_mapfile(mapfile);
 }
 
 // Print stats for merge sections to stderr.
@@ -4020,11 +3993,8 @@ Output_section::do_print_to_mapfile(Mapfile* mapfile) const
 void
 Output_section::print_merge_stats()
 {
-  Input_section_list::iterator p;
-  for (p = this->input_sections_.begin();
-       p != this->input_sections_.end();
-       ++p)
-    p->print_merge_stats(this->name_);
+  for (auto &p : this->input_sections_)
+    p.print_merge_stats(this->name_);
 }
 
 // Set a fixed layout for the section.  Used for incremental update links.
@@ -4134,7 +4104,7 @@ Output_segment::remove_output_section(Output_section* os)
   for (int i = 0; i < static_cast<int>(ORDER_MAX); ++i)
     {
       Output_data_list* pdl = &this->output_lists_[i];
-      for (Output_data_list::iterator p = pdl->begin(); p != pdl->end(); ++p)
+      for (auto p = pdl->begin(); p != pdl->end(); ++p)
 	{
 	  if (*p == os)
 	    {
